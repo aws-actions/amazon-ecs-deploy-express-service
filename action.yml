@@ -1,0 +1,102 @@
+name: 'Amazon ECS "Deploy Express Service" Action for GitHub Actions'
+description: 'Creates or updates an Amazon ECS Express Mode service'
+branding:
+  icon: 'cloud'
+  color: 'orange'
+inputs:
+  # Required inputs
+  image:
+    description: 'The container image URI to deploy (e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest)'
+    required: true
+  execution-role-arn:
+    description: 'The ARN of the task execution role that grants the ECS agent permission to pull container images and publish logs'
+    required: true
+  infrastructure-role-arn:
+    description: 'The ARN of the infrastructure role that grants ECS permission to create and manage AWS resources (ALB, target groups, etc.)'
+    required: true
+  
+  # Service identification
+  service:
+    description: 'The name of the ECS Express service to update. Used to construct the service ARN for checking if the service exists. If not provided, a new service will be created.'
+    required: false
+  service-name:
+    description: 'The desired name for a new ECS Express service (serviceName in SDK). Only used when creating a new service. If not provided, AWS will generate a unique name.'
+    required: false
+  cluster:
+    description: "The name of the ECS cluster. Will default to the 'default' cluster."
+    required: false
+    default: 'default'
+  
+  # Primary container configuration
+  container-port:
+    description: 'The port number on the container that receives traffic (containerPort in primaryContainer). If not specified, Express Mode will use port 80.'
+    required: false
+  environment-variables:
+    description: 'Environment variables to set in the container (environment in primaryContainer). Provide as JSON array: [{"name":"KEY","value":"VALUE"}]'
+    required: false
+  secrets:
+    description: 'Secrets to inject into the container (secrets in primaryContainer). Provide as JSON array: [{"name":"KEY","valueFrom":"arn:aws:secretsmanager:..."}]'
+    required: false
+  command:
+    description: 'Override the default container command (command in primaryContainer). Provide as JSON array: ["node","server.js"]'
+    required: false
+  
+  # Resource configuration
+  cpu:
+    description: 'The number of CPU units to allocate (256, 512, 1024, 2048, 4096, 8192, 16384). If not specified, Express Mode defaults to 256 (.25 vCPU).'
+    required: false
+  memory:
+    description: 'The amount of memory in MiB to allocate (512, 1024, 2048, 4096, 8192, 16384, 30720, 61440, 122880). If not specified, Express Mode defaults to 512 MiB.'
+    required: false
+  task-role-arn:
+    description: 'The ARN of the IAM role that the container can assume to make AWS API calls (taskRoleArn)'
+    required: false
+  
+  # Network configuration
+  subnets:
+    description: 'Comma-separated list of subnet IDs for the service (subnets in networkConfiguration). If not specified, Express Mode uses the default VPC.'
+    required: false
+  security-groups:
+    description: 'Comma-separated list of security group IDs for the service (securityGroups in networkConfiguration). If not specified, Express Mode creates security groups automatically.'
+    required: false
+  
+  # Health check configuration
+  health-check-path:
+    description: 'The path for ALB health checks (healthCheckPath). If not specified, Express Mode defaults to /ping.'
+    required: false
+  
+  # Auto-scaling configuration
+  min-task-count:
+    description: 'Minimum number of tasks for auto-scaling (minTaskCount in scalingTarget). Must be less than or equal to max-task-count.'
+    required: false
+  max-task-count:
+    description: 'Maximum number of tasks for auto-scaling (maxTaskCount in scalingTarget). Must be greater than or equal to min-task-count.'
+    required: false
+  auto-scaling-metric:
+    description: 'The metric to use for auto-scaling (autoScalingMetric in scalingTarget): AVERAGE_CPU, AVERAGE_MEMORY, or REQUEST_COUNT_PER_TARGET'
+    required: false
+  auto-scaling-target-value:
+    description: 'The target value for the auto-scaling metric (autoScalingTargetValue in scalingTarget). For example, 60 for 60% CPU utilization.'
+    required: false
+  
+  # Deployment behavior
+  wait-for-service-stability:
+    description: 'Whether to wait for the ECS service to reach stable state after deployment. Valid values are "true" or "false".'
+    required: false
+    default: 'true'
+  wait-for-minutes:
+    description: 'How long to wait for service stability, in minutes. Default is 30 minutes, maximum is 360 minutes (6 hours).'
+    required: false
+    default: '30'
+
+outputs:
+  service-arn:
+    description: 'The ARN of the deployed Express service'
+  endpoint:
+    description: 'The endpoint URL of the service (from the Application Load Balancer)'
+  status:
+    description: 'The status of the service (ACTIVE, DRAINING, or INACTIVE)'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
