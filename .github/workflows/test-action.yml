@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - feature/express-service-deployment
+    paths:
+      - 'index.js'
+      - 'dist/**'
+      - 'action.yml'
+      - '.github/workflows/test-action.yml'
   workflow_dispatch:
 
 permissions:
