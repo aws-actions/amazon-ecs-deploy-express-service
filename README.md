@@ -38,7 +38,7 @@ Configure AWS credentials using the `aws-actions/configure-aws-credentials` acti
 
 ```yaml
 - name: Configure AWS credentials
-  uses: aws-actions/configure-aws-credentials@v4
+  uses: aws-actions/configure-aws-credentials@v5
   with:
     role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
     aws-region: us-east-1
@@ -114,7 +114,7 @@ See [IAM Permissions](#iam-permissions) for detailed policy requirements.
     auto-scaling-target-value: 70
     
     # Deployment behavior
-    wait-for-service-stability: true
+    wait-for-deployment: true
     wait-for-minutes: 30
 ```
 
@@ -178,8 +178,8 @@ See [IAM Permissions](#iam-permissions) for detailed policy requirements.
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `wait-for-service-stability` | Whether to wait for the service to reach stable state | `true` |
-| `wait-for-minutes` | How long to wait for service stability, in minutes (max 360) | `30` |
+| `wait-for-deployment` | Whether to wait for the deployment to complete successfully | `true` |
+| `wait-for-minutes` | How long to wait for deployment completion, in minutes (max 360) | `30` |
 
 ## Outputs
 
@@ -193,68 +193,17 @@ See [IAM Permissions](#iam-permissions) for detailed policy requirements.
 
 ### Execution Role
 
-The execution role needs permissions to pull container images and write logs:
+The execution role can use the managed policy `AmazonECSTaskExecutionRolePolicy` permissions to pull container images and write logs. If not already created, please follow option 3c in the [procedure](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-first-run.html#express-service-first-run-procedure)
 
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-```
 
 ### Infrastructure Role
 
-The infrastructure role needs permissions to manage ECS Express Mode resources:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:CreateTags",
-        "ec2:DescribeSubnets",
-        "ec2:DescribeSecurityGroups",
-        "ec2:DescribeVpcs",
-        "elasticloadbalancing:CreateLoadBalancer",
-        "elasticloadbalancing:CreateTargetGroup",
-        "elasticloadbalancing:CreateListener",
-        "elasticloadbalancing:DescribeLoadBalancers",
-        "elasticloadbalancing:DescribeTargetGroups",
-        "elasticloadbalancing:DescribeListeners",
-        "elasticloadbalancing:ModifyLoadBalancerAttributes",
-        "elasticloadbalancing:ModifyTargetGroupAttributes",
-        "elasticloadbalancing:AddTags"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-```
+The infrastructure role can use the managed policy `AmazonECSInfrastructureRoleforExpressGatewayServices` permissions to manage ECS Express Mode resources. If not already created, please follow option 3c in the [procedure](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-first-run.html#express-service-first-run-procedure)
 
 ### GitHub Actions Role
 
-The role assumed by GitHub Actions needs permissions to manage ECS Express services:
+This action relies on the [default behavior of the AWS SDK for Javascript](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/setting-credentials-node.html) to determine AWS credentials and region.
+Use [the `aws-actions/configure-aws-credentials` action](https://github.com/aws-actions/configure-aws-credentials) to configure the GitHub Actions environment (OIDC recommended). You can use these permissions to manage ECS Express services:
 
 ```json
 {
@@ -263,6 +212,8 @@ The role assumed by GitHub Actions needs permissions to manage ECS Express servi
     {
       "Effect": "Allow",
       "Action": [
+        "ecs:CreateCluster",
+        "ecs:RegisterTaskDefinition",
         "ecs:CreateExpressGatewayService",
         "ecs:UpdateExpressGatewayService",
         "ecs:DescribeExpressGatewayService",
@@ -294,10 +245,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::123456789012:role/github-actions-role
           aws-region: us-east-1
