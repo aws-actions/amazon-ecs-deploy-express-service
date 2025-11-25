@@ -1,7 +1,6 @@
 const core = require('@actions/core');
 const { 
   ECSClient, 
-  DescribeClustersCommand,
   DescribeServicesCommand,
   CreateExpressGatewayServiceCommand,
   UpdateExpressGatewayServiceCommand
@@ -87,50 +86,6 @@ async function run() {
     const accountId = arnParts[4];
     core.debug(`AWS Account ID: ${accountId}`);
     
-    // Always check if cluster exists
-    core.info(`Checking if cluster '${clusterName}' exists...`);
-    let clusterExists = false;
-    try {
-      const describeClustersCommand = new DescribeClustersCommand({
-        clusters: [clusterName]
-      });
-      const clusterResponse = await ecs.send(describeClustersCommand);
-      
-      if (!clusterResponse.clusters || clusterResponse.clusters.length === 0) {
-        // Cluster not found
-        if (clusterName === 'default') {
-          core.info(`Default cluster not found, will be created with the service`);
-          clusterExists = false;
-        } else {
-          throw new Error(`Cluster '${clusterName}' not found in region ${region}. Please create the cluster first or use the default cluster.`);
-        }
-      } else {
-        const cluster = clusterResponse.clusters[0];
-        if (cluster.status !== 'ACTIVE') {
-          if (clusterName === 'default') {
-            core.info(`Default cluster exists but is not ACTIVE (status: ${cluster.status}), will proceed with creation`);
-            clusterExists = false;
-          } else {
-            throw new Error(`Cluster '${clusterName}' exists but is not ACTIVE (status: ${cluster.status}). Please check the cluster status.`);
-          }
-        } else {
-          core.info(`Cluster '${clusterName}' is ACTIVE`);
-          clusterExists = true;
-        }
-      }
-    } catch (error) {
-      if (error.name === 'ClusterNotFoundException') {
-        if (clusterName === 'default') {
-          core.info(`Default cluster not found, will be created with the service`);
-          clusterExists = false;
-        } else {
-          throw new Error(`Cluster '${clusterName}' not found in region ${region}. Please create the cluster first or use the default cluster.`);
-        }
-      } else {
-        throw error;
-      }
-    }
-    
     // Construct service ARN if service name is provided
     let serviceArn = null;
     let serviceExists = false;
@@ -140,39 +95,34 @@ async function run() {
       serviceArn = `arn:aws:ecs:${region}:${accountId}:service/${clusterName}/${serviceName}`;
       core.info(`Constructed service ARN: ${serviceArn}`);
       
-      // Only check if service exists if cluster exists
-      if (clusterExists) {
-        // Check if service exists using DescribeServices
-        try {
-          core.info('Checking if service exists...');
-          const describeCommand = new DescribeServicesCommand({
-            cluster: clusterName,
-            services: [serviceName]
-          });
-          
-          const describeResponse = await ecs.send(describeCommand);
-          
-          if (describeResponse.services && describeResponse.services.length > 0) {
-            const service = describeResponse.services[0];
-            if (service.status !== 'INACTIVE') {
-              serviceExists = true;
-              core.info(`Service exists with status: ${service.status}`);
-            } else {
-              core.info('Service exists but is INACTIVE, will create new service');
-            }
+      // Check if service exists using DescribeServices
+      try {
+        core.info('Checking if service exists...');
+        const describeCommand = new DescribeServicesCommand({
+          cluster: clusterName,
+          services: [serviceName]
+        });
+        
+        const describeResponse = await ecs.send(describeCommand);
+        
+        if (describeResponse.services && describeResponse.services.length > 0) {
+          const service = describeResponse.services[0];
+          if (service.status !== 'INACTIVE') {
+            serviceExists = true;
+            core.info(`Service exists with status: ${service.status}`);
           } else {
-            core.info('Service does not exist, will create new service');
+            core.info('Service exists but is INACTIVE, will create new service');
           }
-        } catch (error) {
-          if (error.name === 'ServiceNotFoundException') {
-            core.info('Service not found, will create new service');
-            serviceExists = false;
-          } else {
-            throw error;
-          }
+        } else {
+          core.info('Service does not exist, will create new service');
         }
-      } else {
-        core.info('Cluster does not exist, skipping service existence check - will create both');
+      } catch (error) {
+        if (error.name === 'ServiceNotFoundException' || error.name === 'ClusterNotFoundException') {
+          core.info('Service or cluster not found, will create new service');
+          serviceExists = false;
+        } else {
+          throw error;
+        }
       }
     } else {
       core.info('No service name provided, will create a new service with AWS-generated name');

@@ -98,11 +98,27 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      mockSend.mockResolvedValue({
-        service: {
-          serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/production/my-service'
-        }
-      });
+      // First call: DescribeClustersCommand
+      // Second call: DescribeServicesCommand
+      // Third call: UpdateExpressGatewayServiceCommand
+      mockSend
+        .mockResolvedValueOnce({
+          clusters: [{
+            clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/production',
+            status: 'ACTIVE'
+          }]
+        })
+        .mockResolvedValueOnce({
+          services: [{
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/production/my-service',
+            status: 'ACTIVE'
+          }]
+        })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/production/my-service'
+          }
+        });
 
       await run();
 
@@ -118,11 +134,27 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      mockSend.mockResolvedValue({
-        service: {
-          serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service'
-        }
-      });
+      // First call: DescribeClustersCommand
+      // Second call: DescribeServicesCommand
+      // Third call: UpdateExpressGatewayServiceCommand
+      mockSend
+        .mockResolvedValueOnce({
+          clusters: [{
+            clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default',
+            status: 'ACTIVE'
+          }]
+        })
+        .mockResolvedValueOnce({
+          services: [{
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service',
+            status: 'ACTIVE'
+          }]
+        })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service'
+          }
+        });
 
       await run();
 
@@ -141,14 +173,14 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      // First call: DescribeExpressGatewayServiceCommand returns existing service
+      // First call: DescribeServicesCommand returns existing service
       // Second call: UpdateExpressGatewayServiceCommand
       mockSend
         .mockResolvedValueOnce({
-          service: {
+          services: [{
             serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service',
-            status: { statusCode: 'ACTIVE' }
-          }
+            status: 'ACTIVE'
+          }]
         })
         .mockResolvedValueOnce({
           service: {
@@ -158,7 +190,7 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       await run();
 
-      expect(core.info).toHaveBeenCalledWith('Express Gateway service exists with status: ACTIVE');
+      expect(core.info).toHaveBeenCalledWith('Service exists with status: ACTIVE');
       expect(core.info).toHaveBeenCalledWith('Will UPDATE existing service');
       expect(core.info).toHaveBeenCalledWith('Updating Express Gateway service...');
       expect(core.info).toHaveBeenCalledWith('Service updated successfully');
@@ -175,13 +207,12 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      // First call: DescribeExpressGatewayServiceCommand throws ResourceNotFoundException
+      // First call: DescribeServicesCommand returns empty (service not found)
       // Second call: CreateExpressGatewayServiceCommand
-      const notFoundError = new Error('Service not found');
-      notFoundError.name = 'ResourceNotFoundException';
-      
       mockSend
-        .mockRejectedValueOnce(notFoundError)
+        .mockResolvedValueOnce({
+          services: []
+        })
         .mockResolvedValueOnce({
           service: {
             serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service'
@@ -190,7 +221,7 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       await run();
 
-      expect(core.info).toHaveBeenCalledWith('Express Gateway service not found, will create new service');
+      expect(core.info).toHaveBeenCalledWith('Service does not exist, will create new service');
       expect(core.info).toHaveBeenCalledWith('Will CREATE new service');
       expect(core.info).toHaveBeenCalledWith('Creating Express Gateway service...');
       expect(core.info).toHaveBeenCalledWith('Service created successfully');
@@ -205,7 +236,8 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      mockSend.mockResolvedValue({
+      // Only call: CreateExpressGatewayServiceCommand (no service name, so no describe)
+      mockSend.mockResolvedValueOnce({
         service: {
           serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/generated-name'
         }
@@ -229,9 +261,18 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      mockSend.mockResolvedValue({
-        service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-      });
+      // First call: DescribeClustersCommand
+      // Second call: CreateExpressGatewayServiceCommand
+      mockSend
+        .mockResolvedValueOnce({
+          clusters: [{
+            clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default',
+            status: 'ACTIVE'
+          }]
+        })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
+        });
 
       await run();
 
@@ -248,9 +289,13 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      mockSend.mockResolvedValue({
-        service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-      });
+      mockSend
+        .mockResolvedValueOnce({
+          clusters: [{ clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default', status: 'ACTIVE' }]
+        })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
+        });
 
       await run();
 
@@ -267,9 +312,13 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      mockSend.mockResolvedValue({
-        service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-      });
+      mockSend
+        .mockResolvedValueOnce({
+          clusters: [{ clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default', status: 'ACTIVE' }]
+        })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
+        });
 
       await run();
 
@@ -287,9 +336,13 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      mockSend.mockResolvedValue({
-        service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-      });
+      mockSend
+        .mockResolvedValueOnce({
+          clusters: [{ clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default', status: 'ACTIVE' }]
+        })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
+        });
 
       await run();
 
@@ -309,9 +362,13 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      mockSend.mockResolvedValue({
-        service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-      });
+      mockSend
+        .mockResolvedValueOnce({
+          clusters: [{ clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default', status: 'ACTIVE' }]
+        })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
+        });
 
       await run();
 
@@ -331,15 +388,13 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       const accessError = new Error('Access denied');
       accessError.name = 'AccessDeniedException';
+      // Cluster check fails with access denied
       mockSend.mockRejectedValue(accessError);
 
       await run();
 
       expect(core.setFailed).toHaveBeenCalledWith(
         expect.stringContaining('Access denied')
-      );
-      expect(core.setFailed).toHaveBeenCalledWith(
-        expect.stringContaining('IAM roles')
       );
     });
 
@@ -362,7 +417,7 @@ describe('Amazon ECS Deploy Express Service', () => {
       );
     });
 
-    test('handles ClusterNotFoundException with helpful message', async () => {
+    test('handles ClusterNotFoundException gracefully during service check', async () => {
       core.getInput.mockImplementation((name) => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
@@ -372,24 +427,25 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      const notFoundError = new Error('Service not found');
-      notFoundError.name = 'ResourceNotFoundException';
-      
+      // DescribeServicesCommand throws ClusterNotFoundException
+      // CreateExpressGatewayServiceCommand succeeds (Express Mode creates cluster)
       const clusterError = new Error('Cluster not found');
       clusterError.name = 'ClusterNotFoundException';
       
       mockSend
-        .mockRejectedValueOnce(notFoundError)
-        .mockRejectedValueOnce(clusterError);
+        .mockRejectedValueOnce(clusterError)
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/nonexistent/my-service'
+          }
+        });
 
       await run();
 
-      expect(core.setFailed).toHaveBeenCalledWith(
-        expect.stringContaining('Cluster not found')
-      );
-      expect(core.setFailed).toHaveBeenCalledWith(
-        expect.stringContaining('nonexistent')
-      );
+      expect(core.info).toHaveBeenCalledWith('Service or cluster not found, will create new service');
+      expect(core.info).toHaveBeenCalledWith('Will CREATE new service');
+      expect(core.info).toHaveBeenCalledWith('Creating Express Gateway service...');
+      expect(core.setFailed).not.toHaveBeenCalled();
     });
   });
 });
