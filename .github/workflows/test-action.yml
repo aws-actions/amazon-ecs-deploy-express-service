@@ -35,6 +35,8 @@ jobs:
           infrastructure-role-arn: arn:aws:iam::576283685878:role/ButterflyInfraRole
           service: test-nginx-service
           cluster: default
+          cpu: '256'
+          memory: '512'
       
       - name: Display outputs
         run: |
