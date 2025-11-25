@@ -88,34 +88,39 @@ async function run() {
     const accountId = arnParts[4];
     core.debug(`AWS Account ID: ${accountId}`);
     
-    // Check if cluster exists
-    core.info(`Checking if cluster '${clusterName}' exists...`);
+    // Check if cluster exists (skip for default cluster)
     let clusterExists = false;
-    try {
-      const describeClustersCommand = new DescribeClustersCommand({
-        clusters: [clusterName]
-      });
-      const clusterResponse = await ecs.send(describeClustersCommand);
-      
-      if (!clusterResponse.clusters || clusterResponse.clusters.length === 0) {
-        core.info(`Cluster '${clusterName}' not found, will be created with the service`);
-        clusterExists = false;
-      } else {
-        const cluster = clusterResponse.clusters[0];
-        if (cluster.status !== 'ACTIVE') {
-          core.info(`Cluster '${clusterName}' exists but is not ACTIVE (status: ${cluster.status}), will proceed with creation`);
+    if (clusterName === 'default') {
+      core.info(`Using default cluster, skipping existence check`);
+      clusterExists = true; // Assume default cluster exists or will be created
+    } else {
+      core.info(`Checking if cluster '${clusterName}' exists...`);
+      try {
+        const describeClustersCommand = new DescribeClustersCommand({
+          clusters: [clusterName]
+        });
+        const clusterResponse = await ecs.send(describeClustersCommand);
+        
+        if (!clusterResponse.clusters || clusterResponse.clusters.length === 0) {
+          core.info(`Cluster '${clusterName}' not found, will be created with the service`);
           clusterExists = false;
         } else {
-          core.info(`Cluster '${clusterName}' is ACTIVE`);
-          clusterExists = true;
+          const cluster = clusterResponse.clusters[0];
+          if (cluster.status !== 'ACTIVE') {
+            core.info(`Cluster '${clusterName}' exists but is not ACTIVE (status: ${cluster.status}), will proceed with creation`);
+            clusterExists = false;
+          } else {
+            core.info(`Cluster '${clusterName}' is ACTIVE`);
+            clusterExists = true;
+          }
         }
-      }
-    } catch (error) {
-      if (error.name === 'ClusterNotFoundException') {
-        core.info(`Cluster '${clusterName}' not found, will be created with the service`);
-        clusterExists = false;
-      } else {
-        throw error;
+      } catch (error) {
+        if (error.name === 'ClusterNotFoundException') {
+          core.info(`Cluster '${clusterName}' not found, will be created with the service`);
+          clusterExists = false;
+        } else {
+          throw error;
+        }
       }
     }
     
