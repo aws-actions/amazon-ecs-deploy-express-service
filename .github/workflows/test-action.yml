@@ -23,7 +23,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::576283685878:role/TestGHARole
-          aws-region: us-east-1
+          aws-region: us-west-2
       
       - name: Deploy to ECS Express Mode
         id: deploy
