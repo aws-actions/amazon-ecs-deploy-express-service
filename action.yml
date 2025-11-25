@@ -16,11 +16,8 @@ inputs:
     required: true
   
   # Service identification
-  service:
-    description: 'The name of the ECS Express service to update. Used to construct the service ARN for checking if the service exists. If not provided, a new service will be created.'
-    required: false
   service-name:
-    description: 'The desired name for a new ECS Express service (serviceName in SDK). Only used when creating a new service. If not provided, AWS will generate a unique name.'
+    description: 'The name of the ECS Express service (serviceName). If the service exists, it will be updated. If not, a new service will be created with this name. If not provided, AWS will generate a unique name for new services.'
     required: false
   cluster:
     description: "The name of the ECS cluster. Will default to the 'default' cluster."
@@ -40,6 +37,15 @@ inputs:
   command:
     description: 'Override the default container command (command in primaryContainer). Provide as JSON array: ["node","server.js"]'
     required: false
+  log-group:
+    description: 'CloudWatch Logs log group name for container logs (logGroup in awsLogsConfiguration). If not specified, Express Mode creates a log group automatically.'
+    required: false
+  log-stream-prefix:
+    description: 'CloudWatch Logs stream prefix for container logs (logStreamPrefix in awsLogsConfiguration). If not specified, Express Mode uses a default prefix.'
+    required: false
+  repository-credentials:
+    description: 'ARN of the secret containing credentials for private container registry (credentialsParameter in repositoryCredentials). Required for private registries outside ECR.'
+    required: false
   
   # Resource configuration
   cpu:
@@ -57,7 +63,7 @@ inputs:
     description: 'Comma-separated list of subnet IDs for the service (subnets in networkConfiguration). If not specified, Express Mode uses the default VPC.'
     required: false
   security-groups:
-    description: 'Comma-separated list of security group IDs for the service (securityGroups in networkConfiguration). If not specified, Express Mode creates security groups automatically.'
+    description: 'Comma-separated list of security group IDs for the service (securityGroups in networkConfiguration).'
     required: false
   
   # Health check configuration
@@ -79,23 +85,11 @@ inputs:
     description: 'The target value for the auto-scaling metric (autoScalingTargetValue in scalingTarget). For example, 60 for 60% CPU utilization.'
     required: false
   
-  # Deployment behavior
-  wait-for-service-stability:
-    description: 'Whether to wait for the ECS service to reach stable state after deployment. Valid values are "true" or "false".'
-    required: false
-    default: 'true'
-  wait-for-minutes:
-    description: 'How long to wait for service stability, in minutes. Default is 30 minutes, maximum is 360 minutes (6 hours).'
-    required: false
-    default: '30'
-
 outputs:
   service-arn:
     description: 'The ARN of the deployed Express service'
   endpoint:
     description: 'The endpoint URL of the service (from the Application Load Balancer)'
-  status:
-    description: 'The status of the service (ACTIVE, DRAINING, or INACTIVE)'
 
 runs:
   using: 'node20'
