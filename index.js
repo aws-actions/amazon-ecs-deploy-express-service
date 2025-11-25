@@ -15,11 +15,16 @@ async function run() {
     core.info('Amazon ECS Deploy Express Service action started');
     
     // Read required inputs
+    const serviceName = core.getInput('service-name', { required: false });
     const image = core.getInput('image', { required: false });
     const executionRoleArn = core.getInput('execution-role-arn', { required: false });
     const infrastructureRoleArn = core.getInput('infrastructure-role-arn', { required: false });
     
     // Validate required inputs are not empty
+    if (!serviceName || serviceName.trim() === '') {
+      throw new Error('Input required and not supplied: service-name');
+    }
+    
     if (!image || image.trim() === '') {
       throw new Error('Input required and not supplied: image');
     }
@@ -46,7 +51,6 @@ async function run() {
     core.debug('ECS client created successfully');
     
     // Read optional inputs for service identification
-    const serviceName = core.getInput('service-name', { required: false });
     const clusterName = core.getInput('cluster', { required: false }) || 'default';
     
     // Read optional container configuration inputs
@@ -89,57 +93,46 @@ async function run() {
     const accountId = arnParts[4];
     core.debug(`AWS Account ID: ${accountId}`);
     
-    // Construct service ARN if service name is provided
-    let serviceArn = null;
-    let serviceExists = false;
+    // Construct service ARN
+    const serviceArn = `arn:aws:ecs:${region}:${accountId}:service/${clusterName}/${serviceName}`;
+    core.info(`Constructed service ARN: ${serviceArn}`);
     
-    if (serviceName && serviceName.trim() !== '') {
-      // Construct service ARN: arn:aws:ecs:{region}:{account}:service/{cluster}/{service}
-      serviceArn = `arn:aws:ecs:${region}:${accountId}:service/${clusterName}/${serviceName}`;
-      core.info(`Constructed service ARN: ${serviceArn}`);
+    // Check if service exists using DescribeServices
+    let serviceExists = false;
+    try {
+      core.info('Checking if service exists...');
+      const describeCommand = new DescribeServicesCommand({
+        cluster: clusterName,
+        services: [serviceName]
+      });
       
-      // Check if service exists using DescribeServices
-      try {
-        core.info('Checking if service exists...');
-        const describeCommand = new DescribeServicesCommand({
-          cluster: clusterName,
-          services: [serviceName]
-        });
-        
-        const describeResponse = await ecs.send(describeCommand);
-        
-        if (describeResponse.services && describeResponse.services.length > 0) {
-          const service = describeResponse.services[0];
-          if (service.status !== 'INACTIVE') {
-            serviceExists = true;
-            core.info(`Service exists with status: ${service.status}`);
-          } else {
-            core.info('Service exists but is INACTIVE, will create new service');
-          }
+      const describeResponse = await ecs.send(describeCommand);
+      
+      if (describeResponse.services && describeResponse.services.length > 0) {
+        const service = describeResponse.services[0];
+        if (service.status !== 'INACTIVE') {
+          serviceExists = true;
+          core.info(`Service exists with status: ${service.status}`);
         } else {
-          core.info('Service does not exist, will create new service');
+          core.info('Service exists but is INACTIVE, will create new service');
         }
-      } catch (error) {
-        if (error.name === 'ServiceNotFoundException' || error.name === 'ClusterNotFoundException') {
-          core.info('Service or cluster not found, will create new service');
-          serviceExists = false;
-        } else {
-          throw error;
-        }
+      } else {
+        core.info('Service does not exist, will create new service');
       }
-    } else {
-      core.info('No service name provided, will create a new service with AWS-generated name');
+    } catch (error) {
+      if (error.name === 'ServiceNotFoundException' || error.name === 'ClusterNotFoundException') {
+        core.info('Service or cluster not found, will create new service');
+        serviceExists = false;
+      } else {
+        throw error;
+      }
     }
     
     // Log the decision
-    if (serviceArn) {
-      if (serviceExists) {
-        core.info('Will UPDATE existing service');
-      } else {
-        core.info('Will CREATE new service');
-      }
+    if (serviceExists) {
+      core.info('Will UPDATE existing service');
     } else {
-      core.info('Will CREATE new service with AWS-generated name');
+      core.info('Will CREATE new service');
     }
     
     // Build SDK command input object
@@ -233,10 +226,8 @@ async function run() {
       }
     }
     
-    // Add optional service configuration
-    if (serviceName && serviceName.trim() !== '') {
-      serviceConfig.serviceName = serviceName;
-    }
+    // Add service configuration
+    serviceConfig.serviceName = serviceName;
     
     if (clusterName && clusterName !== 'default') {
       serviceConfig.cluster = clusterName;
