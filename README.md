@@ -11,7 +11,7 @@ Deploys an Amazon ECS Express Mode service. ECS Express Mode is a simplified dep
 - [Outputs](#outputs)
 - [IAM Permissions](#iam-permissions)
 - [Examples](#examples)
-- [Comparison with deploy-task-definition](#comparison-with-deploy-task-definition)
+
 
 ## Overview
 
@@ -364,29 +364,25 @@ jobs:
     auto-scaling-target-value: 70
 ```
 
-## Comparison with deploy-task-definition
+## Troubleshooting
 
-| Feature | deploy-task-definition | amazon-ecs-deploy-express-service |
-|---------|----------------------|-----------------------------------|
-| **Infrastructure Management** | Manual (you create ALB, target groups, etc.) | Automatic (Express Mode creates everything) |
-| **Task Definition** | Required | Not required (managed by Express Mode) |
-| **Service Creation** | Separate step | Integrated |
-| **Load Balancer** | Manual configuration | Automatic |
-| **Auto-Scaling** | Manual configuration | Built-in support |
-| **Complexity** | Higher (more control) | Lower (opinionated) |
-| **Use Case** | Complex, customized deployments | Simple, standard web services |
+### Service fails to deploy
 
-**When to use Express Mode:**
-- Deploying standard web applications
-- Want automatic infrastructure management
-- Prefer simplicity over fine-grained control
-- Getting started with ECS
+- Check that the execution role has permissions to pull the container image
+- Verify the infrastructure role has permissions to create load balancers and target groups
+- Ensure the container image exists and is accessible
+- Check CloudWatch Logs for container startup errors
 
-**When to use deploy-task-definition:**
-- Need custom task definition configurations
-- Require specific networking or load balancer setups
-- Have existing ECS infrastructure
-- Need maximum control over ECS resources
+### Deployment timeout
+
+- Increase `wait-for-minutes` if your application takes longer to start
+- Check that your health check path returns 200 OK
+- Verify the container is listening on the specified port
+
+### Cluster not found error
+
+- For custom clusters, ensure the cluster exists before running the action
+- The action will automatically create the default cluster if it doesn't exist
 
 ## Security
 
