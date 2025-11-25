@@ -329,19 +329,19 @@ async function run() {
     // Extract service ARN from response
     const finalServiceArn = response.service?.serviceArn || serviceArn;
     
-    // Wait for service stability if requested
-    const waitForStability = core.getInput('wait-for-service-stability', { required: false }) !== 'false';
+    // Wait for deployment completion if requested
+    const waitForDeployment = core.getInput('wait-for-deployment', { required: false }) !== 'false';
     const waitMinutes = parseInt(core.getInput('wait-for-minutes', { required: false }) || '30', 10);
     
-    if (waitForStability && finalServiceArn) {
-      core.info('Waiting for service to reach stable state...');
+    if (waitForDeployment && finalServiceArn) {
+      core.info('Waiting for deployment to complete...');
       const operationTime = new Date();
       const timeoutMs = waitMinutes * 60 * 1000;
       const startTime = Date.now();
       
       await waitForServiceStable(ecs, finalServiceArn, clusterName, serviceName, operationTime, timeoutMs, startTime);
       
-      core.info('Service has reached stable state');
+      core.info('Deployment completed successfully');
     }
     
     // Set outputs

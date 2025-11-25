@@ -80,12 +80,12 @@ inputs:
     required: false
   
   # Deployment behavior
-  wait-for-service-stability:
-    description: 'Whether to wait for the ECS service to reach stable state after deployment. Valid values are "true" or "false".'
+  wait-for-deployment:
+    description: 'Whether to wait for the deployment to complete successfully. Valid values are "true" or "false".'
     required: false
     default: 'true'
   wait-for-minutes:
-    description: 'How long to wait for service stability, in minutes. Default is 30 minutes, maximum is 360 minutes (6 hours).'
+    description: 'How long to wait for deployment completion, in minutes. Default is 30 minutes, maximum is 360 minutes (6 hours).'
     required: false
     default: '30'
 

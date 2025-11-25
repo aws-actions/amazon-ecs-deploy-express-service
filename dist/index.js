@@ -335,19 +335,19 @@ async function run() {
     // Extract service ARN from response
     const finalServiceArn = response.service?.serviceArn || serviceArn;
     
-    // Wait for service stability if requested
-    const waitForStability = core.getInput('wait-for-service-stability', { required: false }) !== 'false';
+    // Wait for deployment completion if requested
+    const waitForDeployment = core.getInput('wait-for-deployment', { required: false }) !== 'false';
     const waitMinutes = parseInt(core.getInput('wait-for-minutes', { required: false }) || '30', 10);
     
-    if (waitForStability && finalServiceArn) {
-      core.info('Waiting for service to reach stable state...');
+    if (waitForDeployment && finalServiceArn) {
+      core.info('Waiting for deployment to complete...');
       const operationTime = new Date();
       const timeoutMs = waitMinutes * 60 * 1000;
       const startTime = Date.now();
       
       await waitForServiceStable(ecs, finalServiceArn, clusterName, serviceName, operationTime, timeoutMs, startTime);
       
-      core.info('Service has reached stable state');
+      core.info('Deployment completed successfully');
     }
     
     // Set outputs
@@ -433,13 +433,6 @@ async function waitForServiceStable(ecs, serviceArn, clusterName, serviceName, o
     }
     
     // Service is ACTIVE, now check deployment status
-    const currentDeployment = service.currentDeployment;
-    
-    if (!currentDeployment) {
-      core.info('No current deployment found, service is stable');
-      return;
-    }
-    
     // List deployments created after operation time
     const listDeploymentsCommand = new ListServiceDeploymentsCommand({
       cluster: clusterName,
@@ -449,30 +442,31 @@ async function waitForServiceStable(ecs, serviceArn, clusterName, serviceName, o
       }
     });
     
-    const deploymentsResponse = await ecs.send(listDeploymentsCommand);
+    let deploymentArn = null;
     
-    if (!deploymentsResponse.serviceDeployments || deploymentsResponse.serviceDeployments.length === 0) {
-      core.info('No recent deployments found, checking current deployment...');
-      // Fall back to checking current deployment
-      const deploymentStatus = await getDeploymentStatus(ecs, currentDeployment);
+    try {
+      const deploymentsResponse = await ecs.send(listDeploymentsCommand);
       
-      if (deploymentStatus === 'SUCCESSFUL') {
-        core.info('Current deployment is successful, service is stable');
-        return;
+      if (deploymentsResponse.serviceDeployments && deploymentsResponse.serviceDeployments.length > 0) {
+        // Use the most recent deployment
+        deploymentArn = deploymentsResponse.serviceDeployments[0].serviceDeploymentArn;
+        core.info(`Found deployment: ${deploymentArn}`);
       }
-      
-      if (deploymentStatus === 'FAILED' || deploymentStatus === 'STOPPED') {
-        throw new Error(`Deployment ${currentDeployment} ${deploymentStatus}`);
-      }
-      
-      core.info(`Deployment status: ${deploymentStatus}, waiting...`);
-      await sleep(pollInterval);
-      continue;
+    } catch (error) {
+      core.warning(`Could not list deployments: ${error.message}`);
     }
     
-    // Check the most recent deployment
-    const latestDeployment = deploymentsResponse.serviceDeployments[0];
-    const deploymentArn = latestDeployment.serviceDeploymentArn;
+    // If no deployment found from list, try current deployment from service
+    if (!deploymentArn && service.currentDeployment) {
+      deploymentArn = service.currentDeployment;
+      core.info(`Using current deployment from service: ${deploymentArn}`);
+    }
+    
+    // If still no deployment, service is stable
+    if (!deploymentArn) {
+      core.info('No deployment found, service is stable');
+      return;
+    }
     
     const deploymentStatus = await getDeploymentStatus(ecs, deploymentArn);
     

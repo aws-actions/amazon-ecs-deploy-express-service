@@ -114,7 +114,7 @@ See [IAM Permissions](#iam-permissions) for detailed policy requirements.
     auto-scaling-target-value: 70
     
     # Deployment behavior
-    wait-for-service-stability: true
+    wait-for-deployment: true
     wait-for-minutes: 30
 ```
 
@@ -178,8 +178,8 @@ See [IAM Permissions](#iam-permissions) for detailed policy requirements.
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `wait-for-service-stability` | Whether to wait for the service to reach stable state | `true` |
-| `wait-for-minutes` | How long to wait for service stability, in minutes (max 360) | `30` |
+| `wait-for-deployment` | Whether to wait for the deployment to complete successfully | `true` |
+| `wait-for-minutes` | How long to wait for deployment completion, in minutes (max 360) | `30` |
 
 ## Outputs
 
