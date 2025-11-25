@@ -76,7 +76,7 @@
     - Log operation being performed
     - _Requirements: 1.4, 1.5, 9.1, 9.2, 9.3, 9.4_
 
-  - [ ] 3.9 Wait for service stability
+  - [x] 3.9 Wait for service stability
     - Check wait-for-service-stability input (default true)
     - If enabled, poll service using DescribeExpressGatewayServiceCommand
     - Check service status (ACTIVE, DRAINING, INACTIVE)
@@ -85,7 +85,7 @@
     - Log progress during waiting
     - _Requirements: 11.5_
 
-  - [ ] 3.10 Extract and set outputs
+  - [x] 3.10 Extract and set outputs
     - Extract service ARN from response
     - Extract endpoint URL from first ingress path if available
     - Extract status code from service status
