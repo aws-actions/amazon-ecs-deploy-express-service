@@ -54,6 +54,9 @@ async function run() {
     const environmentVariables = core.getInput('environment-variables', { required: false });
     const secrets = core.getInput('secrets', { required: false });
     const command = core.getInput('command', { required: false });
+    const logGroup = core.getInput('log-group', { required: false });
+    const logStreamPrefix = core.getInput('log-stream-prefix', { required: false });
+    const repositoryCredentials = core.getInput('repository-credentials', { required: false });
     
     // Read optional resource configuration inputs
     const cpu = core.getInput('cpu', { required: false });
@@ -178,6 +181,26 @@ async function run() {
       } catch (error) {
         throw new Error(`Invalid command JSON: ${error.message}`);
       }
+    }
+    
+    // Add optional logging configuration
+    if (logGroup && logGroup.trim() !== '' || logStreamPrefix && logStreamPrefix.trim() !== '') {
+      serviceConfig.primaryContainer.awsLogsConfiguration = {};
+      
+      if (logGroup && logGroup.trim() !== '') {
+        serviceConfig.primaryContainer.awsLogsConfiguration.logGroup = logGroup;
+      }
+      
+      if (logStreamPrefix && logStreamPrefix.trim() !== '') {
+        serviceConfig.primaryContainer.awsLogsConfiguration.logStreamPrefix = logStreamPrefix;
+      }
+    }
+    
+    // Add optional repository credentials
+    if (repositoryCredentials && repositoryCredentials.trim() !== '') {
+      serviceConfig.primaryContainer.repositoryCredentials = {
+        credentialsParameter: repositoryCredentials
+      };
     }
     
     // Add optional resource configuration
