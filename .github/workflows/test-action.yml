@@ -9,6 +9,7 @@ on:
 jobs:
   test-deploy:
     runs-on: ubuntu-latest
+    environment: testing
     
     steps:
       - name: Checkout
