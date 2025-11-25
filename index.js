@@ -46,7 +46,7 @@ async function run() {
     core.debug('ECS client created successfully');
     
     // Read optional inputs for service identification
-    const serviceName = core.getInput('service', { required: false });
+    const serviceName = core.getInput('service-name', { required: false });
     const clusterName = core.getInput('cluster', { required: false }) || 'default';
     
     // Read optional container configuration inputs
