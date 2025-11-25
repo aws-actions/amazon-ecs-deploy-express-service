@@ -5,6 +5,9 @@ branding:
   color: 'orange'
 inputs:
   # Required inputs
+  service-name:
+    description: 'The name of the ECS Express service. Used for both creating new services and updating existing ones.'
+    required: true
   image:
     description: 'The container image URI to deploy (e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest)'
     required: true
@@ -16,9 +19,6 @@ inputs:
     required: true
   
   # Service identification
-  service-name:
-    description: 'The name of the ECS Express service (serviceName). If the service exists, it will be updated. If not, a new service will be created with this name. If not provided, AWS will generate a unique name for new services.'
-    required: false
   cluster:
     description: "The name of the ECS cluster. Will default to the 'default' cluster."
     required: false
