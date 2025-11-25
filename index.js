@@ -224,11 +224,21 @@ async function run() {
     }
     
     // Add optional scaling configuration
-    if (minTaskCount && minTaskCount.trim() !== '' && maxTaskCount && maxTaskCount.trim() !== '') {
-      serviceConfig.scalingTarget = {
-        minTaskCount: parseInt(minTaskCount, 10),
-        maxTaskCount: parseInt(maxTaskCount, 10)
-      };
+    const hasScalingConfig = (minTaskCount && minTaskCount.trim() !== '') ||
+                             (maxTaskCount && maxTaskCount.trim() !== '') ||
+                             (autoScalingMetric && autoScalingMetric.trim() !== '') ||
+                             (autoScalingTargetValue && autoScalingTargetValue.trim() !== '');
+    
+    if (hasScalingConfig) {
+      serviceConfig.scalingTarget = {};
+      
+      if (minTaskCount && minTaskCount.trim() !== '') {
+        serviceConfig.scalingTarget.minTaskCount = parseInt(minTaskCount, 10);
+      }
+      
+      if (maxTaskCount && maxTaskCount.trim() !== '') {
+        serviceConfig.scalingTarget.maxTaskCount = parseInt(maxTaskCount, 10);
+      }
       
       if (autoScalingMetric && autoScalingMetric.trim() !== '') {
         serviceConfig.scalingTarget.autoScalingMetric = autoScalingMetric;
