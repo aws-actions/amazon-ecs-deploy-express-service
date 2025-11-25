@@ -7,7 +7,8 @@
 const core = __nccwpck_require__(7484);
 const { 
   ECSClient, 
-  DescribeExpressGatewayServiceCommand,
+  DescribeClustersCommand,
+  DescribeServicesCommand,
   CreateExpressGatewayServiceCommand,
   UpdateExpressGatewayServiceCommand
 } = __nccwpck_require__(212);
@@ -79,61 +80,97 @@ async function run() {
     const autoScalingMetric = core.getInput('auto-scaling-metric', { required: false });
     const autoScalingTargetValue = core.getInput('auto-scaling-target-value', { required: false });
     
+    // Get AWS region from ECS client config
+    const region = await ecs.config.region();
+    core.debug(`AWS Region: ${region}`);
+    
+    // Parse account ID from execution-role-arn
+    // Format: arn:aws:iam::ACCOUNT-ID:role/name
+    const arnParts = executionRoleArn.split(':');
+    if (arnParts.length < 5) {
+      throw new Error(`Invalid execution-role-arn format: ${executionRoleArn}`);
+    }
+    const accountId = arnParts[4];
+    core.debug(`AWS Account ID: ${accountId}`);
+    
+    // Check if cluster exists (skip for default cluster)
+    let clusterExists = false;
+    if (clusterName === 'default') {
+      core.info(`Using default cluster, skipping existence check`);
+      clusterExists = true; // Assume default cluster exists or will be created
+    } else {
+      core.info(`Checking if cluster '${clusterName}' exists...`);
+      try {
+        const describeClustersCommand = new DescribeClustersCommand({
+          clusters: [clusterName]
+        });
+        const clusterResponse = await ecs.send(describeClustersCommand);
+        
+        if (!clusterResponse.clusters || clusterResponse.clusters.length === 0) {
+          core.info(`Cluster '${clusterName}' not found, will be created with the service`);
+          clusterExists = false;
+        } else {
+          const cluster = clusterResponse.clusters[0];
+          if (cluster.status !== 'ACTIVE') {
+            core.info(`Cluster '${clusterName}' exists but is not ACTIVE (status: ${cluster.status}), will proceed with creation`);
+            clusterExists = false;
+          } else {
+            core.info(`Cluster '${clusterName}' is ACTIVE`);
+            clusterExists = true;
+          }
+        }
+      } catch (error) {
+        if (error.name === 'ClusterNotFoundException') {
+          core.info(`Cluster '${clusterName}' not found, will be created with the service`);
+          clusterExists = false;
+        } else {
+          throw error;
+        }
+      }
+    }
+    
     // Construct service ARN if service name is provided
     let serviceArn = null;
     let serviceExists = false;
     
     if (serviceName && serviceName.trim() !== '') {
-      // Get AWS region from ECS client config
-      const region = await ecs.config.region();
-      core.debug(`AWS Region: ${region}`);
-      
-      // Parse account ID from execution-role-arn
-      // Format: arn:aws:iam::ACCOUNT-ID:role/name
-      const arnParts = executionRoleArn.split(':');
-      if (arnParts.length < 5) {
-        throw new Error(`Invalid execution-role-arn format: ${executionRoleArn}`);
-      }
-      const accountId = arnParts[4];
-      core.debug(`AWS Account ID: ${accountId}`);
-      
       // Construct service ARN: arn:aws:ecs:{region}:{account}:service/{cluster}/{service}
       serviceArn = `arn:aws:ecs:${region}:${accountId}:service/${clusterName}/${serviceName}`;
       core.info(`Constructed service ARN: ${serviceArn}`);
       
-      // Check if service exists using Express Gateway API
-      try {
-        core.info('Checking if Express Gateway service exists...');
-        const describeCommand = new DescribeExpressGatewayServiceCommand({
-          serviceArn: serviceArn
-        });
-        
-        const describeResponse = await ecs.send(describeCommand);
-        
-        // Check if service was found and is not inactive
-        if (describeResponse.service) {
-          const service = describeResponse.service;
-          const status = service.status?.statusCode;
+      // Only check if service exists if cluster exists
+      if (clusterExists) {
+        // Check if service exists using DescribeServices
+        try {
+          core.info('Checking if service exists...');
+          const describeCommand = new DescribeServicesCommand({
+            cluster: clusterName,
+            services: [serviceName]
+          });
           
-          // Service exists if it's found and not in a terminal state
-          if (status !== 'INACTIVE') {
-            serviceExists = true;
-            core.info(`Express Gateway service exists with status: ${status}`);
+          const describeResponse = await ecs.send(describeCommand);
+          
+          if (describeResponse.services && describeResponse.services.length > 0) {
+            const service = describeResponse.services[0];
+            if (service.status !== 'INACTIVE') {
+              serviceExists = true;
+              core.info(`Service exists with status: ${service.status}`);
+            } else {
+              core.info('Service exists but is INACTIVE, will create new service');
+            }
           } else {
-            core.info('Express Gateway service exists but is INACTIVE, will create new service');
+            core.info('Service does not exist, will create new service');
           }
-        } else {
-          core.info('Express Gateway service does not exist, will create new service');
+        } catch (error) {
+          if (error.name === 'ServiceNotFoundException') {
+            core.info('Service not found, will create new service');
+            serviceExists = false;
+          } else {
+            throw error;
+          }
         }
-      } catch (error) {
-        // ResourceNotFoundException means we need to create
-        if (error.name === 'ResourceNotFoundException') {
-          core.info('Express Gateway service not found, will create new service');
-          serviceExists = false;
-        } else {
-          // Re-throw other errors
-          throw error;
-        }
+      } else {
+        core.info('Cluster does not exist, skipping service existence check - will create both');
       }
     } else {
       core.info('No service name provided, will create a new service with AWS-generated name');
