@@ -1,23 +1,10 @@
 name: Test Express Service Deployment
 
 on:
+  push:
+    branches:
+      - feature/express-service-deployment
   workflow_dispatch:
-    inputs:
-      image:
-        description: 'Container image URI'
-        required: true
-        default: '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest'
-      service-name:
-        description: 'ECS service name (leave empty for AWS-generated name)'
-        required: false
-      cluster:
-        description: 'ECS cluster name'
-        required: false
-        default: 'default'
-      aws-region:
-        description: 'AWS region'
-        required: true
-        default: 'us-east-1'
 
 jobs:
   test-deploy:
@@ -30,28 +17,20 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          # Option 1: Use OIDC (recommended)
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ github.event.inputs.aws-region }}
-          
-          # Option 2: Use access keys (less secure, for testing only)
-          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # aws-region: ${{ github.event.inputs.aws-region }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
       
       - name: Deploy to ECS Express Mode
         id: deploy
         uses: ./
         with:
-          image: ${{ github.event.inputs.image }}
-          execution-role-arn: ${{ secrets.ECS_EXECUTION_ROLE_ARN }}
-          infrastructure-role-arn: ${{ secrets.ECS_INFRASTRUCTURE_ROLE_ARN }}
-          service: ${{ github.event.inputs.service-name }}
-          cluster: ${{ github.event.inputs.cluster }}
-          # Optional: Add more inputs as needed
-          # container-port: '8080'
-          # cpu: '512'
-          # memory: '1024'
+          # Using public nginx image from Docker Hub
+          image: public.ecr.aws/nginx/nginx:latest
+          execution-role-arn: arn:aws:iam::576283685878:role/admin
+          infrastructure-role-arn: arn:aws:iam::576283685878:role/admin
+          service: test-nginx-service
+          cluster: default
       
       - name: Display outputs
         run: |
