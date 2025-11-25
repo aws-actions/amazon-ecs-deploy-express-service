@@ -46,4 +46,3 @@ jobs:
         run: |
           echo "Service ARN: ${{ steps.deploy.outputs.service-arn }}"
           echo "Endpoint: ${{ steps.deploy.outputs.endpoint }}"
-          echo "Status: ${{ steps.deploy.outputs.status }}"
