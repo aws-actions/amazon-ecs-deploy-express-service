@@ -87,39 +87,47 @@ async function run() {
     const accountId = arnParts[4];
     core.debug(`AWS Account ID: ${accountId}`);
     
-    // Check if cluster exists (skip for default cluster)
+    // Always check if cluster exists
+    core.info(`Checking if cluster '${clusterName}' exists...`);
     let clusterExists = false;
-    if (clusterName === 'default') {
-      core.info(`Using default cluster, skipping existence check`);
-      clusterExists = true; // Assume default cluster exists or will be created
-    } else {
-      core.info(`Checking if cluster '${clusterName}' exists...`);
-      try {
-        const describeClustersCommand = new DescribeClustersCommand({
-          clusters: [clusterName]
-        });
-        const clusterResponse = await ecs.send(describeClustersCommand);
-        
-        if (!clusterResponse.clusters || clusterResponse.clusters.length === 0) {
-          core.info(`Cluster '${clusterName}' not found, will be created with the service`);
+    try {
+      const describeClustersCommand = new DescribeClustersCommand({
+        clusters: [clusterName]
+      });
+      const clusterResponse = await ecs.send(describeClustersCommand);
+      
+      if (!clusterResponse.clusters || clusterResponse.clusters.length === 0) {
+        // Cluster not found
+        if (clusterName === 'default') {
+          core.info(`Default cluster not found, will be created with the service`);
           clusterExists = false;
         } else {
-          const cluster = clusterResponse.clusters[0];
-          if (cluster.status !== 'ACTIVE') {
-            core.info(`Cluster '${clusterName}' exists but is not ACTIVE (status: ${cluster.status}), will proceed with creation`);
+          throw new Error(`Cluster '${clusterName}' not found in region ${region}. Please create the cluster first or use the default cluster.`);
+        }
+      } else {
+        const cluster = clusterResponse.clusters[0];
+        if (cluster.status !== 'ACTIVE') {
+          if (clusterName === 'default') {
+            core.info(`Default cluster exists but is not ACTIVE (status: ${cluster.status}), will proceed with creation`);
             clusterExists = false;
           } else {
-            core.info(`Cluster '${clusterName}' is ACTIVE`);
-            clusterExists = true;
+            throw new Error(`Cluster '${clusterName}' exists but is not ACTIVE (status: ${cluster.status}). Please check the cluster status.`);
           }
+        } else {
+          core.info(`Cluster '${clusterName}' is ACTIVE`);
+          clusterExists = true;
         }
-      } catch (error) {
-        if (error.name === 'ClusterNotFoundException') {
-          core.info(`Cluster '${clusterName}' not found, will be created with the service`);
+      }
+    } catch (error) {
+      if (error.name === 'ClusterNotFoundException') {
+        if (clusterName === 'default') {
+          core.info(`Default cluster not found, will be created with the service`);
           clusterExists = false;
         } else {
-          throw error;
+          throw new Error(`Cluster '${clusterName}' not found in region ${region}. Please create the cluster first or use the default cluster.`);
         }
+      } else {
+        throw error;
       }
     }
     
