@@ -418,6 +418,7 @@ async function waitForServiceStable(ecs, serviceArn, clusterName, serviceName, o
     const statusCode = service.status?.statusCode;
     
     core.info(`Service status: ${statusCode}`);
+    core.debug(`Service response: ${JSON.stringify(service, null, 2)}`);
     
     // Check if service is INACTIVE or DRAINING (failure states)
     if (statusCode === 'INACTIVE' || statusCode === 'DRAINING') {
