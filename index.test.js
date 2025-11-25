@@ -30,6 +30,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         return '';
       });
 
@@ -43,6 +44,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return '';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         return '';
       });
 
@@ -56,6 +58,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return '';
+        if (name === 'service-name') return 'test-service';
         return '';
       });
 
@@ -69,6 +72,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         if (name === 'cluster') return 'default';
         return '';
       });
@@ -168,6 +172,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         if (name === 'service-name') return 'my-service';
         if (name === 'cluster') return 'default';
         return '';
@@ -202,6 +207,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         if (name === 'service-name') return 'my-service';
         if (name === 'cluster') return 'default';
         return '';
@@ -228,27 +234,19 @@ describe('Amazon ECS Deploy Express Service', () => {
       expect(mockSend).toHaveBeenCalledTimes(2);
     });
 
-    test('creates service when no service name provided', async () => {
+    test('fails when service-name is missing', async () => {
       core.getInput.mockImplementation((name) => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'service-name') return '';
         return '';
-      });
-
-      // Only call: CreateExpressGatewayServiceCommand (no service name, so no describe)
-      mockSend.mockResolvedValueOnce({
-        service: {
-          serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/generated-name'
-        }
       });
 
       await run();
 
-      expect(core.info).toHaveBeenCalledWith('No service name provided, will create a new service with AWS-generated name');
-      expect(core.info).toHaveBeenCalledWith('Will CREATE new service with AWS-generated name');
-      expect(core.info).toHaveBeenCalledWith('Creating Express Gateway service...');
-      expect(mockSend).toHaveBeenCalledTimes(1);
+      expect(core.setFailed).toHaveBeenCalled();
     });
   });
 
@@ -258,6 +256,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         return '';
       });
 
@@ -285,6 +284,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         if (name === 'container-port') return '8080';
         return '';
       });
@@ -308,6 +308,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         if (name === 'environment-variables') return '[{"name":"ENV","value":"prod"}]';
         return '';
       });
@@ -331,6 +332,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         if (name === 'cpu') return '512';
         if (name === 'memory') return '1024';
         return '';
@@ -355,6 +357,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         if (name === 'min-task-count') return '1';
         if (name === 'max-task-count') return '10';
         if (name === 'auto-scaling-metric') return 'AVERAGE_CPU';
@@ -383,6 +386,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         return '';
       });
 
@@ -403,6 +407,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         return '';
       });
 
@@ -422,6 +427,7 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
         if (name === 'service-name') return 'my-service';
         if (name === 'cluster') return 'nonexistent';
         return '';
