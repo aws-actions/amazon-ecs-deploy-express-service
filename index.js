@@ -89,9 +89,10 @@ async function run() {
     
     // Check if cluster exists (skip for default cluster)
     let clusterExists = false;
+    let skipServiceCheck = false;
     if (clusterName === 'default') {
-      core.info(`Using default cluster, skipping existence check`);
-      clusterExists = true; // Assume default cluster exists or will be created
+      core.info(`Using default cluster, skipping cluster and service existence checks`);
+      skipServiceCheck = true; // Skip service check for default cluster
     } else {
       core.info(`Checking if cluster '${clusterName}' exists...`);
       try {
@@ -132,8 +133,8 @@ async function run() {
       serviceArn = `arn:aws:ecs:${region}:${accountId}:service/${clusterName}/${serviceName}`;
       core.info(`Constructed service ARN: ${serviceArn}`);
       
-      // Only check if service exists if cluster exists
-      if (clusterExists) {
+      // Only check if service exists if we should check and cluster exists
+      if (!skipServiceCheck && clusterExists) {
         // Check if service exists using DescribeServices
         try {
           core.info('Checking if service exists...');
@@ -163,6 +164,8 @@ async function run() {
             throw error;
           }
         }
+      } else if (skipServiceCheck) {
+        core.info('Skipping service existence check for default cluster');
       } else {
         core.info('Cluster does not exist, skipping service existence check - will create both');
       }
