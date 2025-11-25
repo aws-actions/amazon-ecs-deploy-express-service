@@ -31,8 +31,8 @@ jobs:
         with:
           # Using public nginx image from Docker Hub
           image: public.ecr.aws/nginx/nginx:latest
-          execution-role-arn: arn:aws:iam::576283685878:role/admin
-          infrastructure-role-arn: arn:aws:iam::576283685878:role/admin
+          execution-role-arn: arn:aws:iam::576283685878:role/ecsTaskExecutionRole
+          infrastructure-role-arn: arn:aws:iam::576283685878:role/ButterflyInfraRole
           service: test-nginx-service
           cluster: default
       
