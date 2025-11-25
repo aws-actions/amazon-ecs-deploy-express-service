@@ -2,7 +2,6 @@ const core = require('@actions/core');
 const { 
   ECSClient, 
   DescribeClustersCommand,
-  DescribeExpressGatewayServiceCommand,
   DescribeServicesCommand,
   CreateExpressGatewayServiceCommand,
   UpdateExpressGatewayServiceCommand
@@ -135,66 +134,32 @@ async function run() {
       
       // Only check if service exists if cluster exists
       if (clusterExists) {
-        // Check if service exists - try Express Gateway API first, fall back to standard DescribeServices
+        // Check if service exists using DescribeServices
         try {
-          core.info('Checking if Express Gateway service exists...');
-          const describeCommand = new DescribeExpressGatewayServiceCommand({
-            serviceArn: serviceArn
+          core.info('Checking if service exists...');
+          const describeCommand = new DescribeServicesCommand({
+            cluster: clusterName,
+            services: [serviceName]
           });
           
           const describeResponse = await ecs.send(describeCommand);
           
-          // Check if service was found and is not inactive
-          if (describeResponse.service) {
-            const service = describeResponse.service;
-            const status = service.status?.statusCode;
-            
-            // Service exists if it's found and not in a terminal state
-            if (status !== 'INACTIVE') {
+          if (describeResponse.services && describeResponse.services.length > 0) {
+            const service = describeResponse.services[0];
+            if (service.status !== 'INACTIVE') {
               serviceExists = true;
-              core.info(`Express Gateway service exists with status: ${status}`);
+              core.info(`Service exists with status: ${service.status}`);
             } else {
-              core.info('Express Gateway service exists but is INACTIVE, will create new service');
+              core.info('Service exists but is INACTIVE, will create new service');
             }
           } else {
-            core.info('Express Gateway service does not exist, will create new service');
+            core.info('Service does not exist, will create new service');
           }
         } catch (error) {
-          // If Express Gateway API is not available, fall back to standard DescribeServices
-          if (error.name === 'UnknownOperationException' || error.message?.includes('DescribeExpressGatewayService')) {
-            core.info('Express Gateway API not available, falling back to DescribeServices...');
-            try {
-              const describeCommand = new DescribeServicesCommand({
-                cluster: clusterName,
-                services: [serviceArn]
-              });
-              
-              const describeResponse = await ecs.send(describeCommand);
-              
-              if (describeResponse.services && describeResponse.services.length > 0) {
-                const service = describeResponse.services[0];
-                if (service.status !== 'INACTIVE') {
-                  serviceExists = true;
-                  core.info(`Service exists with status: ${service.status}`);
-                } else {
-                  core.info('Service exists but is INACTIVE, will create new service');
-                }
-              } else {
-                core.info('Service does not exist, will create new service');
-              }
-            } catch (fallbackError) {
-              if (fallbackError.name === 'ServiceNotFoundException') {
-                core.info('Service not found, will create new service');
-                serviceExists = false;
-              } else {
-                throw fallbackError;
-              }
-            }
-          } else if (error.name === 'ResourceNotFoundException') {
-            core.info('Express Gateway service not found, will create new service');
+          if (error.name === 'ServiceNotFoundException') {
+            core.info('Service not found, will create new service');
             serviceExists = false;
           } else {
-            // Re-throw other errors
             throw error;
           }
         }
