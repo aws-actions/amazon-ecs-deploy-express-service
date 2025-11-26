@@ -327,7 +327,6 @@ async function run() {
 
 /**
  * Wait for Express Gateway service to reach stable state
- * Following CloudFormation's approach:
  * 1. Describe service to get current status
  * 2. List service deployments to get deployment ARNs (avoids DB consistency issues)
  * 3. Wait for service status to become ACTIVE
