@@ -376,13 +376,17 @@ async function waitForServiceStable(ecs, serviceArn) {
               });
               const listResponse = await ecs.send(listDeploymentsCommand);
               
+              core.info(`Found ${listResponse.serviceDeployments?.length || 0} deployments`);
+              
               if (listResponse.serviceDeployments && listResponse.serviceDeployments.length > 0) {
                 // Get the most recent deployment (first in the list)
                 deploymentArn = listResponse.serviceDeployments[0];
                 core.info(`Monitoring deployment: ${deploymentArn}`);
+              } else {
+                core.warning('No deployments found for service');
               }
             } catch (listError) {
-              core.debug(`ListServiceDeployments error: ${listError.message}`);
+              core.warning(`ListServiceDeployments error: ${listError.message}`);
             }
           }
           
