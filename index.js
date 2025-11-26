@@ -270,10 +270,13 @@ async function run() {
     
     // Create or update the service
     let response;
+    let deploymentStartTime;
     try {
       if (serviceExists && serviceArn) {
         // Update existing service
         core.info('Updating Express Gateway service...');
+        // Capture timestamp right before making the API call
+        deploymentStartTime = new Date();
         const updateCommand = new UpdateExpressGatewayServiceCommand({
           serviceArn: serviceArn,
           ...serviceConfig
@@ -283,6 +286,8 @@ async function run() {
       } else {
         // Create new service
         core.info('Creating Express Gateway service...');
+        // Capture timestamp right before making the API call
+        deploymentStartTime = new Date();
         const createCommand = new CreateExpressGatewayServiceCommand(serviceConfig);
         response = await ecs.send(createCommand);
         core.info('Service created successfully');
@@ -312,7 +317,7 @@ async function run() {
     }
     
     // Wait for deployment to complete
-    await waitForServiceStable(ecs, finalServiceArn);
+    await waitForServiceStable(ecs, finalServiceArn, deploymentStartTime);
     
   } catch (error) {
     core.setFailed(error.message);
@@ -327,8 +332,12 @@ async function run() {
  * 2. List service deployments to get deployment ARNs (avoids DB consistency issues)
  * 3. Wait for service status to become ACTIVE
  * 4. Wait for deployment status to become SUCCESSFUL
+ * 
+ * @param {ECSClient} ecs - The ECS client
+ * @param {string} serviceArn - The service ARN
+ * @param {Date} deploymentStartTime - Timestamp when the deployment was initiated
  */
-async function waitForServiceStable(ecs, serviceArn) {
+async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
   core.info('Waiting for service deployment to complete...');
   const maxWaitMinutes = 15;
   const pollIntervalSeconds = 15;
@@ -355,7 +364,6 @@ async function waitForServiceStable(ecs, serviceArn) {
       if (serviceResponse.service) {
         const service = serviceResponse.service;
         const statusCode = service.status?.statusCode;
-        const serviceUpdatedAt = service.updatedAt;
         
         // Log the actual service ARN from the response for debugging
         if (service.serviceArn && service.serviceArn !== serviceArn) {
@@ -375,15 +383,15 @@ async function waitForServiceStable(ecs, serviceArn) {
           
           // Step 2: List service deployments to get deployment ARNs
           // This follows CloudFormation's pattern to avoid DB consistency issues
-          // Filter for deployments created after the service was last updated
-          if (!deploymentArn && serviceUpdatedAt) {
+          // Filter for deployments created after our action initiated the deployment
+          if (!deploymentArn) {
             try {
-              core.debug(`Calling ListServiceDeployments with service ARN: ${serviceArn}, filtering for deployments after ${new Date(serviceUpdatedAt).toISOString()}`);
+              core.debug(`Calling ListServiceDeployments with service ARN: ${serviceArn}, filtering for deployments after ${deploymentStartTime.toISOString()}`);
               const listDeploymentsCommand = new ListServiceDeploymentsCommand({
                 cluster: service.cluster || 'default',
                 service: serviceArn,
                 createdAt: {
-                  after: serviceUpdatedAt
+                  after: deploymentStartTime
                 }
               });
               const listResponse = await ecs.send(listDeploymentsCommand);
@@ -394,7 +402,7 @@ async function waitForServiceStable(ecs, serviceArn) {
                 deploymentArn = deployment.serviceDeploymentArn;
                 core.info(`Monitoring deployment: ${deploymentArn}`);
               } else {
-                core.warning('No deployments found for service');
+                core.debug('No deployments found yet, will retry...');
               }
             } catch (listError) {
               core.warning(`ListServiceDeployments error: ${listError.message}. Service ARN: ${serviceArn}`);
