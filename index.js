@@ -368,7 +368,6 @@ async function waitForServiceStable(ecs, serviceArn) {
         // Check if service is ACTIVE
         if (statusCode === 'ACTIVE') {
           if (!serviceActive) {
-            core.info('Service is ACTIVE, checking deployment status...');
             serviceActive = true;
           }
           
@@ -382,8 +381,6 @@ async function waitForServiceStable(ecs, serviceArn) {
                 service: serviceArn
               });
               const listResponse = await ecs.send(listDeploymentsCommand);
-              
-              core.info(`Found ${listResponse.serviceDeployments?.length || 0} deployments`);
               
               if (listResponse.serviceDeployments && listResponse.serviceDeployments.length > 0) {
                 // Get the most recent deployment (first in the list)
