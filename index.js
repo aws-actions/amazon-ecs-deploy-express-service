@@ -362,7 +362,6 @@ async function waitForServiceStable(ecs, serviceArn) {
         // Check if service is ACTIVE
         if (statusCode === 'ACTIVE') {
           if (!serviceActive) {
-            core.info('Service is ACTIVE, checking deployment status...');
             serviceActive = true;
           }
           
@@ -378,7 +377,7 @@ async function waitForServiceStable(ecs, serviceArn) {
               if (listResponse.serviceDeployments && listResponse.serviceDeployments.length > 0) {
                 // Get the most recent deployment (first in the list)
                 deploymentArn = listResponse.serviceDeployments[0];
-                core.debug(`Monitoring deployment: ${deploymentArn}`);
+                core.info(`Monitoring deployment: ${deploymentArn}`);
               }
             } catch (listError) {
               core.debug(`ListServiceDeployments error: ${listError.message}`);
@@ -396,7 +395,7 @@ async function waitForServiceStable(ecs, serviceArn) {
               const deployment = deploymentResponse.serviceDeployment;
               const deploymentStatus = deployment.status?.statusCode;
               
-              core.info(`Deployment status: ${deploymentStatus}`);
+              core.info(`Deployment ${deploymentArn} status: ${deploymentStatus}. Will re-poll in ${pollIntervalSeconds} seconds...`);
               
               // Check for deployment failure
               if (deploymentStatus === 'FAILED' || deploymentStatus === 'STOPPED') {
@@ -422,8 +421,6 @@ async function waitForServiceStable(ecs, serviceArn) {
               }
             }
           }
-        } else {
-          core.info(`Waiting for service to become ACTIVE (current: ${statusCode})...`);
         }
       }
     } catch (error) {
