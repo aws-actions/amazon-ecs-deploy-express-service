@@ -354,8 +354,6 @@ async function waitForServiceStable(ecs, serviceArn) {
         const service = serviceResponse.service;
         const statusCode = service.status?.statusCode;
         
-        core.info(`Service status: ${statusCode}`);
-        
         // Check for failure states
         if (statusCode === 'INACTIVE' || statusCode === 'DRAINING') {
           throw new Error(`Service entered ${statusCode} state`);
@@ -364,7 +362,7 @@ async function waitForServiceStable(ecs, serviceArn) {
         // Check if service is ACTIVE
         if (statusCode === 'ACTIVE') {
           if (!serviceActive) {
-            core.info('Service is now ACTIVE');
+            core.info('Service is ACTIVE, checking deployment status...');
             serviceActive = true;
           }
           
@@ -380,7 +378,7 @@ async function waitForServiceStable(ecs, serviceArn) {
               if (listResponse.serviceDeployments && listResponse.serviceDeployments.length > 0) {
                 // Get the most recent deployment (first in the list)
                 deploymentArn = listResponse.serviceDeployments[0];
-                core.info(`Monitoring deployment: ${deploymentArn}`);
+                core.debug(`Monitoring deployment: ${deploymentArn}`);
               }
             } catch (listError) {
               core.debug(`ListServiceDeployments error: ${listError.message}`);
@@ -407,7 +405,7 @@ async function waitForServiceStable(ecs, serviceArn) {
               
               // Deployment is complete when status is SUCCESSFUL
               if (deploymentStatus === 'SUCCESSFUL') {
-                core.info('Service deployment completed successfully');
+                core.info('Deployment completed successfully');
                 
                 // Extract endpoint from active configurations
                 if (service.activeConfigurations && 
