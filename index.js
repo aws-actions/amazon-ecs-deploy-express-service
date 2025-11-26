@@ -1,4 +1,5 @@
 // GitHub Action for deploying ECS Express services
+// Trigger deployment test
 const core = require('@actions/core');
 const { 
   ECSClient, 
