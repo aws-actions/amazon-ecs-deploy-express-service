@@ -1,0 +1,37 @@
+name: Package
+
+# When a pull request is opened/reopened or when the head branch of the pull request is updated.
+on:
+  pull_request:
+
+
+jobs:
+  build:
+    name: Package distribution file
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Package
+        run: |
+          npm ci
+          npm test
+          npm run package
+      - name: Commit to PR
+        if: github.actor == 'dependabot[bot]'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Actions"
+          git add dist/
+          git commit -m "chore: Update dist" || echo "No changes to commit"
+          git push 
+      - name: Check git diff
+        if: github.actor != 'dependabot[bot]'
+        run: |
+          git diff --exit-code dist/index.js
