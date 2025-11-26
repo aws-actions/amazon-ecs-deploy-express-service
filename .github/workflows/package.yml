@@ -11,13 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: read
     steps:
-      - name: Init a git repo
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: Checkout PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr checkout ${{ github.event.pull_request.number }}
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - name: Package
         run: |
           npm ci
