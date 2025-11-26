@@ -8,6 +8,9 @@ const core = __nccwpck_require__(7484);
 const { 
   ECSClient, 
   DescribeServicesCommand,
+  DescribeExpressGatewayServiceCommand,
+  DescribeServiceDeploymentCommand,
+  ListServiceDeploymentsCommand,
   CreateExpressGatewayServiceCommand,
   UpdateExpressGatewayServiceCommand
 } = __nccwpck_require__(212);
@@ -21,11 +24,16 @@ async function run() {
     core.info('Amazon ECS Deploy Express Service action started');
     
     // Read required inputs
+    const serviceName = core.getInput('service-name', { required: false });
     const image = core.getInput('image', { required: false });
     const executionRoleArn = core.getInput('execution-role-arn', { required: false });
     const infrastructureRoleArn = core.getInput('infrastructure-role-arn', { required: false });
     
     // Validate required inputs are not empty
+    if (!serviceName || serviceName.trim() === '') {
+      throw new Error('Input required and not supplied: service-name');
+    }
+    
     if (!image || image.trim() === '') {
       throw new Error('Input required and not supplied: image');
     }
@@ -52,7 +60,6 @@ async function run() {
     core.debug('ECS client created successfully');
     
     // Read optional inputs for service identification
-    const serviceName = core.getInput('service-name', { required: false });
     const clusterName = core.getInput('cluster', { required: false }) || 'default';
     
     // Read optional container configuration inputs
@@ -95,57 +102,46 @@ async function run() {
     const accountId = arnParts[4];
     core.debug(`AWS Account ID: ${accountId}`);
     
-    // Construct service ARN if service name is provided
-    let serviceArn = null;
-    let serviceExists = false;
+    // Construct service ARN
+    const serviceArn = `arn:aws:ecs:${region}:${accountId}:service/${clusterName}/${serviceName}`;
+    core.info(`Constructed service ARN: ${serviceArn}`);
     
-    if (serviceName && serviceName.trim() !== '') {
-      // Construct service ARN: arn:aws:ecs:{region}:{account}:service/{cluster}/{service}
-      serviceArn = `arn:aws:ecs:${region}:${accountId}:service/${clusterName}/${serviceName}`;
-      core.info(`Constructed service ARN: ${serviceArn}`);
+    // Check if service exists using DescribeServices
+    let serviceExists = false;
+    try {
+      core.info('Checking if service exists...');
+      const describeCommand = new DescribeServicesCommand({
+        cluster: clusterName,
+        services: [serviceName]
+      });
       
-      // Check if service exists using DescribeServices
-      try {
-        core.info('Checking if service exists...');
-        const describeCommand = new DescribeServicesCommand({
-          cluster: clusterName,
-          services: [serviceName]
-        });
-        
-        const describeResponse = await ecs.send(describeCommand);
-        
-        if (describeResponse.services && describeResponse.services.length > 0) {
-          const service = describeResponse.services[0];
-          if (service.status !== 'INACTIVE') {
-            serviceExists = true;
-            core.info(`Service exists with status: ${service.status}`);
-          } else {
-            core.info('Service exists but is INACTIVE, will create new service');
-          }
+      const describeResponse = await ecs.send(describeCommand);
+      
+      if (describeResponse.services && describeResponse.services.length > 0) {
+        const service = describeResponse.services[0];
+        if (service.status !== 'INACTIVE') {
+          serviceExists = true;
+          core.info(`Service exists with status: ${service.status}`);
         } else {
-          core.info('Service does not exist, will create new service');
+          core.info('Service exists but is INACTIVE, will create new service');
         }
-      } catch (error) {
-        if (error.name === 'ServiceNotFoundException' || error.name === 'ClusterNotFoundException') {
-          core.info('Service or cluster not found, will create new service');
-          serviceExists = false;
-        } else {
-          throw error;
-        }
+      } else {
+        core.info('Service does not exist, will create new service');
       }
-    } else {
-      core.info('No service name provided, will create a new service with AWS-generated name');
+    } catch (error) {
+      if (error.name === 'ServiceNotFoundException' || error.name === 'ClusterNotFoundException') {
+        core.info('Service or cluster not found, will create new service');
+        serviceExists = false;
+      } else {
+        throw error;
+      }
     }
     
     // Log the decision
-    if (serviceArn) {
-      if (serviceExists) {
-        core.info('Will UPDATE existing service');
-      } else {
-        core.info('Will CREATE new service');
-      }
+    if (serviceExists) {
+      core.info('Will UPDATE existing service');
     } else {
-      core.info('Will CREATE new service with AWS-generated name');
+      core.info('Will CREATE new service');
     }
     
     // Build SDK command input object
@@ -239,10 +235,8 @@ async function run() {
       }
     }
     
-    // Add optional service configuration
-    if (serviceName && serviceName.trim() !== '') {
-      serviceConfig.serviceName = serviceName;
-    }
+    // Add service configuration
+    serviceConfig.serviceName = serviceName;
     
     if (clusterName && clusterName !== 'default') {
       serviceConfig.cluster = clusterName;
@@ -312,9 +306,144 @@ async function run() {
     
     core.debug(`Service response: ${JSON.stringify(response, null, 2)}`);
     
+    // Get the service ARN from response
+    const finalServiceArn = response?.service?.serviceArn || serviceArn;
+    
+    // Set service ARN output
+    if (finalServiceArn) {
+      core.setOutput('service-arn', finalServiceArn);
+      core.info(`Service ARN: ${finalServiceArn}`);
+    }
+    
+    // Wait for deployment to complete
+    await waitForServiceStable(ecs, finalServiceArn);
+    
   } catch (error) {
     core.setFailed(error.message);
     core.debug(error.stack);
+  }
+}
+
+/**
+ * Wait for Express Gateway service to reach stable state
+ * Following CloudFormation's approach:
+ * 1. Describe service to get current status
+ * 2. List service deployments to get deployment ARNs (avoids DB consistency issues)
+ * 3. Wait for service status to become ACTIVE
+ * 4. Wait for deployment status to become SUCCESSFUL
+ */
+async function waitForServiceStable(ecs, serviceArn) {
+  core.info('Waiting for service deployment to complete...');
+  const maxWaitMinutes = 15;
+  const pollIntervalSeconds = 15;
+  const maxWaitMs = maxWaitMinutes * 60 * 1000;
+  const startTime = Date.now();
+  
+  let serviceActive = false;
+  let deploymentArn = null;
+  
+  while (true) {
+    // Check timeout
+    if (Date.now() - startTime > maxWaitMs) {
+      core.warning(`Deployment is taking longer than ${maxWaitMinutes} minutes. The deployment will continue in the background.`);
+      break;
+    }
+    
+    try {
+      // Step 1: Check service status using DescribeExpressGatewayService
+      const describeServiceCommand = new DescribeExpressGatewayServiceCommand({
+        serviceArn: serviceArn
+      });
+      const serviceResponse = await ecs.send(describeServiceCommand);
+      
+      if (serviceResponse.service) {
+        const service = serviceResponse.service;
+        const statusCode = service.status?.statusCode;
+        
+        core.info(`Service status: ${statusCode}`);
+        
+        // Check for failure states
+        if (statusCode === 'INACTIVE' || statusCode === 'DRAINING') {
+          throw new Error(`Service entered ${statusCode} state`);
+        }
+        
+        // Check if service is ACTIVE
+        if (statusCode === 'ACTIVE') {
+          if (!serviceActive) {
+            core.info('Service is now ACTIVE');
+            serviceActive = true;
+          }
+          
+          // Step 2: List service deployments to get deployment ARNs
+          // This follows CloudFormation's pattern to avoid DB consistency issues
+          if (!deploymentArn) {
+            try {
+              const listDeploymentsCommand = new ListServiceDeploymentsCommand({
+                serviceArn: serviceArn
+              });
+              const listResponse = await ecs.send(listDeploymentsCommand);
+              
+              if (listResponse.serviceDeployments && listResponse.serviceDeployments.length > 0) {
+                // Get the most recent deployment (first in the list)
+                deploymentArn = listResponse.serviceDeployments[0];
+                core.info(`Monitoring deployment: ${deploymentArn}`);
+              }
+            } catch (listError) {
+              core.debug(`ListServiceDeployments error: ${listError.message}`);
+            }
+          }
+          
+          // Step 3: Check deployment status using DescribeServiceDeployment
+          if (deploymentArn) {
+            const describeDeploymentCommand = new DescribeServiceDeploymentCommand({
+              serviceDeploymentArn: deploymentArn
+            });
+            const deploymentResponse = await ecs.send(describeDeploymentCommand);
+            
+            if (deploymentResponse.serviceDeployment) {
+              const deployment = deploymentResponse.serviceDeployment;
+              const deploymentStatus = deployment.status?.statusCode;
+              
+              core.info(`Deployment status: ${deploymentStatus}`);
+              
+              // Check for deployment failure
+              if (deploymentStatus === 'FAILED' || deploymentStatus === 'STOPPED') {
+                throw new Error(`Deployment ${deploymentArn} ${deploymentStatus}`);
+              }
+              
+              // Deployment is complete when status is SUCCESSFUL
+              if (deploymentStatus === 'SUCCESSFUL') {
+                core.info('Service deployment completed successfully');
+                
+                // Extract endpoint from active configurations
+                if (service.activeConfigurations && 
+                    service.activeConfigurations.length > 0 &&
+                    service.activeConfigurations[0].ingressPaths &&
+                    service.activeConfigurations[0].ingressPaths.length > 0) {
+                  const endpoint = service.activeConfigurations[0].ingressPaths[0].endpoint;
+                  if (endpoint) {
+                    core.setOutput('endpoint', endpoint);
+                    core.info(`Service endpoint: ${endpoint}`);
+                  }
+                }
+                return;
+              }
+            }
+          }
+        } else {
+          core.info(`Waiting for service to become ACTIVE (current: ${statusCode})...`);
+        }
+      }
+    } catch (error) {
+      // Only warn on transient errors, throw on actual failures
+      if (error.message.includes('entered') || error.message.includes('FAILED') || error.message.includes('STOPPED')) {
+        throw error;
+      }
+      core.warning(`Error checking status: ${error.message}`);
+    }
+    
+    // Wait before next poll
+    await new Promise(resolve => setTimeout(resolve, pollIntervalSeconds * 1000));
   }
 }
 

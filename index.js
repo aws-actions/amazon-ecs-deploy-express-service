@@ -2,6 +2,9 @@ const core = require('@actions/core');
 const { 
   ECSClient, 
   DescribeServicesCommand,
+  DescribeExpressGatewayServiceCommand,
+  DescribeServiceDeploymentCommand,
+  ListServiceDeploymentsCommand,
   CreateExpressGatewayServiceCommand,
   UpdateExpressGatewayServiceCommand
 } = require('@aws-sdk/client-ecs');
@@ -297,9 +300,144 @@ async function run() {
     
     core.debug(`Service response: ${JSON.stringify(response, null, 2)}`);
     
+    // Get the service ARN from response
+    const finalServiceArn = response?.service?.serviceArn || serviceArn;
+    
+    // Set service ARN output
+    if (finalServiceArn) {
+      core.setOutput('service-arn', finalServiceArn);
+      core.info(`Service ARN: ${finalServiceArn}`);
+    }
+    
+    // Wait for deployment to complete
+    await waitForServiceStable(ecs, finalServiceArn);
+    
   } catch (error) {
     core.setFailed(error.message);
     core.debug(error.stack);
+  }
+}
+
+/**
+ * Wait for Express Gateway service to reach stable state
+ * Following CloudFormation's approach:
+ * 1. Describe service to get current status
+ * 2. List service deployments to get deployment ARNs (avoids DB consistency issues)
+ * 3. Wait for service status to become ACTIVE
+ * 4. Wait for deployment status to become SUCCESSFUL
+ */
+async function waitForServiceStable(ecs, serviceArn) {
+  core.info('Waiting for service deployment to complete...');
+  const maxWaitMinutes = 15;
+  const pollIntervalSeconds = 15;
+  const maxWaitMs = maxWaitMinutes * 60 * 1000;
+  const startTime = Date.now();
+  
+  let serviceActive = false;
+  let deploymentArn = null;
+  
+  while (true) {
+    // Check timeout
+    if (Date.now() - startTime > maxWaitMs) {
+      core.warning(`Deployment is taking longer than ${maxWaitMinutes} minutes. The deployment will continue in the background.`);
+      break;
+    }
+    
+    try {
+      // Step 1: Check service status using DescribeExpressGatewayService
+      const describeServiceCommand = new DescribeExpressGatewayServiceCommand({
+        serviceArn: serviceArn
+      });
+      const serviceResponse = await ecs.send(describeServiceCommand);
+      
+      if (serviceResponse.service) {
+        const service = serviceResponse.service;
+        const statusCode = service.status?.statusCode;
+        
+        core.info(`Service status: ${statusCode}`);
+        
+        // Check for failure states
+        if (statusCode === 'INACTIVE' || statusCode === 'DRAINING') {
+          throw new Error(`Service entered ${statusCode} state`);
+        }
+        
+        // Check if service is ACTIVE
+        if (statusCode === 'ACTIVE') {
+          if (!serviceActive) {
+            core.info('Service is now ACTIVE');
+            serviceActive = true;
+          }
+          
+          // Step 2: List service deployments to get deployment ARNs
+          // This follows CloudFormation's pattern to avoid DB consistency issues
+          if (!deploymentArn) {
+            try {
+              const listDeploymentsCommand = new ListServiceDeploymentsCommand({
+                serviceArn: serviceArn
+              });
+              const listResponse = await ecs.send(listDeploymentsCommand);
+              
+              if (listResponse.serviceDeployments && listResponse.serviceDeployments.length > 0) {
+                // Get the most recent deployment (first in the list)
+                deploymentArn = listResponse.serviceDeployments[0];
+                core.info(`Monitoring deployment: ${deploymentArn}`);
+              }
+            } catch (listError) {
+              core.debug(`ListServiceDeployments error: ${listError.message}`);
+            }
+          }
+          
+          // Step 3: Check deployment status using DescribeServiceDeployment
+          if (deploymentArn) {
+            const describeDeploymentCommand = new DescribeServiceDeploymentCommand({
+              serviceDeploymentArn: deploymentArn
+            });
+            const deploymentResponse = await ecs.send(describeDeploymentCommand);
+            
+            if (deploymentResponse.serviceDeployment) {
+              const deployment = deploymentResponse.serviceDeployment;
+              const deploymentStatus = deployment.status?.statusCode;
+              
+              core.info(`Deployment status: ${deploymentStatus}`);
+              
+              // Check for deployment failure
+              if (deploymentStatus === 'FAILED' || deploymentStatus === 'STOPPED') {
+                throw new Error(`Deployment ${deploymentArn} ${deploymentStatus}`);
+              }
+              
+              // Deployment is complete when status is SUCCESSFUL
+              if (deploymentStatus === 'SUCCESSFUL') {
+                core.info('Service deployment completed successfully');
+                
+                // Extract endpoint from active configurations
+                if (service.activeConfigurations && 
+                    service.activeConfigurations.length > 0 &&
+                    service.activeConfigurations[0].ingressPaths &&
+                    service.activeConfigurations[0].ingressPaths.length > 0) {
+                  const endpoint = service.activeConfigurations[0].ingressPaths[0].endpoint;
+                  if (endpoint) {
+                    core.setOutput('endpoint', endpoint);
+                    core.info(`Service endpoint: ${endpoint}`);
+                  }
+                }
+                return;
+              }
+            }
+          }
+        } else {
+          core.info(`Waiting for service to become ACTIVE (current: ${statusCode})...`);
+        }
+      }
+    } catch (error) {
+      // Only warn on transient errors, throw on actual failures
+      if (error.message.includes('entered') || error.message.includes('FAILED') || error.message.includes('STOPPED')) {
+        throw error;
+      }
+      core.warning(`Error checking status: ${error.message}`);
+    }
+    
+    // Wait before next poll
+    await new Promise(resolve => setTimeout(resolve, pollIntervalSeconds * 1000));
   }
 }
 
