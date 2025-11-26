@@ -4,7 +4,7 @@ const {
   ECSClient, 
   DescribeServicesCommand,
   DescribeExpressGatewayServiceCommand,
-  DescribeServiceDeploymentCommand,
+  DescribeServiceDeploymentsCommand,
   ListServiceDeploymentsCommand,
   CreateExpressGatewayServiceCommand,
   UpdateExpressGatewayServiceCommand
@@ -387,7 +387,8 @@ async function waitForServiceStable(ecs, serviceArn) {
               
               if (listResponse.serviceDeployments && listResponse.serviceDeployments.length > 0) {
                 // Get the most recent deployment (first in the list)
-                deploymentArn = listResponse.serviceDeployments[0];
+                const deployment = listResponse.serviceDeployments[0];
+                deploymentArn = deployment.serviceDeploymentArn;
                 core.info(`Monitoring deployment: ${deploymentArn}`);
               } else {
                 core.warning('No deployments found for service');
@@ -397,16 +398,16 @@ async function waitForServiceStable(ecs, serviceArn) {
             }
           }
           
-          // Step 3: Check deployment status using DescribeServiceDeployment
+          // Step 3: Check deployment status using DescribeServiceDeployments
           if (deploymentArn) {
-            const describeDeploymentCommand = new DescribeServiceDeploymentCommand({
-              serviceDeploymentArn: deploymentArn
+            const describeDeploymentCommand = new DescribeServiceDeploymentsCommand({
+              serviceDeploymentArns: [deploymentArn]
             });
             const deploymentResponse = await ecs.send(describeDeploymentCommand);
             
-            if (deploymentResponse.serviceDeployment) {
-              const deployment = deploymentResponse.serviceDeployment;
-              const deploymentStatus = deployment.status?.statusCode;
+            if (deploymentResponse.serviceDeployments && deploymentResponse.serviceDeployments.length > 0) {
+              const deployment = deploymentResponse.serviceDeployments[0];
+              const deploymentStatus = deployment.status;
               
               core.info(`Deployment ${deploymentArn} status: ${deploymentStatus}. Will re-poll in ${pollIntervalSeconds} seconds...`);
               
