@@ -396,6 +396,9 @@ async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
               });
               const listResponse = await ecs.send(listDeploymentsCommand);
               
+              const deploymentCount = listResponse.serviceDeployments?.length || 0;
+              core.info(`Found ${deploymentCount} deployment(s) created after ${deploymentStartTime.toISOString()}`);
+              
               if (listResponse.serviceDeployments && listResponse.serviceDeployments.length > 0) {
                 // Get the most recent deployment (first in the list)
                 const deployment = listResponse.serviceDeployments[0];
