@@ -396,6 +396,9 @@ async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
               });
               const listResponse = await ecs.send(listDeploymentsCommand);
               
+              // Log the full response for debugging
+              core.debug(`ListServiceDeployments response: ${JSON.stringify(listResponse, null, 2)}`);
+              
               const deploymentCount = listResponse.serviceDeployments?.length || 0;
               core.info(`Found ${deploymentCount} deployment(s) created after ${deploymentStartTime.toISOString()}`);
               
