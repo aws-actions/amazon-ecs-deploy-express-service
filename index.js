@@ -354,6 +354,7 @@ async function waitForServiceStable(ecs, serviceArn) {
       if (serviceResponse.service) {
         const service = serviceResponse.service;
         const statusCode = service.status?.statusCode;
+        const serviceUpdatedAt = service.updatedAt;
         
         // Log the actual service ARN from the response for debugging
         if (service.serviceArn && service.serviceArn !== serviceArn) {
@@ -373,12 +374,16 @@ async function waitForServiceStable(ecs, serviceArn) {
           
           // Step 2: List service deployments to get deployment ARNs
           // This follows CloudFormation's pattern to avoid DB consistency issues
-          if (!deploymentArn) {
+          // Filter for deployments created after the service was last updated
+          if (!deploymentArn && serviceUpdatedAt) {
             try {
-              core.debug(`Calling ListServiceDeployments with service ARN: ${serviceArn}`);
+              core.debug(`Calling ListServiceDeployments with service ARN: ${serviceArn}, filtering for deployments after ${new Date(serviceUpdatedAt).toISOString()}`);
               const listDeploymentsCommand = new ListServiceDeploymentsCommand({
                 cluster: service.cluster || 'default',
-                service: serviceArn
+                service: serviceArn,
+                createdAt: {
+                  after: serviceUpdatedAt
+                }
               });
               const listResponse = await ecs.send(listDeploymentsCommand);
               
