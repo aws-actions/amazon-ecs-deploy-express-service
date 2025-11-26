@@ -24,6 +24,30 @@ describe('Amazon ECS Deploy Express Service', () => {
     }));
   });
 
+  // Helper function to mock successful deployment monitoring
+  const mockSuccessfulDeployment = (serviceArn, cluster = 'default') => {
+    return [
+      { // DescribeExpressGatewayService
+        service: {
+          serviceArn: serviceArn,
+          status: { statusCode: 'ACTIVE' },
+          cluster: cluster
+        }
+      },
+      { // ListServiceDeployments
+        serviceDeployments: [{
+          serviceDeploymentArn: `${serviceArn.replace('/service/', '/service-deployment/')}/abc123`
+        }]
+      },
+      { // DescribeServiceDeployments
+        serviceDeployments: [{
+          serviceDeploymentArn: `${serviceArn.replace('/service/', '/service-deployment/')}/abc123`,
+          status: 'SUCCESSFUL'
+        }]
+      }
+    ];
+  };
+
   describe('Required input validation', () => {
     test('fails when image is missing', async () => {
       core.getInput.mockImplementation((name) => {
@@ -77,12 +101,32 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      // Mock successful service creation
-      mockSend.mockResolvedValue({
-        service: {
-          serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service'
-        }
-      });
+      // Mock successful service creation and deployment monitoring
+      mockSend
+        .mockResolvedValueOnce({ services: [] }) // DescribeServices - not found
+        .mockResolvedValueOnce({ // CreateExpressGatewayService
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service'
+          }
+        })
+        .mockResolvedValueOnce({ // DescribeExpressGatewayService
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({ // ListServiceDeployments
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123'
+          }]
+        })
+        .mockResolvedValueOnce({ // DescribeServiceDeployments
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123',
+            status: 'SUCCESSFUL'
+          }]
+        });
 
       await run();
 
@@ -102,27 +146,22 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      // First call: DescribeClustersCommand
-      // Second call: DescribeServicesCommand
-      // Third call: UpdateExpressGatewayServiceCommand
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/production/my-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn, 'production');
+      
       mockSend
-        .mockResolvedValueOnce({
-          clusters: [{
-            clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/production',
-            status: 'ACTIVE'
-          }]
-        })
-        .mockResolvedValueOnce({
+        .mockResolvedValueOnce({ // DescribeServices
           services: [{
-            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/production/my-service',
+            serviceArn: serviceArn,
             status: 'ACTIVE'
           }]
         })
-        .mockResolvedValueOnce({
-          service: {
-            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/production/my-service'
-          }
-        });
+        .mockResolvedValueOnce({ // UpdateExpressGatewayService
+          service: { serviceArn: serviceArn }
+        })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
@@ -138,27 +177,22 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      // First call: DescribeClustersCommand
-      // Second call: DescribeServicesCommand
-      // Third call: UpdateExpressGatewayServiceCommand
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
       mockSend
-        .mockResolvedValueOnce({
-          clusters: [{
-            clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default',
-            status: 'ACTIVE'
-          }]
-        })
-        .mockResolvedValueOnce({
+        .mockResolvedValueOnce({ // DescribeServices
           services: [{
-            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service',
+            serviceArn: serviceArn,
             status: 'ACTIVE'
           }]
         })
-        .mockResolvedValueOnce({
-          service: {
-            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service'
-          }
-        });
+        .mockResolvedValueOnce({ // UpdateExpressGatewayService
+          service: { serviceArn: serviceArn }
+        })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
@@ -172,26 +206,27 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
-        if (name === 'service-name') return 'test-service';
         if (name === 'service-name') return 'my-service';
         if (name === 'cluster') return 'default';
         return '';
       });
 
-      // First call: DescribeServicesCommand returns existing service
-      // Second call: UpdateExpressGatewayServiceCommand
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
       mockSend
-        .mockResolvedValueOnce({
+        .mockResolvedValueOnce({ // DescribeServices returns existing service
           services: [{
-            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service',
+            serviceArn: serviceArn,
             status: 'ACTIVE'
           }]
         })
-        .mockResolvedValueOnce({
-          service: {
-            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service'
-          }
-        });
+        .mockResolvedValueOnce({ // UpdateExpressGatewayService
+          service: { serviceArn: serviceArn }
+        })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
@@ -199,7 +234,6 @@ describe('Amazon ECS Deploy Express Service', () => {
       expect(core.info).toHaveBeenCalledWith('Will UPDATE existing service');
       expect(core.info).toHaveBeenCalledWith('Updating Express Gateway service...');
       expect(core.info).toHaveBeenCalledWith('Service updated successfully');
-      expect(mockSend).toHaveBeenCalledTimes(2);
     });
 
     test('creates service when ResourceNotFoundException is thrown', async () => {
@@ -207,23 +241,20 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
-        if (name === 'service-name') return 'test-service';
         if (name === 'service-name') return 'my-service';
         if (name === 'cluster') return 'default';
         return '';
       });
 
-      // First call: DescribeServicesCommand returns empty (service not found)
-      // Second call: CreateExpressGatewayServiceCommand
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
       mockSend
-        .mockResolvedValueOnce({
-          services: []
-        })
-        .mockResolvedValueOnce({
-          service: {
-            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/my-service'
-          }
-        });
+        .mockResolvedValueOnce({ services: [] }) // DescribeServices returns empty (service not found)
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } }) // CreateExpressGatewayService
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
@@ -231,7 +262,6 @@ describe('Amazon ECS Deploy Express Service', () => {
       expect(core.info).toHaveBeenCalledWith('Will CREATE new service');
       expect(core.info).toHaveBeenCalledWith('Creating Express Gateway service...');
       expect(core.info).toHaveBeenCalledWith('Service created successfully');
-      expect(mockSend).toHaveBeenCalledTimes(2);
     });
 
     test('fails when service-name is missing', async () => {
@@ -260,18 +290,15 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
-      // First call: DescribeClustersCommand
-      // Second call: CreateExpressGatewayServiceCommand
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
       mockSend
-        .mockResolvedValueOnce({
-          clusters: [{
-            clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default',
-            status: 'ACTIVE'
-          }]
-        })
-        .mockResolvedValueOnce({
-          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-        });
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
@@ -289,13 +316,15 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
       mockSend
-        .mockResolvedValueOnce({
-          clusters: [{ clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default', status: 'ACTIVE' }]
-        })
-        .mockResolvedValueOnce({
-          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-        });
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
@@ -313,13 +342,15 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
       mockSend
-        .mockResolvedValueOnce({
-          clusters: [{ clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default', status: 'ACTIVE' }]
-        })
-        .mockResolvedValueOnce({
-          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-        });
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
@@ -338,13 +369,15 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
       mockSend
-        .mockResolvedValueOnce({
-          clusters: [{ clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default', status: 'ACTIVE' }]
-        })
-        .mockResolvedValueOnce({
-          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-        });
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
@@ -365,18 +398,331 @@ describe('Amazon ECS Deploy Express Service', () => {
         return '';
       });
 
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
       mockSend
-        .mockResolvedValueOnce({
-          clusters: [{ clusterArn: 'arn:aws:ecs:us-east-1:123456789012:cluster/default', status: 'ACTIVE' }]
-        })
-        .mockResolvedValueOnce({
-          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test' }
-        });
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
 
       await run();
 
       expect(mockSend).toHaveBeenCalled();
       expect(core.info).toHaveBeenCalledWith('Service created successfully');
+    });
+  });
+
+  describe('Deployment monitoring', () => {
+    test('passes deployment start timestamp to waitForServiceStable', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      // Mock service creation and deployment monitoring
+      mockSend
+        .mockResolvedValueOnce({ services: [] }) // DescribeServices - not found
+        .mockResolvedValueOnce({ // CreateExpressGatewayService
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' }
+        })
+        .mockResolvedValueOnce({ // DescribeExpressGatewayService
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({ // ListServiceDeployments
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123'
+          }]
+        })
+        .mockResolvedValueOnce({ // DescribeServiceDeployments
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123',
+            status: 'SUCCESSFUL'
+          }]
+        });
+
+      await run();
+      
+      // Verify that deployment monitoring was called (5 total calls)
+      expect(mockSend).toHaveBeenCalledTimes(5);
+      expect(core.info).toHaveBeenCalledWith('Waiting for service deployment to complete...');
+      expect(core.info).toHaveBeenCalledWith(expect.stringContaining('Found 1 deployment(s)'));
+    });
+
+    test('waits for service to become ACTIVE', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      // Use fake timers to avoid actual waiting
+      jest.useFakeTimers();
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' }
+        })
+        .mockResolvedValueOnce({ // First check - service not ACTIVE yet
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'CREATING' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({ // Second check - service is ACTIVE
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123'
+          }]
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123',
+            status: 'SUCCESSFUL'
+          }]
+        });
+
+      const runPromise = run();
+      
+      // Fast-forward through the polling interval
+      await jest.advanceTimersByTimeAsync(15000);
+      
+      await runPromise;
+
+      expect(core.info).toHaveBeenCalledWith('Waiting for service deployment to complete...');
+      expect(mockSend).toHaveBeenCalledTimes(6);
+      
+      jest.useRealTimers();
+    });
+
+    test('monitors deployment status until SUCCESSFUL', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      // Use fake timers to avoid actual waiting
+      jest.useFakeTimers();
+
+      const deploymentArn = 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123';
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' }
+        })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{ serviceDeploymentArn: deploymentArn }]
+        })
+        .mockResolvedValueOnce({ // First check - IN_PROGRESS
+          serviceDeployments: [{
+            serviceDeploymentArn: deploymentArn,
+            status: 'IN_PROGRESS'
+          }]
+        })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({ // Second check - SUCCESSFUL
+          serviceDeployments: [{
+            serviceDeploymentArn: deploymentArn,
+            status: 'SUCCESSFUL'
+          }]
+        });
+
+      const runPromise = run();
+      
+      // Fast-forward through the polling interval
+      await jest.advanceTimersByTimeAsync(15000);
+      
+      await runPromise;
+
+      expect(core.info).toHaveBeenCalledWith(expect.stringContaining('Deployment completed successfully'));
+      
+      jest.useRealTimers();
+    });
+
+    test('logs deployment count from ListServiceDeployments', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' }
+        })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [
+            { serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123' },
+            { serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/def456' }
+          ]
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123',
+            status: 'SUCCESSFUL'
+          }]
+        });
+
+      await run();
+
+      expect(core.info).toHaveBeenCalledWith(expect.stringContaining('Found 2 deployment(s)'));
+    });
+
+    test('fails when deployment enters FAILED state', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      const deploymentArn = 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123';
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' }
+        })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{ serviceDeploymentArn: deploymentArn }]
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{
+            serviceDeploymentArn: deploymentArn,
+            status: 'FAILED'
+          }]
+        });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('FAILED'));
+    });
+
+    test('fails when service enters INACTIVE state', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' }
+        })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'INACTIVE' },
+            cluster: 'default'
+          }
+        });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('INACTIVE'));
+    });
+
+    test('extracts and outputs service endpoint when deployment succeeds', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      const endpoint = 'https://test-service-abc123.execute-api.us-east-1.amazonaws.com';
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({
+          service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' }
+        })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default',
+            activeConfigurations: [{
+              ingressPaths: [{
+                endpoint: endpoint
+              }]
+            }]
+          }
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123'
+          }]
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123',
+            status: 'SUCCESSFUL'
+          }]
+        });
+
+      await run();
+
+      expect(core.setOutput).toHaveBeenCalledWith('endpoint', endpoint);
+      expect(core.info).toHaveBeenCalledWith(`Service endpoint: ${endpoint}`);
     });
   });
 
@@ -427,7 +773,6 @@ describe('Amazon ECS Deploy Express Service', () => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
         if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
-        if (name === 'service-name') return 'test-service';
         if (name === 'service-name') return 'my-service';
         if (name === 'cluster') return 'nonexistent';
         return '';
@@ -439,11 +784,29 @@ describe('Amazon ECS Deploy Express Service', () => {
       clusterError.name = 'ClusterNotFoundException';
       
       mockSend
-        .mockRejectedValueOnce(clusterError)
-        .mockResolvedValueOnce({
+        .mockRejectedValueOnce(clusterError) // DescribeServices fails
+        .mockResolvedValueOnce({ // CreateExpressGatewayService succeeds
           service: {
             serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/nonexistent/my-service'
           }
+        })
+        .mockResolvedValueOnce({ // DescribeExpressGatewayService for monitoring
+          service: {
+            serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/nonexistent/my-service',
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'nonexistent'
+          }
+        })
+        .mockResolvedValueOnce({ // ListServiceDeployments
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/nonexistent/my-service/abc123'
+          }]
+        })
+        .mockResolvedValueOnce({ // DescribeServiceDeployments
+          serviceDeployments: [{
+            serviceDeploymentArn: 'arn:aws:ecs:us-east-1:123456789012:service-deployment/nonexistent/my-service/abc123',
+            status: 'SUCCESSFUL'
+          }]
         });
 
       await run();
