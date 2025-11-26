@@ -363,6 +363,7 @@ async function waitForServiceStable(ecs, serviceArn) {
         // Check if service is ACTIVE
         if (statusCode === 'ACTIVE') {
           if (!serviceActive) {
+            core.info('Service is ACTIVE, checking deployment status...');
             serviceActive = true;
           }
           
