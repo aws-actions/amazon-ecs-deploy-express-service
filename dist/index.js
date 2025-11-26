@@ -361,6 +361,11 @@ async function waitForServiceStable(ecs, serviceArn) {
         const service = serviceResponse.service;
         const statusCode = service.status?.statusCode;
         
+        // Log the actual service ARN from the response for debugging
+        if (service.serviceArn && service.serviceArn !== serviceArn) {
+          core.debug(`Service ARN from response: ${service.serviceArn}`);
+        }
+        
         // Check for failure states
         if (statusCode === 'INACTIVE' || statusCode === 'DRAINING') {
           throw new Error(`Service entered ${statusCode} state`);
@@ -377,8 +382,10 @@ async function waitForServiceStable(ecs, serviceArn) {
           // This follows CloudFormation's pattern to avoid DB consistency issues
           if (!deploymentArn) {
             try {
+              core.debug(`Calling ListServiceDeployments with service ARN: ${serviceArn}`);
               const listDeploymentsCommand = new ListServiceDeploymentsCommand({
-                serviceArn: serviceArn
+                cluster: service.cluster || 'default',
+                service: serviceArn
               });
               const listResponse = await ecs.send(listDeploymentsCommand);
               
@@ -392,7 +399,7 @@ async function waitForServiceStable(ecs, serviceArn) {
                 core.warning('No deployments found for service');
               }
             } catch (listError) {
-              core.warning(`ListServiceDeployments error: ${listError.message}`);
+              core.warning(`ListServiceDeployments error: ${listError.message}. Service ARN: ${serviceArn}`);
             }
           }
           
