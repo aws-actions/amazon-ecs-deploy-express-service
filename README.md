@@ -147,8 +147,8 @@ See [IAM Permissions](#iam-permissions) for detailed policy requirements.
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `cpu` | The number of CPU units to allocate (256, 512, 1024, 2048, 4096, 8192, 16384). If not specified, Express Mode defaults to 256 (.25 vCPU). | - |
-| `memory` | The amount of memory in MiB to allocate (512, 1024, 2048, 4096, 8192, 16384, 30720, 61440, 122880). If not specified, Express Mode defaults to 512 MiB. | - |
+| `cpu` | The number of CPU units to allocate (256, 512, 1024, 2048, 4096, 8192, 16384). If not specified, Express Mode defaults to 1024 (1 vCPU). | - |
+| `memory` | The amount of memory in MiB to allocate (512, 1024, 2048, 4096, 8192, 16384, 30720, 61440, 122880). If not specified, Express Mode defaults to 2048 MiB. | - |
 | `task-role-arn` | The ARN of the IAM role that the container can assume to make AWS API calls | - |
 
 ### Network Configuration
