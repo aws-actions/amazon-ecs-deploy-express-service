@@ -308,35 +308,24 @@ async function run() {
     // Process tags input
     if (tags && tags.trim() !== '') {
       try {
-        core.info('Processing tags for service...');
         let parsedTags;
         
         // Try to parse as JSON first
         if (tags.trim().startsWith('[')) {
-          core.debug('Parsing tags as JSON format');
           parsedTags = parseTagsFromJSON(tags);
         } else {
           // Parse as multiline format
-          core.debug('Parsing tags as multiline format');
           parsedTags = parseTagsFromMultiline(tags);
         }
         
         if (parsedTags.length > 0) {
           serviceConfig.tags = parsedTags;
-          core.info(`Successfully parsed ${parsedTags.length} tag(s) for service:`);
-          parsedTags.forEach(tag => {
-            core.info(`  ${tag.key}=${tag.value}`);
-          });
-        } else {
-          core.info('No tags to apply after parsing');
         }
       } catch (error) {
         const errorMessage = `Tag parsing failed: ${error.message}`;
         core.setFailed(errorMessage);
         throw new Error(errorMessage);
       }
-    } else {
-      core.debug('No tags provided, skipping tag processing');
     }
     
     // Add optional scaling configuration

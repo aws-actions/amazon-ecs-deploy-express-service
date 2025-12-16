@@ -749,10 +749,6 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       await run();
 
-      expect(core.info).toHaveBeenCalledWith('Processing tags for service...');
-      expect(core.info).toHaveBeenCalledWith('Successfully parsed 2 tag(s) for service:');
-      expect(core.info).toHaveBeenCalledWith('  Environment=Production');
-      expect(core.info).toHaveBeenCalledWith('  Team=DevOps');
       expect(core.info).toHaveBeenCalledWith('Tags successfully included in service creation');
     });
 
@@ -778,11 +774,7 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       await run();
 
-      expect(core.info).toHaveBeenCalledWith('Processing tags for service...');
-      expect(core.info).toHaveBeenCalledWith('Successfully parsed 3 tag(s) for service:');
-      expect(core.info).toHaveBeenCalledWith('  Environment=Production');
-      expect(core.info).toHaveBeenCalledWith('  Team=DevOps');
-      expect(core.info).toHaveBeenCalledWith('  CostCenter=');
+      expect(core.info).toHaveBeenCalledWith('Tags successfully included in service creation');
     });
 
     test('skips tag processing when no tags provided', async () => {
@@ -807,7 +799,6 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       await run();
 
-      expect(core.debug).toHaveBeenCalledWith('No tags provided, skipping tag processing');
       expect(core.info).not.toHaveBeenCalledWith(expect.stringContaining('Processing tags'));
     });
 
