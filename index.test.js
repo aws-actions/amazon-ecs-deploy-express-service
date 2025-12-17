@@ -726,6 +726,121 @@ describe('Amazon ECS Deploy Express Service', () => {
     });
   });
 
+  describe('Tag handling', () => {
+    test('includes tags in service config when provided as JSON', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'tags') return '[{"key":"Environment","value":"Production"},{"key":"Team","value":"DevOps"}]';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.debug).toHaveBeenCalledWith('Tags successfully included in service creation');
+    });
+
+    test('includes tags in service config when provided as multiline', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'tags') return 'Environment=Production\nTeam=DevOps\nCostCenter=';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.debug).toHaveBeenCalledWith('Tags successfully included in service creation');
+    });
+
+    test('skips tag processing when no tags provided', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'tags') return '';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.info).not.toHaveBeenCalledWith(expect.stringContaining('Processing tags'));
+    });
+
+    test('fails with helpful message when JSON tags are malformed', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'tags') return '[{"key":"Environment","value":}]'; // Invalid JSON
+        return '';
+      });
+
+      // Mock service check to avoid unrelated errors
+      mockSend.mockResolvedValueOnce({ services: [] });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Tag parsing failed'));
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Invalid tags JSON'));
+    });
+
+    test('fails with helpful message when multiline tags have invalid format', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'tags') return 'Environment=Production\nInvalidLine'; // Missing = sign
+        return '';
+      });
+
+      // Mock service check to avoid unrelated errors
+      mockSend.mockResolvedValueOnce({ services: [] });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Tag parsing failed'));
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Invalid tag format'));
+    });
+  });
+
   describe('Error handling', () => {
     test('handles AccessDeniedException with helpful message', async () => {
       core.getInput.mockImplementation((name) => {

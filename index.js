@@ -12,6 +12,68 @@ const {
 } = require('@aws-sdk/client-ecs');
 
 /**
+ * Parse tags from JSON format input
+ * Expected format: [{"key":"Environment","value":"Production"}]
+ * @param {string} tagsInput - JSON string containing tag array
+ * @returns {Array} Array of tag objects with key and value properties
+ */
+function parseTagsFromJSON(tagsInput) {
+  if (!tagsInput || tagsInput.trim() === '') {
+    return [];
+  }
+  
+  try {
+    const tags = JSON.parse(tagsInput);
+    if (!Array.isArray(tags)) {
+      throw new Error('Tags must be an array');
+    }
+    return tags;
+  } catch (error) {
+    throw new Error(`Invalid tags JSON: ${error.message}`);
+  }
+}
+
+/**
+ * Parse tags from multiline format input
+ * Expected format: key=value (one per line)
+ * @param {string} tagsInput - Multiline string with key=value pairs
+ * @returns {Array} Array of tag objects with key and value properties
+ */
+function parseTagsFromMultiline(tagsInput) {
+  if (!tagsInput || tagsInput.trim() === '') {
+    return [];
+  }
+  
+  const tags = [];
+  const lines = tagsInput.split('\n');
+  
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+    if (trimmedLine === '') {
+      continue; // Skip empty lines
+    }
+    
+    const equalIndex = trimmedLine.indexOf('=');
+    if (equalIndex === -1) {
+      throw new Error(`Invalid tag format: "${trimmedLine}". Expected format: key=value`);
+    }
+    
+    const key = trimmedLine.substring(0, equalIndex).trim();
+    const value = trimmedLine.substring(equalIndex + 1).trim();
+    
+    if (key === '') {
+      throw new Error(`Empty tag key in line: "${trimmedLine}"`);
+    }
+    
+    tags.push({ key, value });
+  }
+  
+  return tags;
+}
+
+
+
+/**
  * Main entry point for the GitHub Action
  * Creates or updates an Amazon ECS Express Mode service
  */
@@ -66,6 +128,7 @@ async function run() {
     const logGroup = core.getInput('log-group', { required: false });
     const logStreamPrefix = core.getInput('log-stream-prefix', { required: false });
     const repositoryCredentials = core.getInput('repository-credentials', { required: false });
+    const tags = core.getInput('tags', { required: false });
     
     // Read optional resource configuration inputs
     const cpu = core.getInput('cpu', { required: false });
@@ -242,6 +305,29 @@ async function run() {
       serviceConfig.healthCheckPath = healthCheckPath;
     }
     
+    // Process tags input
+    if (tags && tags.trim() !== '') {
+      try {
+        let parsedTags;
+        
+        // Try to parse as JSON first
+        if (tags.trim().startsWith('[')) {
+          parsedTags = parseTagsFromJSON(tags);
+        } else {
+          // Parse as multiline format
+          parsedTags = parseTagsFromMultiline(tags);
+        }
+        
+        if (parsedTags.length > 0) {
+          serviceConfig.tags = parsedTags;
+        }
+      } catch (error) {
+        const errorMessage = `Tag parsing failed: ${error.message}`;
+        core.setFailed(errorMessage);
+        throw new Error(errorMessage);
+      }
+    }
+    
     // Add optional scaling configuration
     const hasScalingConfig = (minTaskCount && minTaskCount.trim() !== '') ||
                              (maxTaskCount && maxTaskCount.trim() !== '') ||
@@ -291,6 +377,12 @@ async function run() {
         const createCommand = new CreateExpressGatewayServiceCommand(serviceConfig);
         response = await ecs.send(createCommand);
         core.info('Service created successfully');
+        
+        // Log successful tag application for service creation
+        // Note: Tags are only applied during service creation, not during updates
+        if (serviceConfig.tags && serviceConfig.tags.length > 0) {
+          core.debug(`Tags successfully included in service creation`);
+        }
       }
     } catch (error) {
       // Handle AWS SDK errors with helpful messages

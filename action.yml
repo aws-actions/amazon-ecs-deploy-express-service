@@ -46,6 +46,9 @@ inputs:
   repository-credentials:
     description: 'ARN of the secret containing credentials for private container registry (credentialsParameter in repositoryCredentials). Required for private registries outside ECR.'
     required: false
+  tags:
+    description: 'Resource tags to apply to the ECS Express Gateway service and associated AWS resources (ALB, target groups, auto-scaling, etc.). Provide as JSON array: [{"key":"Environment","value":"Production"}] or multiline format: Environment=Production'
+    required: false
   
   # Resource configuration
   cpu:
