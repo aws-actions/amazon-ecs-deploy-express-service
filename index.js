@@ -369,11 +369,6 @@ async function run() {
         });
         response = await ecs.send(updateCommand);
         core.info('Service updated successfully');
-        
-        // Log successful tag application for service updates
-        if (serviceConfig.tags && serviceConfig.tags.length > 0) {
-          core.debug(`Tags successfully included in service update`);
-        }
       } else {
         // Create new service
         core.info('Creating Express Gateway service...');

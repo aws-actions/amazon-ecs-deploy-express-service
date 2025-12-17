@@ -839,36 +839,6 @@ describe('Amazon ECS Deploy Express Service', () => {
       expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Tag parsing failed'));
       expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Invalid tag format'));
     });
-
-    test('logs different message for service updates with tags', async () => {
-      core.getInput.mockImplementation((name) => {
-        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
-        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
-        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
-        if (name === 'service-name') return 'test-service';
-        if (name === 'tags') return '[{"key":"Environment","value":"Production"}]';
-        return '';
-      });
-
-      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
-      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
-      
-      mockSend
-        .mockResolvedValueOnce({ // DescribeServices returns existing service
-          services: [{
-            serviceArn: serviceArn,
-            status: 'ACTIVE'
-          }]
-        })
-        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } }) // UpdateExpressGatewayService
-        .mockResolvedValueOnce(deploymentMocks[0])
-        .mockResolvedValueOnce(deploymentMocks[1])
-        .mockResolvedValueOnce(deploymentMocks[2]);
-
-      await run();
-
-      expect(core.debug).toHaveBeenCalledWith('Tags successfully included in service update');
-    });
   });
 
   describe('Error handling', () => {
