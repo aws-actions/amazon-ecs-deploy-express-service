@@ -221,14 +221,14 @@ class SigninClient extends smithyClient.Client {
     }
 }
 
-let SigninServiceException$1 = class SigninServiceException extends smithyClient.ServiceException {
+class SigninServiceException extends smithyClient.ServiceException {
     constructor(options) {
         super(options);
         Object.setPrototypeOf(this, SigninServiceException.prototype);
     }
-};
+}
 
-let AccessDeniedException$1 = class AccessDeniedException extends SigninServiceException$1 {
+class AccessDeniedException extends SigninServiceException {
     name = "AccessDeniedException";
     $fault = "client";
     error;
@@ -241,8 +241,8 @@ let AccessDeniedException$1 = class AccessDeniedException extends SigninServiceE
         Object.setPrototypeOf(this, AccessDeniedException.prototype);
         this.error = opts.error;
     }
-};
-let InternalServerException$1 = class InternalServerException extends SigninServiceException$1 {
+}
+class InternalServerException extends SigninServiceException {
     name = "InternalServerException";
     $fault = "server";
     error;
@@ -255,8 +255,8 @@ let InternalServerException$1 = class InternalServerException extends SigninServ
         Object.setPrototypeOf(this, InternalServerException.prototype);
         this.error = opts.error;
     }
-};
-let TooManyRequestsError$1 = class TooManyRequestsError extends SigninServiceException$1 {
+}
+class TooManyRequestsError extends SigninServiceException {
     name = "TooManyRequestsError";
     $fault = "client";
     error;
@@ -269,8 +269,8 @@ let TooManyRequestsError$1 = class TooManyRequestsError extends SigninServiceExc
         Object.setPrototypeOf(this, TooManyRequestsError.prototype);
         this.error = opts.error;
     }
-};
-let ValidationException$1 = class ValidationException extends SigninServiceException$1 {
+}
+class ValidationException extends SigninServiceException {
     name = "ValidationException";
     $fault = "client";
     error;
@@ -283,7 +283,7 @@ let ValidationException$1 = class ValidationException extends SigninServiceExcep
         Object.setPrototypeOf(this, ValidationException.prototype);
         this.error = opts.error;
     }
-};
+}
 
 const _ADE = "AccessDeniedException";
 const _AT = "AccessToken";
@@ -321,186 +321,80 @@ const _tO = "tokenOutput";
 const _tT = "tokenType";
 const n0 = "com.amazonaws.signin";
 var RefreshToken = [0, n0, _RT, 8, 0];
-var AccessDeniedException = [
-    -3,
-    n0,
-    _ADE,
-    {
-        [_e]: _c,
-    },
-    [_e, _m],
-    [0, 0],
-];
-schema.TypeRegistry.for(n0).registerError(AccessDeniedException, AccessDeniedException$1);
-var AccessToken = [
+var AccessDeniedException$ = [-3, n0, _ADE, { [_e]: _c }, [_e, _m], [0, 0]];
+schema.TypeRegistry.for(n0).registerError(AccessDeniedException$, AccessDeniedException);
+var AccessToken$ = [
     3,
     n0,
     _AT,
     8,
     [_aKI, _sAK, _sT],
     [
-        [
-            0,
-            {
-                [_jN]: _aKI,
-            },
-        ],
-        [
-            0,
-            {
-                [_jN]: _sAK,
-            },
-        ],
-        [
-            0,
-            {
-                [_jN]: _sT,
-            },
-        ],
+        [0, { [_jN]: _aKI }],
+        [0, { [_jN]: _sAK }],
+        [0, { [_jN]: _sT }],
     ],
 ];
-var CreateOAuth2TokenRequest = [
+var CreateOAuth2TokenRequest$ = [
     3,
     n0,
     _COATR,
     0,
     [_tI],
-    [[() => CreateOAuth2TokenRequestBody, 16]],
+    [[() => CreateOAuth2TokenRequestBody$, 16]],
 ];
-var CreateOAuth2TokenRequestBody = [
+var CreateOAuth2TokenRequestBody$ = [
     3,
     n0,
     _COATRB,
     0,
     [_cI, _gT, _co, _rU, _cV, _rT],
     [
-        [
-            0,
-            {
-                [_jN]: _cI,
-            },
-        ],
-        [
-            0,
-            {
-                [_jN]: _gT,
-            },
-        ],
+        [0, { [_jN]: _cI }],
+        [0, { [_jN]: _gT }],
         0,
-        [
-            0,
-            {
-                [_jN]: _rU,
-            },
-        ],
-        [
-            0,
-            {
-                [_jN]: _cV,
-            },
-        ],
-        [
-            () => RefreshToken,
-            {
-                [_jN]: _rT,
-            },
-        ],
+        [0, { [_jN]: _rU }],
+        [0, { [_jN]: _cV }],
+        [() => RefreshToken, { [_jN]: _rT }],
     ],
 ];
-var CreateOAuth2TokenResponse = [
+var CreateOAuth2TokenResponse$ = [
     3,
     n0,
     _COATRr,
     0,
     [_tO],
-    [[() => CreateOAuth2TokenResponseBody, 16]],
+    [[() => CreateOAuth2TokenResponseBody$, 16]],
 ];
-var CreateOAuth2TokenResponseBody = [
+var CreateOAuth2TokenResponseBody$ = [
     3,
     n0,
     _COATRBr,
     0,
     [_aT, _tT, _eI, _rT, _iT],
     [
-        [
-            () => AccessToken,
-            {
-                [_jN]: _aT,
-            },
-        ],
-        [
-            0,
-            {
-                [_jN]: _tT,
-            },
-        ],
-        [
-            1,
-            {
-                [_jN]: _eI,
-            },
-        ],
-        [
-            () => RefreshToken,
-            {
-                [_jN]: _rT,
-            },
-        ],
-        [
-            0,
-            {
-                [_jN]: _iT,
-            },
-        ],
+        [() => AccessToken$, { [_jN]: _aT }],
+        [0, { [_jN]: _tT }],
+        [1, { [_jN]: _eI }],
+        [() => RefreshToken, { [_jN]: _rT }],
+        [0, { [_jN]: _iT }],
     ],
 ];
-var InternalServerException = [
-    -3,
-    n0,
-    _ISE,
-    {
-        [_e]: _s,
-        [_hE]: 500,
-    },
-    [_e, _m],
-    [0, 0],
-];
-schema.TypeRegistry.for(n0).registerError(InternalServerException, InternalServerException$1);
-var TooManyRequestsError = [
-    -3,
-    n0,
-    _TMRE,
-    {
-        [_e]: _c,
-        [_hE]: 429,
-    },
-    [_e, _m],
-    [0, 0],
-];
-schema.TypeRegistry.for(n0).registerError(TooManyRequestsError, TooManyRequestsError$1);
-var ValidationException = [
-    -3,
-    n0,
-    _VE,
-    {
-        [_e]: _c,
-        [_hE]: 400,
-    },
-    [_e, _m],
-    [0, 0],
-];
-schema.TypeRegistry.for(n0).registerError(ValidationException, ValidationException$1);
-var SigninServiceException = [-3, _sm, "SigninServiceException", 0, [], []];
-schema.TypeRegistry.for(_sm).registerError(SigninServiceException, SigninServiceException$1);
-var CreateOAuth2Token = [
+var InternalServerException$ = [-3, n0, _ISE, { [_e]: _s, [_hE]: 500 }, [_e, _m], [0, 0]];
+schema.TypeRegistry.for(n0).registerError(InternalServerException$, InternalServerException);
+var TooManyRequestsError$ = [-3, n0, _TMRE, { [_e]: _c, [_hE]: 429 }, [_e, _m], [0, 0]];
+schema.TypeRegistry.for(n0).registerError(TooManyRequestsError$, TooManyRequestsError);
+var ValidationException$ = [-3, n0, _VE, { [_e]: _c, [_hE]: 400 }, [_e, _m], [0, 0]];
+schema.TypeRegistry.for(n0).registerError(ValidationException$, ValidationException);
+var SigninServiceException$ = [-3, _sm, "SigninServiceException", 0, [], []];
+schema.TypeRegistry.for(_sm).registerError(SigninServiceException$, SigninServiceException);
+var CreateOAuth2Token$ = [
     9,
     n0,
     _COAT,
-    {
-        [_h]: ["POST", "/v1/token", 200],
-    },
-    () => CreateOAuth2TokenRequest,
-    () => CreateOAuth2TokenResponse,
+    { [_h]: ["POST", "/v1/token", 200] },
+    () => CreateOAuth2TokenRequest$,
+    () => CreateOAuth2TokenResponse$,
 ];
 
 class CreateOAuth2TokenCommand extends smithyClient.Command
@@ -511,7 +405,7 @@ class CreateOAuth2TokenCommand extends smithyClient.Command
 })
     .s("Signin", "CreateOAuth2Token", {})
     .n("SigninClient", "CreateOAuth2TokenCommand")
-    .sc(CreateOAuth2Token)
+    .sc(CreateOAuth2Token$)
     .build() {
 }
 
@@ -539,15 +433,26 @@ __webpack_unused_export__ = ({
     enumerable: true,
     get: function () { return smithyClient.Client; }
 });
-__webpack_unused_export__ = AccessDeniedException$1;
+__webpack_unused_export__ = AccessDeniedException;
+__webpack_unused_export__ = AccessDeniedException$;
+__webpack_unused_export__ = AccessToken$;
+__webpack_unused_export__ = CreateOAuth2Token$;
 exports.CreateOAuth2TokenCommand = CreateOAuth2TokenCommand;
-__webpack_unused_export__ = InternalServerException$1;
+__webpack_unused_export__ = CreateOAuth2TokenRequest$;
+__webpack_unused_export__ = CreateOAuth2TokenRequestBody$;
+__webpack_unused_export__ = CreateOAuth2TokenResponse$;
+__webpack_unused_export__ = CreateOAuth2TokenResponseBody$;
+__webpack_unused_export__ = InternalServerException;
+__webpack_unused_export__ = InternalServerException$;
 __webpack_unused_export__ = OAuth2ErrorCode;
 __webpack_unused_export__ = Signin;
 exports.SigninClient = SigninClient;
-__webpack_unused_export__ = SigninServiceException$1;
-__webpack_unused_export__ = TooManyRequestsError$1;
-__webpack_unused_export__ = ValidationException$1;
+__webpack_unused_export__ = SigninServiceException;
+__webpack_unused_export__ = SigninServiceException$;
+__webpack_unused_export__ = TooManyRequestsError;
+__webpack_unused_export__ = TooManyRequestsError$;
+__webpack_unused_export__ = ValidationException;
+__webpack_unused_export__ = ValidationException$;
 
 
 /***/ }),
@@ -567,14 +472,13 @@ const hash_node_1 = __webpack_require__(5092);
 const middleware_retry_1 = __webpack_require__(9618);
 const node_config_provider_1 = __webpack_require__(5704);
 const node_http_handler_1 = __webpack_require__(1279);
+const smithy_client_1 = __webpack_require__(1411);
 const util_body_length_node_1 = __webpack_require__(3638);
+const util_defaults_mode_node_1 = __webpack_require__(5435);
 const util_retry_1 = __webpack_require__(5518);
 const runtimeConfig_shared_1 = __webpack_require__(357);
-const smithy_client_1 = __webpack_require__(1411);
-const util_defaults_mode_node_1 = __webpack_require__(5435);
-const smithy_client_2 = __webpack_require__(1411);
 const getRuntimeConfig = (config) => {
-    (0, smithy_client_2.emitWarningIfUnsupportedVersion)(process.version);
+    (0, smithy_client_1.emitWarningIfUnsupportedVersion)(process.version);
     const defaultsMode = (0, util_defaults_mode_node_1.resolveDefaultsModeConfig)(config);
     const defaultConfigProvider = () => defaultsMode().then(smithy_client_1.loadConfigsForDefaultMode);
     const clientSharedValues = (0, runtimeConfig_shared_1.getRuntimeConfig)(config);
@@ -650,7 +554,12 @@ const getRuntimeConfig = (config) => {
             },
         ],
         logger: config?.logger ?? new smithy_client_1.NoOpLogger(),
-        protocol: config?.protocol ?? new protocols_1.AwsRestJsonProtocol({ defaultNamespace: "com.amazonaws.signin" }),
+        protocol: config?.protocol ?? protocols_1.AwsRestJsonProtocol,
+        protocolSettings: config?.protocolSettings ?? {
+            defaultNamespace: "com.amazonaws.signin",
+            version: "2023-01-01",
+            serviceTarget: "Signin",
+        },
         serviceId: config?.serviceId ?? "Signin",
         urlParser: config?.urlParser ?? url_parser_1.parseUrl,
         utf8Decoder: config?.utf8Decoder ?? util_utf8_1.fromUtf8,
@@ -665,7 +574,7 @@ exports.getRuntimeConfig = getRuntimeConfig;
 /***/ 9955:
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/nested-clients","version":"3.940.0","description":"Nested clients for AWS SDK packages.","main":"./dist-cjs/index.js","module":"./dist-es/index.js","types":"./dist-types/index.d.ts","scripts":{"build":"yarn lint && concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"node ../../scripts/compilation/inline nested-clients","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","lint":"node ../../scripts/validation/submodules-linter.js --pkg nested-clients","test":"yarn g:vitest run","test:watch":"yarn g:vitest watch"},"engines":{"node":">=18.0.0"},"sideEffects":false,"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"3.940.0","@aws-sdk/middleware-host-header":"3.936.0","@aws-sdk/middleware-logger":"3.936.0","@aws-sdk/middleware-recursion-detection":"3.936.0","@aws-sdk/middleware-user-agent":"3.940.0","@aws-sdk/region-config-resolver":"3.936.0","@aws-sdk/types":"3.936.0","@aws-sdk/util-endpoints":"3.936.0","@aws-sdk/util-user-agent-browser":"3.936.0","@aws-sdk/util-user-agent-node":"3.940.0","@smithy/config-resolver":"^4.4.3","@smithy/core":"^3.18.5","@smithy/fetch-http-handler":"^5.3.6","@smithy/hash-node":"^4.2.5","@smithy/invalid-dependency":"^4.2.5","@smithy/middleware-content-length":"^4.2.5","@smithy/middleware-endpoint":"^4.3.12","@smithy/middleware-retry":"^4.4.12","@smithy/middleware-serde":"^4.2.6","@smithy/middleware-stack":"^4.2.5","@smithy/node-config-provider":"^4.3.5","@smithy/node-http-handler":"^4.4.5","@smithy/protocol-http":"^5.3.5","@smithy/smithy-client":"^4.9.8","@smithy/types":"^4.9.0","@smithy/url-parser":"^4.2.5","@smithy/util-base64":"^4.3.0","@smithy/util-body-length-browser":"^4.2.0","@smithy/util-body-length-node":"^4.2.1","@smithy/util-defaults-mode-browser":"^4.3.11","@smithy/util-defaults-mode-node":"^4.2.14","@smithy/util-endpoints":"^3.2.5","@smithy/util-middleware":"^4.2.5","@smithy/util-retry":"^4.2.5","@smithy/util-utf8":"^4.2.0","tslib":"^2.6.2"},"devDependencies":{"concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~5.8.3"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["./signin.d.ts","./signin.js","./sso-oidc.d.ts","./sso-oidc.js","./sts.d.ts","./sts.js","dist-*/**"],"browser":{"./dist-es/submodules/signin/runtimeConfig":"./dist-es/submodules/signin/runtimeConfig.browser","./dist-es/submodules/sso-oidc/runtimeConfig":"./dist-es/submodules/sso-oidc/runtimeConfig.browser","./dist-es/submodules/sts/runtimeConfig":"./dist-es/submodules/sts/runtimeConfig.browser"},"react-native":{},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/packages/nested-clients","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"packages/nested-clients"},"exports":{"./package.json":"./package.json","./sso-oidc":{"types":"./dist-types/submodules/sso-oidc/index.d.ts","module":"./dist-es/submodules/sso-oidc/index.js","node":"./dist-cjs/submodules/sso-oidc/index.js","import":"./dist-es/submodules/sso-oidc/index.js","require":"./dist-cjs/submodules/sso-oidc/index.js"},"./sts":{"types":"./dist-types/submodules/sts/index.d.ts","module":"./dist-es/submodules/sts/index.js","node":"./dist-cjs/submodules/sts/index.js","import":"./dist-es/submodules/sts/index.js","require":"./dist-cjs/submodules/sts/index.js"},"./signin":{"types":"./dist-types/submodules/signin/index.d.ts","module":"./dist-es/submodules/signin/index.js","node":"./dist-cjs/submodules/signin/index.js","import":"./dist-es/submodules/signin/index.js","require":"./dist-cjs/submodules/signin/index.js"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/nested-clients","version":"3.953.0","description":"Nested clients for AWS SDK packages.","main":"./dist-cjs/index.js","module":"./dist-es/index.js","types":"./dist-types/index.d.ts","scripts":{"build":"yarn lint && concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"node ../../scripts/compilation/inline nested-clients","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","lint":"node ../../scripts/validation/submodules-linter.js --pkg nested-clients","test":"yarn g:vitest run","test:watch":"yarn g:vitest watch"},"engines":{"node":">=18.0.0"},"sideEffects":false,"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"3.953.0","@aws-sdk/middleware-host-header":"3.953.0","@aws-sdk/middleware-logger":"3.953.0","@aws-sdk/middleware-recursion-detection":"3.953.0","@aws-sdk/middleware-user-agent":"3.953.0","@aws-sdk/region-config-resolver":"3.953.0","@aws-sdk/types":"3.953.0","@aws-sdk/util-endpoints":"3.953.0","@aws-sdk/util-user-agent-browser":"3.953.0","@aws-sdk/util-user-agent-node":"3.953.0","@smithy/config-resolver":"^4.4.4","@smithy/core":"^3.19.0","@smithy/fetch-http-handler":"^5.3.7","@smithy/hash-node":"^4.2.6","@smithy/invalid-dependency":"^4.2.6","@smithy/middleware-content-length":"^4.2.6","@smithy/middleware-endpoint":"^4.3.15","@smithy/middleware-retry":"^4.4.15","@smithy/middleware-serde":"^4.2.7","@smithy/middleware-stack":"^4.2.6","@smithy/node-config-provider":"^4.3.6","@smithy/node-http-handler":"^4.4.6","@smithy/protocol-http":"^5.3.6","@smithy/smithy-client":"^4.10.0","@smithy/types":"^4.10.0","@smithy/url-parser":"^4.2.6","@smithy/util-base64":"^4.3.0","@smithy/util-body-length-browser":"^4.2.0","@smithy/util-body-length-node":"^4.2.1","@smithy/util-defaults-mode-browser":"^4.3.14","@smithy/util-defaults-mode-node":"^4.2.17","@smithy/util-endpoints":"^3.2.6","@smithy/util-middleware":"^4.2.6","@smithy/util-retry":"^4.2.6","@smithy/util-utf8":"^4.2.0","tslib":"^2.6.2"},"devDependencies":{"concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~5.8.3"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["./signin.d.ts","./signin.js","./sso-oidc.d.ts","./sso-oidc.js","./sts.d.ts","./sts.js","dist-*/**"],"browser":{"./dist-es/submodules/signin/runtimeConfig":"./dist-es/submodules/signin/runtimeConfig.browser","./dist-es/submodules/sso-oidc/runtimeConfig":"./dist-es/submodules/sso-oidc/runtimeConfig.browser","./dist-es/submodules/sts/runtimeConfig":"./dist-es/submodules/sts/runtimeConfig.browser"},"react-native":{},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/packages/nested-clients","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"packages/nested-clients"},"exports":{"./package.json":"./package.json","./sso-oidc":{"types":"./dist-types/submodules/sso-oidc/index.d.ts","module":"./dist-es/submodules/sso-oidc/index.js","node":"./dist-cjs/submodules/sso-oidc/index.js","import":"./dist-es/submodules/sso-oidc/index.js","require":"./dist-cjs/submodules/sso-oidc/index.js"},"./sts":{"types":"./dist-types/submodules/sts/index.d.ts","module":"./dist-es/submodules/sts/index.js","node":"./dist-cjs/submodules/sts/index.js","import":"./dist-es/submodules/sts/index.js","require":"./dist-cjs/submodules/sts/index.js"},"./signin":{"types":"./dist-types/submodules/signin/index.d.ts","module":"./dist-es/submodules/signin/index.js","node":"./dist-cjs/submodules/signin/index.js","import":"./dist-es/submodules/signin/index.js","require":"./dist-cjs/submodules/signin/index.js"}}}');
 
 /***/ })
 

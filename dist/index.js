@@ -3889,14 +3889,14 @@ class ECSClient extends smithyClient.Client {
     }
 }
 
-let ECSServiceException$1 = class ECSServiceException extends smithyClient.ServiceException {
+class ECSServiceException extends smithyClient.ServiceException {
     constructor(options) {
         super(options);
         Object.setPrototypeOf(this, ECSServiceException.prototype);
     }
-};
+}
 
-let AccessDeniedException$1 = class AccessDeniedException extends ECSServiceException$1 {
+class AccessDeniedException extends ECSServiceException {
     name = "AccessDeniedException";
     $fault = "client";
     constructor(opts) {
@@ -3907,8 +3907,8 @@ let AccessDeniedException$1 = class AccessDeniedException extends ECSServiceExce
         });
         Object.setPrototypeOf(this, AccessDeniedException.prototype);
     }
-};
-let ClientException$1 = class ClientException extends ECSServiceException$1 {
+}
+class ClientException extends ECSServiceException {
     name = "ClientException";
     $fault = "client";
     constructor(opts) {
@@ -3919,8 +3919,8 @@ let ClientException$1 = class ClientException extends ECSServiceException$1 {
         });
         Object.setPrototypeOf(this, ClientException.prototype);
     }
-};
-let ClusterNotFoundException$1 = class ClusterNotFoundException extends ECSServiceException$1 {
+}
+class ClusterNotFoundException extends ECSServiceException {
     name = "ClusterNotFoundException";
     $fault = "client";
     constructor(opts) {
@@ -3931,8 +3931,8 @@ let ClusterNotFoundException$1 = class ClusterNotFoundException extends ECSServi
         });
         Object.setPrototypeOf(this, ClusterNotFoundException.prototype);
     }
-};
-let InvalidParameterException$1 = class InvalidParameterException extends ECSServiceException$1 {
+}
+class InvalidParameterException extends ECSServiceException {
     name = "InvalidParameterException";
     $fault = "client";
     constructor(opts) {
@@ -3943,8 +3943,8 @@ let InvalidParameterException$1 = class InvalidParameterException extends ECSSer
         });
         Object.setPrototypeOf(this, InvalidParameterException.prototype);
     }
-};
-let LimitExceededException$1 = class LimitExceededException extends ECSServiceException$1 {
+}
+class LimitExceededException extends ECSServiceException {
     name = "LimitExceededException";
     $fault = "client";
     constructor(opts) {
@@ -3955,8 +3955,8 @@ let LimitExceededException$1 = class LimitExceededException extends ECSServiceEx
         });
         Object.setPrototypeOf(this, LimitExceededException.prototype);
     }
-};
-let ServerException$1 = class ServerException extends ECSServiceException$1 {
+}
+class ServerException extends ECSServiceException {
     name = "ServerException";
     $fault = "server";
     constructor(opts) {
@@ -3967,8 +3967,8 @@ let ServerException$1 = class ServerException extends ECSServiceException$1 {
         });
         Object.setPrototypeOf(this, ServerException.prototype);
     }
-};
-let UnsupportedFeatureException$1 = class UnsupportedFeatureException extends ECSServiceException$1 {
+}
+class UnsupportedFeatureException extends ECSServiceException {
     name = "UnsupportedFeatureException";
     $fault = "client";
     constructor(opts) {
@@ -3979,8 +3979,8 @@ let UnsupportedFeatureException$1 = class UnsupportedFeatureException extends EC
         });
         Object.setPrototypeOf(this, UnsupportedFeatureException.prototype);
     }
-};
-let UpdateInProgressException$1 = class UpdateInProgressException extends ECSServiceException$1 {
+}
+class UpdateInProgressException extends ECSServiceException {
     name = "UpdateInProgressException";
     $fault = "client";
     constructor(opts) {
@@ -3991,8 +3991,8 @@ let UpdateInProgressException$1 = class UpdateInProgressException extends ECSSer
         });
         Object.setPrototypeOf(this, UpdateInProgressException.prototype);
     }
-};
-let NamespaceNotFoundException$1 = class NamespaceNotFoundException extends ECSServiceException$1 {
+}
+class NamespaceNotFoundException extends ECSServiceException {
     name = "NamespaceNotFoundException";
     $fault = "client";
     constructor(opts) {
@@ -4003,8 +4003,8 @@ let NamespaceNotFoundException$1 = class NamespaceNotFoundException extends ECSS
         });
         Object.setPrototypeOf(this, NamespaceNotFoundException.prototype);
     }
-};
-let PlatformTaskDefinitionIncompatibilityException$1 = class PlatformTaskDefinitionIncompatibilityException extends ECSServiceException$1 {
+}
+class PlatformTaskDefinitionIncompatibilityException extends ECSServiceException {
     name = "PlatformTaskDefinitionIncompatibilityException";
     $fault = "client";
     constructor(opts) {
@@ -4015,8 +4015,8 @@ let PlatformTaskDefinitionIncompatibilityException$1 = class PlatformTaskDefinit
         });
         Object.setPrototypeOf(this, PlatformTaskDefinitionIncompatibilityException.prototype);
     }
-};
-let PlatformUnknownException$1 = class PlatformUnknownException extends ECSServiceException$1 {
+}
+class PlatformUnknownException extends ECSServiceException {
     name = "PlatformUnknownException";
     $fault = "client";
     constructor(opts) {
@@ -4027,8 +4027,8 @@ let PlatformUnknownException$1 = class PlatformUnknownException extends ECSServi
         });
         Object.setPrototypeOf(this, PlatformUnknownException.prototype);
     }
-};
-let ServiceNotActiveException$1 = class ServiceNotActiveException extends ECSServiceException$1 {
+}
+class ServiceNotActiveException extends ECSServiceException {
     name = "ServiceNotActiveException";
     $fault = "client";
     constructor(opts) {
@@ -4039,8 +4039,8 @@ let ServiceNotActiveException$1 = class ServiceNotActiveException extends ECSSer
         });
         Object.setPrototypeOf(this, ServiceNotActiveException.prototype);
     }
-};
-let ServiceNotFoundException$1 = class ServiceNotFoundException extends ECSServiceException$1 {
+}
+class ServiceNotFoundException extends ECSServiceException {
     name = "ServiceNotFoundException";
     $fault = "client";
     constructor(opts) {
@@ -4051,8 +4051,8 @@ let ServiceNotFoundException$1 = class ServiceNotFoundException extends ECSServi
         });
         Object.setPrototypeOf(this, ServiceNotFoundException.prototype);
     }
-};
-let TargetNotFoundException$1 = class TargetNotFoundException extends ECSServiceException$1 {
+}
+class TargetNotFoundException extends ECSServiceException {
     name = "TargetNotFoundException";
     $fault = "client";
     constructor(opts) {
@@ -4063,8 +4063,8 @@ let TargetNotFoundException$1 = class TargetNotFoundException extends ECSService
         });
         Object.setPrototypeOf(this, TargetNotFoundException.prototype);
     }
-};
-let ClusterContainsCapacityProviderException$1 = class ClusterContainsCapacityProviderException extends ECSServiceException$1 {
+}
+class ClusterContainsCapacityProviderException extends ECSServiceException {
     name = "ClusterContainsCapacityProviderException";
     $fault = "client";
     constructor(opts) {
@@ -4075,8 +4075,8 @@ let ClusterContainsCapacityProviderException$1 = class ClusterContainsCapacityPr
         });
         Object.setPrototypeOf(this, ClusterContainsCapacityProviderException.prototype);
     }
-};
-let ClusterContainsContainerInstancesException$1 = class ClusterContainsContainerInstancesException extends ECSServiceException$1 {
+}
+class ClusterContainsContainerInstancesException extends ECSServiceException {
     name = "ClusterContainsContainerInstancesException";
     $fault = "client";
     constructor(opts) {
@@ -4087,8 +4087,8 @@ let ClusterContainsContainerInstancesException$1 = class ClusterContainsContaine
         });
         Object.setPrototypeOf(this, ClusterContainsContainerInstancesException.prototype);
     }
-};
-let ClusterContainsServicesException$1 = class ClusterContainsServicesException extends ECSServiceException$1 {
+}
+class ClusterContainsServicesException extends ECSServiceException {
     name = "ClusterContainsServicesException";
     $fault = "client";
     constructor(opts) {
@@ -4099,8 +4099,8 @@ let ClusterContainsServicesException$1 = class ClusterContainsServicesException 
         });
         Object.setPrototypeOf(this, ClusterContainsServicesException.prototype);
     }
-};
-let ClusterContainsTasksException$1 = class ClusterContainsTasksException extends ECSServiceException$1 {
+}
+class ClusterContainsTasksException extends ECSServiceException {
     name = "ClusterContainsTasksException";
     $fault = "client";
     constructor(opts) {
@@ -4111,8 +4111,8 @@ let ClusterContainsTasksException$1 = class ClusterContainsTasksException extend
         });
         Object.setPrototypeOf(this, ClusterContainsTasksException.prototype);
     }
-};
-let TaskSetNotFoundException$1 = class TaskSetNotFoundException extends ECSServiceException$1 {
+}
+class TaskSetNotFoundException extends ECSServiceException {
     name = "TaskSetNotFoundException";
     $fault = "client";
     constructor(opts) {
@@ -4123,8 +4123,8 @@ let TaskSetNotFoundException$1 = class TaskSetNotFoundException extends ECSServi
         });
         Object.setPrototypeOf(this, TaskSetNotFoundException.prototype);
     }
-};
-let ResourceNotFoundException$1 = class ResourceNotFoundException extends ECSServiceException$1 {
+}
+class ResourceNotFoundException extends ECSServiceException {
     name = "ResourceNotFoundException";
     $fault = "client";
     constructor(opts) {
@@ -4135,8 +4135,8 @@ let ResourceNotFoundException$1 = class ResourceNotFoundException extends ECSSer
         });
         Object.setPrototypeOf(this, ResourceNotFoundException.prototype);
     }
-};
-let TargetNotConnectedException$1 = class TargetNotConnectedException extends ECSServiceException$1 {
+}
+class TargetNotConnectedException extends ECSServiceException {
     name = "TargetNotConnectedException";
     $fault = "client";
     constructor(opts) {
@@ -4147,8 +4147,8 @@ let TargetNotConnectedException$1 = class TargetNotConnectedException extends EC
         });
         Object.setPrototypeOf(this, TargetNotConnectedException.prototype);
     }
-};
-let AttributeLimitExceededException$1 = class AttributeLimitExceededException extends ECSServiceException$1 {
+}
+class AttributeLimitExceededException extends ECSServiceException {
     name = "AttributeLimitExceededException";
     $fault = "client";
     constructor(opts) {
@@ -4159,8 +4159,8 @@ let AttributeLimitExceededException$1 = class AttributeLimitExceededException ex
         });
         Object.setPrototypeOf(this, AttributeLimitExceededException.prototype);
     }
-};
-let ResourceInUseException$1 = class ResourceInUseException extends ECSServiceException$1 {
+}
+class ResourceInUseException extends ECSServiceException {
     name = "ResourceInUseException";
     $fault = "client";
     constructor(opts) {
@@ -4171,8 +4171,8 @@ let ResourceInUseException$1 = class ResourceInUseException extends ECSServiceEx
         });
         Object.setPrototypeOf(this, ResourceInUseException.prototype);
     }
-};
-let BlockedException$1 = class BlockedException extends ECSServiceException$1 {
+}
+class BlockedException extends ECSServiceException {
     name = "BlockedException";
     $fault = "client";
     constructor(opts) {
@@ -4183,8 +4183,8 @@ let BlockedException$1 = class BlockedException extends ECSServiceException$1 {
         });
         Object.setPrototypeOf(this, BlockedException.prototype);
     }
-};
-let ConflictException$1 = class ConflictException extends ECSServiceException$1 {
+}
+class ConflictException extends ECSServiceException {
     name = "ConflictException";
     $fault = "client";
     resourceIds;
@@ -4197,8 +4197,8 @@ let ConflictException$1 = class ConflictException extends ECSServiceException$1 
         Object.setPrototypeOf(this, ConflictException.prototype);
         this.resourceIds = opts.resourceIds;
     }
-};
-let ServiceDeploymentNotFoundException$1 = class ServiceDeploymentNotFoundException extends ECSServiceException$1 {
+}
+class ServiceDeploymentNotFoundException extends ECSServiceException {
     name = "ServiceDeploymentNotFoundException";
     $fault = "client";
     constructor(opts) {
@@ -4209,8 +4209,8 @@ let ServiceDeploymentNotFoundException$1 = class ServiceDeploymentNotFoundExcept
         });
         Object.setPrototypeOf(this, ServiceDeploymentNotFoundException.prototype);
     }
-};
-let MissingVersionException$1 = class MissingVersionException extends ECSServiceException$1 {
+}
+class MissingVersionException extends ECSServiceException {
     name = "MissingVersionException";
     $fault = "client";
     constructor(opts) {
@@ -4221,8 +4221,8 @@ let MissingVersionException$1 = class MissingVersionException extends ECSService
         });
         Object.setPrototypeOf(this, MissingVersionException.prototype);
     }
-};
-let NoUpdateAvailableException$1 = class NoUpdateAvailableException extends ECSServiceException$1 {
+}
+class NoUpdateAvailableException extends ECSServiceException {
     name = "NoUpdateAvailableException";
     $fault = "client";
     constructor(opts) {
@@ -4233,7 +4233,7 @@ let NoUpdateAvailableException$1 = class NoUpdateAvailableException extends ECSS
         });
         Object.setPrototypeOf(this, NoUpdateAvailableException.prototype);
     }
-};
+}
 
 const _A = "Attachment";
 const _AC = "AdvancedConfiguration";
@@ -5225,85 +5225,49 @@ const _wD = "workingDirectory";
 const _xN = "xmlName";
 const n0 = "com.amazonaws.ecs";
 var SensitiveString = [0, n0, _SS, 8, 0];
-var AcceleratorCountRequest = [3, n0, _ACR, 0, [_m, _ma], [1, 1]];
-var AcceleratorTotalMemoryMiBRequest = [3, n0, _ATMMBR, 0, [_m, _ma], [1, 1]];
-var AccessDeniedException = [
-    -3,
-    n0,
-    _ADE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(AccessDeniedException, AccessDeniedException$1);
-var AdvancedConfiguration = [3, n0, _AC, 0, [_aTGA, _pLR, _tLR, _rA], [0, 0, 0, 0]];
-var Attachment = [3, n0, _A, 0, [_i, _t, _s, _d], [0, 0, 0, () => AttachmentDetails]];
-var AttachmentStateChange = [3, n0, _ASC, 0, [_aA, _s], [0, 0]];
-var Attribute = [3, n0, _At, 0, [_n, _v, _tT, _tI], [0, 0, 0, 0]];
-var AttributeLimitExceededException = [
-    -3,
-    n0,
-    _ALEE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(AttributeLimitExceededException, AttributeLimitExceededException$1);
-var AutoScalingGroupProvider = [
+var AcceleratorCountRequest$ = [3, n0, _ACR, 0, [_m, _ma], [1, 1]];
+var AcceleratorTotalMemoryMiBRequest$ = [3, n0, _ATMMBR, 0, [_m, _ma], [1, 1]];
+var AccessDeniedException$ = [-3, n0, _ADE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(AccessDeniedException$, AccessDeniedException);
+var AdvancedConfiguration$ = [3, n0, _AC, 0, [_aTGA, _pLR, _tLR, _rA], [0, 0, 0, 0]];
+var Attachment$ = [3, n0, _A, 0, [_i, _t, _s, _d], [0, 0, 0, () => AttachmentDetails]];
+var AttachmentStateChange$ = [3, n0, _ASC, 0, [_aA, _s], [0, 0]];
+var Attribute$ = [3, n0, _At, 0, [_n, _v, _tT, _tI], [0, 0, 0, 0]];
+var AttributeLimitExceededException$ = [-3, n0, _ALEE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(AttributeLimitExceededException$, AttributeLimitExceededException);
+var AutoScalingGroupProvider$ = [
     3,
     n0,
     _ASGP,
     0,
     [_aSGA, _mS, _mTP, _mD],
-    [0, () => ManagedScaling, 0, 0],
+    [0, () => ManagedScaling$, 0, 0],
 ];
-var AutoScalingGroupProviderUpdate = [
+var AutoScalingGroupProviderUpdate$ = [
     3,
     n0,
     _ASGPU,
     0,
     [_mS, _mTP, _mD],
-    [() => ManagedScaling, 0, 0],
+    [() => ManagedScaling$, 0, 0],
 ];
-var AwsVpcConfiguration = [3, n0, _AVC, 0, [_su, _sG, _aPI], [64 | 0, 64 | 0, 0]];
-var BaselineEbsBandwidthMbpsRequest = [3, n0, _BEBMR, 0, [_m, _ma], [1, 1]];
-var BlockedException = [
-    -3,
-    n0,
-    _BE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(BlockedException, BlockedException$1);
-var CanaryConfiguration = [3, n0, _CC, 0, [_cP, _cBTIM], [1, 1]];
-var CapacityProvider = [
+var AwsVpcConfiguration$ = [3, n0, _AVC, 0, [_su, _sG, _aPI], [64 | 0, 64 | 0, 0]];
+var BaselineEbsBandwidthMbpsRequest$ = [3, n0, _BEBMR, 0, [_m, _ma], [1, 1]];
+var BlockedException$ = [-3, n0, _BE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(BlockedException$, BlockedException);
+var CanaryConfiguration$ = [3, n0, _CC, 0, [_cP, _cBTIM], [1, 1]];
+var CapacityProvider$ = [
     3,
     n0,
     _CP,
     0,
     [_cPA, _n, _cl, _s, _aSGP, _mIP, _uS, _uSR, _ta, _t],
-    [0, 0, 0, 0, () => AutoScalingGroupProvider, [() => ManagedInstancesProvider, 0], 0, 0, () => Tags, 0],
+    [0, 0, 0, 0, () => AutoScalingGroupProvider$, [() => ManagedInstancesProvider$, 0], 0, 0, () => Tags, 0],
 ];
-var CapacityProviderStrategyItem = [3, n0, _CPSI, 0, [_cPa, _w, _b], [0, 1, 1]];
-var ClientException = [
-    -3,
-    n0,
-    _CE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ClientException, ClientException$1);
-var Cluster = [
+var CapacityProviderStrategyItem$ = [3, n0, _CPSI, 0, [_cPa, _w, _b], [0, 1, 1]];
+var ClientException$ = [-3, n0, _CE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ClientException$, ClientException);
+var Cluster$ = [
     3,
     n0,
     _C,
@@ -5312,7 +5276,7 @@ var Cluster = [
     [
         0,
         0,
-        () => ClusterConfiguration,
+        () => ClusterConfiguration$,
         0,
         1,
         1,
@@ -5325,87 +5289,33 @@ var Cluster = [
         () => CapacityProviderStrategy,
         () => Attachments,
         0,
-        () => ClusterServiceConnectDefaults,
+        () => ClusterServiceConnectDefaults$,
     ],
 ];
-var ClusterConfiguration = [
+var ClusterConfiguration$ = [
     3,
     n0,
     _CCl,
     0,
     [_eCC, _mSC],
-    [() => ExecuteCommandConfiguration, () => ManagedStorageConfiguration],
+    [() => ExecuteCommandConfiguration$, () => ManagedStorageConfiguration$],
 ];
-var ClusterContainsCapacityProviderException = [
-    -3,
-    n0,
-    _CCCPE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ClusterContainsCapacityProviderException, ClusterContainsCapacityProviderException$1);
-var ClusterContainsContainerInstancesException = [
-    -3,
-    n0,
-    _CCCIE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ClusterContainsContainerInstancesException, ClusterContainsContainerInstancesException$1);
-var ClusterContainsServicesException = [
-    -3,
-    n0,
-    _CCSE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ClusterContainsServicesException, ClusterContainsServicesException$1);
-var ClusterContainsTasksException = [
-    -3,
-    n0,
-    _CCTE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ClusterContainsTasksException, ClusterContainsTasksException$1);
-var ClusterNotFoundException = [
-    -3,
-    n0,
-    _CNFE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ClusterNotFoundException, ClusterNotFoundException$1);
-var ClusterServiceConnectDefaults = [3, n0, _CSCD, 0, [_na], [0]];
-var ClusterServiceConnectDefaultsRequest = [3, n0, _CSCDR, 0, [_na], [0]];
-var ClusterSetting = [3, n0, _CS, 0, [_n, _v], [0, 0]];
-var ConflictException = [
-    -3,
-    n0,
-    _CEo,
-    {
-        [_e]: _c,
-    },
-    [_rI, _me],
-    [64 | 0, 0],
-];
-schema.TypeRegistry.for(n0).registerError(ConflictException, ConflictException$1);
-var Container = [
+var ClusterContainsCapacityProviderException$ = [-3, n0, _CCCPE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ClusterContainsCapacityProviderException$, ClusterContainsCapacityProviderException);
+var ClusterContainsContainerInstancesException$ = [-3, n0, _CCCIE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ClusterContainsContainerInstancesException$, ClusterContainsContainerInstancesException);
+var ClusterContainsServicesException$ = [-3, n0, _CCSE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ClusterContainsServicesException$, ClusterContainsServicesException);
+var ClusterContainsTasksException$ = [-3, n0, _CCTE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ClusterContainsTasksException$, ClusterContainsTasksException);
+var ClusterNotFoundException$ = [-3, n0, _CNFE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ClusterNotFoundException$, ClusterNotFoundException);
+var ClusterServiceConnectDefaults$ = [3, n0, _CSCD, 0, [_na], [0]];
+var ClusterServiceConnectDefaultsRequest$ = [3, n0, _CSCDR, 0, [_na], [0]];
+var ClusterSetting$ = [3, n0, _CS, 0, [_n, _v], [0, 0]];
+var ConflictException$ = [-3, n0, _CEo, { [_e]: _c }, [_rI, _me], [64 | 0, 0]];
+schema.TypeRegistry.for(n0).registerError(ConflictException$, ConflictException);
+var Container$ = [
     3,
     n0,
     _Co,
@@ -5413,7 +5323,7 @@ var Container = [
     [_cAo, _tA, _n, _im, _iD, _rIu, _lS, _eC, _r, _nB, _nI, _hS, _mA, _cp, _mem, _mR, _gI],
     [0, 0, 0, 0, 0, 0, 0, 1, 0, () => NetworkBindings, () => NetworkInterfaces, 0, () => ManagedAgents, 0, 0, 0, 64 | 0],
 ];
-var ContainerDefinition = [
+var ContainerDefinition$ = [
     3,
     n0,
     _CD,
@@ -5465,21 +5375,21 @@ var ContainerDefinition = [
     [
         0,
         0,
-        () => RepositoryCredentials,
+        () => RepositoryCredentials$,
         1,
         1,
         1,
         64 | 0,
         () => PortMappingList,
         2,
-        () => ContainerRestartPolicy,
+        () => ContainerRestartPolicy$,
         64 | 0,
         64 | 0,
         () => EnvironmentVariables,
         () => EnvironmentFiles,
         () => MountPointList,
         () => VolumeFromList,
-        () => LinuxParameters,
+        () => LinuxParameters$,
         () => SecretList,
         () => ContainerDependencies,
         1,
@@ -5499,17 +5409,17 @@ var ContainerDefinition = [
         2,
         128 | 0,
         () => UlimitList,
-        () => LogConfiguration,
-        () => HealthCheck,
+        () => LogConfiguration$,
+        () => HealthCheck$,
         () => SystemControls,
         () => ResourceRequirements,
-        () => FirelensConfiguration,
+        () => FirelensConfiguration$,
         64 | 0,
     ],
 ];
-var ContainerDependency = [3, n0, _CDo, 0, [_cNo, _con], [0, 0]];
-var ContainerImage = [3, n0, _CI, 0, [_cNo, _iD, _im], [0, 0, 0]];
-var ContainerInstance = [
+var ContainerDependency$ = [3, n0, _CDo, 0, [_cNo, _con], [0, 0]];
+var ContainerImage$ = [3, n0, _CI, 0, [_cNo, _iD, _im], [0, 0, 0]];
+var ContainerInstance$ = [
     3,
     n0,
     _CIo,
@@ -5520,7 +5430,7 @@ var ContainerInstance = [
         0,
         0,
         1,
-        () => VersionInfo,
+        () => VersionInfo$,
         () => Resources,
         () => Resources,
         0,
@@ -5533,10 +5443,10 @@ var ContainerInstance = [
         4,
         () => Attachments,
         () => Tags,
-        () => ContainerInstanceHealthStatus,
+        () => ContainerInstanceHealthStatus$,
     ],
 ];
-var ContainerInstanceHealthStatus = [
+var ContainerInstanceHealthStatus$ = [
     3,
     n0,
     _CIHS,
@@ -5544,7 +5454,7 @@ var ContainerInstanceHealthStatus = [
     [_oS, _d],
     [0, () => InstanceHealthCheckResultList],
 ];
-var ContainerOverride = [
+var ContainerOverride$ = [
     3,
     n0,
     _CO,
@@ -5552,8 +5462,8 @@ var ContainerOverride = [
     [_n, _com, _en, _eF, _cp, _mem, _mR, _rR],
     [0, 64 | 0, () => EnvironmentVariables, () => EnvironmentFiles, 1, 1, 1, () => ResourceRequirements],
 ];
-var ContainerRestartPolicy = [3, n0, _CRP, 0, [_ena, _iEC, _rAP], [2, 64 | 1, 1]];
-var ContainerStateChange = [
+var ContainerRestartPolicy$ = [3, n0, _CRP, 0, [_ena, _iEC, _rAP], [2, 64 | 1, 1]];
+var ContainerStateChange$ = [
     3,
     n0,
     _CSC,
@@ -5561,23 +5471,23 @@ var ContainerStateChange = [
     [_cNo, _iD, _rIu, _eC, _nB, _r, _s],
     [0, 0, 0, 1, () => NetworkBindings, 0, 0],
 ];
-var CreateCapacityProviderRequest = [
+var CreateCapacityProviderRequest$ = [
     3,
     n0,
     _CCPR,
     0,
     [_n, _cl, _aSGP, _mIP, _ta],
-    [0, 0, () => AutoScalingGroupProvider, [() => CreateManagedInstancesProviderConfiguration, 0], () => Tags],
+    [0, 0, () => AutoScalingGroupProvider$, [() => CreateManagedInstancesProviderConfiguration$, 0], () => Tags],
 ];
-var CreateCapacityProviderResponse = [
+var CreateCapacityProviderResponse$ = [
     3,
     n0,
     _CCPRr,
     0,
     [_cPa],
-    [[() => CapacityProvider, 0]],
+    [[() => CapacityProvider$, 0]],
 ];
-var CreateClusterRequest = [
+var CreateClusterRequest$ = [
     3,
     n0,
     _CCR,
@@ -5587,15 +5497,15 @@ var CreateClusterRequest = [
         0,
         () => Tags,
         () => ClusterSettings,
-        () => ClusterConfiguration,
+        () => ClusterConfiguration$,
         64 | 0,
         () => CapacityProviderStrategy,
-        () => ClusterServiceConnectDefaultsRequest,
+        () => ClusterServiceConnectDefaultsRequest$,
     ],
 ];
-var CreateClusterResponse = [3, n0, _CCRr, 0, [_cl], [() => Cluster]];
-var CreatedAt = [3, n0, _CA, 0, [_be, _af], [4, 4]];
-var CreateExpressGatewayServiceRequest = [
+var CreateClusterResponse$ = [3, n0, _CCRr, 0, [_cl], [() => Cluster$]];
+var CreatedAt$ = [3, n0, _CA, 0, [_be, _af], [4, 4]];
+var CreateExpressGatewayServiceRequest$ = [
     3,
     n0,
     _CEGSR,
@@ -5607,32 +5517,32 @@ var CreateExpressGatewayServiceRequest = [
         0,
         0,
         0,
-        () => ExpressGatewayContainer,
+        () => ExpressGatewayContainer$,
         0,
-        () => ExpressGatewayServiceNetworkConfiguration,
+        () => ExpressGatewayServiceNetworkConfiguration$,
         0,
         0,
-        () => ExpressGatewayScalingTarget,
+        () => ExpressGatewayScalingTarget$,
         () => Tags,
     ],
 ];
-var CreateExpressGatewayServiceResponse = [
+var CreateExpressGatewayServiceResponse$ = [
     3,
     n0,
     _CEGSRr,
     0,
     [_ser],
-    [() => ECSExpressGatewayService],
+    [() => ECSExpressGatewayService$],
 ];
-var CreateManagedInstancesProviderConfiguration = [
+var CreateManagedInstancesProviderConfiguration$ = [
     3,
     n0,
     _CMIPC,
     0,
     [_iRA, _iLT, _pTr, _iO],
-    [0, [() => InstanceLaunchTemplate, 0], 0, () => InfrastructureOptimization],
+    [0, [() => InstanceLaunchTemplate$, 0], 0, () => InfrastructureOptimization$],
 ];
-var CreateServiceRequest = [
+var CreateServiceRequest$ = [
     3,
     n0,
     _CSR,
@@ -5678,24 +5588,24 @@ var CreateServiceRequest = [
         () => CapacityProviderStrategy,
         0,
         0,
-        () => DeploymentConfiguration,
+        () => DeploymentConfiguration$,
         () => PlacementConstraints,
         () => PlacementStrategies,
-        () => NetworkConfiguration,
+        () => NetworkConfiguration$,
         1,
         0,
-        () => DeploymentController,
+        () => DeploymentController$,
         () => Tags,
         2,
         0,
         2,
-        () => ServiceConnectConfiguration,
+        () => ServiceConnectConfiguration$,
         () => ServiceVolumeConfigurations,
         () => VpcLatticeConfigurations,
     ],
 ];
-var CreateServiceResponse = [3, n0, _CSRr, 0, [_ser], [() => Service]];
-var CreateTaskSetRequest = [
+var CreateServiceResponse$ = [3, n0, _CSRr, 0, [_ser], [() => Service$]];
+var CreateTaskSetRequest$ = [
     3,
     n0,
     _CTSR,
@@ -5706,46 +5616,46 @@ var CreateTaskSetRequest = [
         0,
         0,
         0,
-        () => NetworkConfiguration,
+        () => NetworkConfiguration$,
         () => LoadBalancers,
         () => ServiceRegistries,
         0,
         () => CapacityProviderStrategy,
         0,
-        () => Scale,
+        () => Scale$,
         0,
         () => Tags,
     ],
 ];
-var CreateTaskSetResponse = [3, n0, _CTSRr, 0, [_tS], [() => TaskSet]];
-var DeleteAccountSettingRequest = [3, n0, _DASR, 0, [_n, _pA], [0, 0]];
-var DeleteAccountSettingResponse = [3, n0, _DASRe, 0, [_set], [() => Setting]];
-var DeleteAttributesRequest = [3, n0, _DAR, 0, [_cl, _at], [0, () => Attributes]];
-var DeleteAttributesResponse = [3, n0, _DARe, 0, [_at], [() => Attributes]];
-var DeleteCapacityProviderRequest = [3, n0, _DCPR, 0, [_cPa, _cl], [0, 0]];
-var DeleteCapacityProviderResponse = [
+var CreateTaskSetResponse$ = [3, n0, _CTSRr, 0, [_tS], [() => TaskSet$]];
+var DeleteAccountSettingRequest$ = [3, n0, _DASR, 0, [_n, _pA], [0, 0]];
+var DeleteAccountSettingResponse$ = [3, n0, _DASRe, 0, [_set], [() => Setting$]];
+var DeleteAttributesRequest$ = [3, n0, _DAR, 0, [_cl, _at], [0, () => Attributes]];
+var DeleteAttributesResponse$ = [3, n0, _DARe, 0, [_at], [() => Attributes]];
+var DeleteCapacityProviderRequest$ = [3, n0, _DCPR, 0, [_cPa, _cl], [0, 0]];
+var DeleteCapacityProviderResponse$ = [
     3,
     n0,
     _DCPRe,
     0,
     [_cPa],
-    [[() => CapacityProvider, 0]],
+    [[() => CapacityProvider$, 0]],
 ];
-var DeleteClusterRequest = [3, n0, _DCR, 0, [_cl], [0]];
-var DeleteClusterResponse = [3, n0, _DCRe, 0, [_cl], [() => Cluster]];
-var DeleteExpressGatewayServiceRequest = [3, n0, _DEGSR, 0, [_sA], [0]];
-var DeleteExpressGatewayServiceResponse = [
+var DeleteClusterRequest$ = [3, n0, _DCR, 0, [_cl], [0]];
+var DeleteClusterResponse$ = [3, n0, _DCRe, 0, [_cl], [() => Cluster$]];
+var DeleteExpressGatewayServiceRequest$ = [3, n0, _DEGSR, 0, [_sA], [0]];
+var DeleteExpressGatewayServiceResponse$ = [
     3,
     n0,
     _DEGSRe,
     0,
     [_ser],
-    [() => ECSExpressGatewayService],
+    [() => ECSExpressGatewayService$],
 ];
-var DeleteServiceRequest = [3, n0, _DSR, 0, [_cl, _ser, _f], [0, 0, 2]];
-var DeleteServiceResponse = [3, n0, _DSRe, 0, [_ser], [() => Service]];
-var DeleteTaskDefinitionsRequest = [3, n0, _DTDR, 0, [_tDa], [64 | 0]];
-var DeleteTaskDefinitionsResponse = [
+var DeleteServiceRequest$ = [3, n0, _DSR, 0, [_cl, _ser, _f], [0, 0, 2]];
+var DeleteServiceResponse$ = [3, n0, _DSRe, 0, [_ser], [() => Service$]];
+var DeleteTaskDefinitionsRequest$ = [3, n0, _DTDR, 0, [_tDa], [64 | 0]];
+var DeleteTaskDefinitionsResponse$ = [
     3,
     n0,
     _DTDRe,
@@ -5753,9 +5663,9 @@ var DeleteTaskDefinitionsResponse = [
     [_tDa, _fa],
     [() => TaskDefinitionList, () => Failures],
 ];
-var DeleteTaskSetRequest = [3, n0, _DTSR, 0, [_cl, _ser, _tS, _f], [0, 0, 0, 2]];
-var DeleteTaskSetResponse = [3, n0, _DTSRe, 0, [_tS], [() => TaskSet]];
-var Deployment = [
+var DeleteTaskSetRequest$ = [3, n0, _DTSR, 0, [_cl, _ser, _tS, _f], [0, 0, 0, 2]];
+var DeleteTaskSetResponse$ = [3, n0, _DTSRe, 0, [_tS], [() => TaskSet$]];
+var Deployment$ = [
     3,
     n0,
     _D,
@@ -5775,39 +5685,39 @@ var Deployment = [
         0,
         0,
         0,
-        () => NetworkConfiguration,
+        () => NetworkConfiguration$,
         0,
         0,
-        () => ServiceConnectConfiguration,
+        () => ServiceConnectConfiguration$,
         () => ServiceConnectServiceResourceList,
         () => ServiceVolumeConfigurations,
-        () => DeploymentEphemeralStorage,
+        () => DeploymentEphemeralStorage$,
         () => VpcLatticeConfigurations,
     ],
 ];
-var DeploymentAlarms = [3, n0, _DA, 0, [_aN, _rol, _enab], [64 | 0, 2, 2]];
-var DeploymentCircuitBreaker = [3, n0, _DCB, 0, [_enab, _rol], [2, 2]];
-var DeploymentConfiguration = [
+var DeploymentAlarms$ = [3, n0, _DA, 0, [_aN, _rol, _enab], [64 | 0, 2, 2]];
+var DeploymentCircuitBreaker$ = [3, n0, _DCB, 0, [_enab, _rol], [2, 2]];
+var DeploymentConfiguration$ = [
     3,
     n0,
     _DC,
     0,
     [_dCB, _mPa, _mHP, _al, _str, _bTIM, _lH, _lCi, _cC],
     [
-        () => DeploymentCircuitBreaker,
+        () => DeploymentCircuitBreaker$,
         1,
         1,
-        () => DeploymentAlarms,
+        () => DeploymentAlarms$,
         0,
         1,
         () => DeploymentLifecycleHookList,
-        () => LinearConfiguration,
-        () => CanaryConfiguration,
+        () => LinearConfiguration$,
+        () => CanaryConfiguration$,
     ],
 ];
-var DeploymentController = [3, n0, _DCe, 0, [_t], [0]];
-var DeploymentEphemeralStorage = [3, n0, _DES, 0, [_kKI], [0]];
-var DeploymentLifecycleHook = [
+var DeploymentController$ = [3, n0, _DCe, 0, [_t], [0]];
+var DeploymentEphemeralStorage$ = [3, n0, _DES, 0, [_kKI], [0]];
+var DeploymentLifecycleHook$ = [
     3,
     n0,
     _DLH,
@@ -5815,25 +5725,25 @@ var DeploymentLifecycleHook = [
     [_hTA, _rA, _lSi, _hD],
     [0, 0, 64 | 0, 15],
 ];
-var DeregisterContainerInstanceRequest = [3, n0, _DCIR, 0, [_cl, _cI, _f], [0, 0, 2]];
-var DeregisterContainerInstanceResponse = [
+var DeregisterContainerInstanceRequest$ = [3, n0, _DCIR, 0, [_cl, _cI, _f], [0, 0, 2]];
+var DeregisterContainerInstanceResponse$ = [
     3,
     n0,
     _DCIRe,
     0,
     [_cI],
-    [() => ContainerInstance],
+    [() => ContainerInstance$],
 ];
-var DeregisterTaskDefinitionRequest = [3, n0, _DTDRer, 0, [_tD], [0]];
-var DeregisterTaskDefinitionResponse = [
+var DeregisterTaskDefinitionRequest$ = [3, n0, _DTDRer, 0, [_tD], [0]];
+var DeregisterTaskDefinitionResponse$ = [
     3,
     n0,
     _DTDRere,
     0,
     [_tD],
-    [() => TaskDefinition],
+    [() => TaskDefinition$],
 ];
-var DescribeCapacityProvidersRequest = [
+var DescribeCapacityProvidersRequest$ = [
     3,
     n0,
     _DCPRes,
@@ -5841,7 +5751,7 @@ var DescribeCapacityProvidersRequest = [
     [_cPap, _cl, _inc, _mRa, _nT],
     [64 | 0, 0, 64 | 0, 1, 0],
 ];
-var DescribeCapacityProvidersResponse = [
+var DescribeCapacityProvidersResponse$ = [
     3,
     n0,
     _DCPResc,
@@ -5849,8 +5759,8 @@ var DescribeCapacityProvidersResponse = [
     [_cPap, _fa, _nT],
     [[() => CapacityProviders, 0], () => Failures, 0],
 ];
-var DescribeClustersRequest = [3, n0, _DCRes, 0, [_clu, _inc], [64 | 0, 64 | 0]];
-var DescribeClustersResponse = [
+var DescribeClustersRequest$ = [3, n0, _DCRes, 0, [_clu, _inc], [64 | 0, 64 | 0]];
+var DescribeClustersResponse$ = [
     3,
     n0,
     _DCResc,
@@ -5858,7 +5768,7 @@ var DescribeClustersResponse = [
     [_clu, _fa],
     [() => Clusters, () => Failures],
 ];
-var DescribeContainerInstancesRequest = [
+var DescribeContainerInstancesRequest$ = [
     3,
     n0,
     _DCIRes,
@@ -5866,7 +5776,7 @@ var DescribeContainerInstancesRequest = [
     [_cl, _cIo, _inc],
     [0, 64 | 0, 64 | 0],
 ];
-var DescribeContainerInstancesResponse = [
+var DescribeContainerInstancesResponse$ = [
     3,
     n0,
     _DCIResc,
@@ -5874,17 +5784,24 @@ var DescribeContainerInstancesResponse = [
     [_cIo, _fa],
     [() => ContainerInstances, () => Failures],
 ];
-var DescribeExpressGatewayServiceRequest = [3, n0, _DEGSRes, 0, [_sA, _inc], [0, 64 | 0]];
-var DescribeExpressGatewayServiceResponse = [
+var DescribeExpressGatewayServiceRequest$ = [
+    3,
+    n0,
+    _DEGSRes,
+    0,
+    [_sA, _inc],
+    [0, 64 | 0],
+];
+var DescribeExpressGatewayServiceResponse$ = [
     3,
     n0,
     _DEGSResc,
     0,
     [_ser],
-    [() => ECSExpressGatewayService],
+    [() => ECSExpressGatewayService$],
 ];
-var DescribeServiceDeploymentsRequest = [3, n0, _DSDR, 0, [_sDA], [64 | 0]];
-var DescribeServiceDeploymentsResponse = [
+var DescribeServiceDeploymentsRequest$ = [3, n0, _DSDR, 0, [_sDA], [64 | 0]];
+var DescribeServiceDeploymentsResponse$ = [
     3,
     n0,
     _DSDRe,
@@ -5892,8 +5809,8 @@ var DescribeServiceDeploymentsResponse = [
     [_sD, _fa],
     [() => ServiceDeployments, () => Failures],
 ];
-var DescribeServiceRevisionsRequest = [3, n0, _DSRR, 0, [_sRA], [64 | 0]];
-var DescribeServiceRevisionsResponse = [
+var DescribeServiceRevisionsRequest$ = [3, n0, _DSRR, 0, [_sRA], [64 | 0]];
+var DescribeServiceRevisionsResponse$ = [
     3,
     n0,
     _DSRRe,
@@ -5901,8 +5818,15 @@ var DescribeServiceRevisionsResponse = [
     [_sRer, _fa],
     [() => ServiceRevisions, () => Failures],
 ];
-var DescribeServicesRequest = [3, n0, _DSRes, 0, [_cl, _serv, _inc], [0, 64 | 0, 64 | 0]];
-var DescribeServicesResponse = [
+var DescribeServicesRequest$ = [
+    3,
+    n0,
+    _DSRes,
+    0,
+    [_cl, _serv, _inc],
+    [0, 64 | 0, 64 | 0],
+];
+var DescribeServicesResponse$ = [
     3,
     n0,
     _DSResc,
@@ -5910,16 +5834,16 @@ var DescribeServicesResponse = [
     [_serv, _fa],
     [() => Services, () => Failures],
 ];
-var DescribeTaskDefinitionRequest = [3, n0, _DTDRes, 0, [_tD, _inc], [0, 64 | 0]];
-var DescribeTaskDefinitionResponse = [
+var DescribeTaskDefinitionRequest$ = [3, n0, _DTDRes, 0, [_tD, _inc], [0, 64 | 0]];
+var DescribeTaskDefinitionResponse$ = [
     3,
     n0,
     _DTDResc,
     0,
     [_tD, _ta],
-    [() => TaskDefinition, () => Tags],
+    [() => TaskDefinition$, () => Tags],
 ];
-var DescribeTaskSetsRequest = [
+var DescribeTaskSetsRequest$ = [
     3,
     n0,
     _DTSRes,
@@ -5927,7 +5851,7 @@ var DescribeTaskSetsRequest = [
     [_cl, _ser, _tSa, _inc],
     [0, 0, 64 | 0, 64 | 0],
 ];
-var DescribeTaskSetsResponse = [
+var DescribeTaskSetsResponse$ = [
     3,
     n0,
     _DTSResc,
@@ -5935,12 +5859,19 @@ var DescribeTaskSetsResponse = [
     [_tSa, _fa],
     [() => TaskSets, () => Failures],
 ];
-var DescribeTasksRequest = [3, n0, _DTR, 0, [_cl, _tas, _inc], [0, 64 | 0, 64 | 0]];
-var DescribeTasksResponse = [3, n0, _DTRe, 0, [_tas, _fa], [() => Tasks, () => Failures]];
-var Device = [3, n0, _De, 0, [_hP, _cPo, _pe], [0, 0, 64 | 0]];
-var DiscoverPollEndpointRequest = [3, n0, _DPER, 0, [_cI, _cl], [0, 0]];
-var DiscoverPollEndpointResponse = [3, n0, _DPERi, 0, [_end, _tE, _sCE], [0, 0, 0]];
-var DockerVolumeConfiguration = [
+var DescribeTasksRequest$ = [3, n0, _DTR, 0, [_cl, _tas, _inc], [0, 64 | 0, 64 | 0]];
+var DescribeTasksResponse$ = [
+    3,
+    n0,
+    _DTRe,
+    0,
+    [_tas, _fa],
+    [() => Tasks, () => Failures],
+];
+var Device$ = [3, n0, _De, 0, [_hP, _cPo, _pe], [0, 0, 64 | 0]];
+var DiscoverPollEndpointRequest$ = [3, n0, _DPER, 0, [_cI, _cl], [0, 0]];
+var DiscoverPollEndpointResponse$ = [3, n0, _DPERi, 0, [_end, _tE, _sCE], [0, 0, 0]];
+var DockerVolumeConfiguration$ = [
     3,
     n0,
     _DVC,
@@ -5948,16 +5879,16 @@ var DockerVolumeConfiguration = [
     [_sco, _au, _dr, _dOr, _la],
     [0, 2, 0, 128 | 0, 128 | 0],
 ];
-var EBSTagSpecification = [3, n0, _EBSTS, 0, [_rT, _ta, _pTr], [0, () => Tags, 0]];
-var ECSExpressGatewayService = [
+var EBSTagSpecification$ = [3, n0, _EBSTS, 0, [_rT, _ta, _pTr], [0, () => Tags, 0]];
+var ECSExpressGatewayService$ = [
     3,
     n0,
     _ECSEGS,
     0,
     [_cl, _sN, _sA, _iRA, _s, _cD, _aCc, _ta, _cAr, _uA],
-    [0, 0, 0, 0, () => ExpressGatewayServiceStatus, 0, () => ExpressGatewayServiceConfigurations, () => Tags, 4, 4],
+    [0, 0, 0, 0, () => ExpressGatewayServiceStatus$, 0, () => ExpressGatewayServiceConfigurations, () => Tags, 4, 4],
 ];
-var ECSManagedResources = [
+var ECSManagedResources$ = [
     3,
     n0,
     _ECSMR,
@@ -5965,32 +5896,32 @@ var ECSManagedResources = [
     [_iP, _aSu, _mAe, _sSG, _lG],
     [
         () => ManagedIngressPaths,
-        () => ManagedAutoScaling,
+        () => ManagedAutoScaling$,
         () => ManagedMetricAlarms,
         () => ManagedSecurityGroups,
         () => ManagedLogGroups,
     ],
 ];
-var EFSAuthorizationConfig = [3, n0, _EFSAC, 0, [_aPIc, _ia], [0, 0]];
-var EFSVolumeConfiguration = [
+var EFSAuthorizationConfig$ = [3, n0, _EFSAC, 0, [_aPIc, _ia], [0, 0]];
+var EFSVolumeConfiguration$ = [
     3,
     n0,
     _EFSVC,
     0,
     [_fSI, _rD, _tEr, _tEP, _aCu],
-    [0, 0, 0, 1, () => EFSAuthorizationConfig],
+    [0, 0, 0, 1, () => EFSAuthorizationConfig$],
 ];
-var EnvironmentFile = [3, n0, _EF, 0, [_v, _t], [0, 0]];
-var EphemeralStorage = [3, n0, _ES, 0, [_sIGB], [1]];
-var ExecuteCommandConfiguration = [
+var EnvironmentFile$ = [3, n0, _EF, 0, [_v, _t], [0, 0]];
+var EphemeralStorage$ = [3, n0, _ES, 0, [_sIGB], [1]];
+var ExecuteCommandConfiguration$ = [
     3,
     n0,
     _ECC,
     0,
     [_kKI, _lo, _lC],
-    [0, 0, () => ExecuteCommandLogConfiguration],
+    [0, 0, () => ExecuteCommandLogConfiguration$],
 ];
-var ExecuteCommandLogConfiguration = [
+var ExecuteCommandLogConfiguration$ = [
     3,
     n0,
     _ECLC,
@@ -5998,7 +5929,7 @@ var ExecuteCommandLogConfiguration = [
     [_cWLGN, _cWEE, _sBN, _sEE, _sKP],
     [0, 2, 0, 2, 0],
 ];
-var ExecuteCommandRequest = [
+var ExecuteCommandRequest$ = [
     3,
     n0,
     _ECR,
@@ -6006,15 +5937,15 @@ var ExecuteCommandRequest = [
     [_cl, _cont, _com, _in, _task],
     [0, 0, 0, 2, 0],
 ];
-var ExecuteCommandResponse = [
+var ExecuteCommandResponse$ = [
     3,
     n0,
     _ECRx,
     0,
     [_cA, _cAo, _cNo, _in, _ses, _tA],
-    [0, 0, 0, 2, [() => Session, 0], 0],
+    [0, 0, 0, 2, [() => Session$, 0], 0],
 ];
-var ExpressGatewayContainer = [
+var ExpressGatewayContainer$ = [
     3,
     n0,
     _EGC,
@@ -6023,15 +5954,15 @@ var ExpressGatewayContainer = [
     [
         0,
         1,
-        () => ExpressGatewayServiceAwsLogsConfiguration,
-        () => ExpressGatewayRepositoryCredentials,
+        () => ExpressGatewayServiceAwsLogsConfiguration$,
+        () => ExpressGatewayRepositoryCredentials$,
         64 | 0,
         () => EnvironmentVariables,
         () => SecretList,
     ],
 ];
-var ExpressGatewayRepositoryCredentials = [3, n0, _EGRC, 0, [_cPr], [0]];
-var ExpressGatewayScalingTarget = [
+var ExpressGatewayRepositoryCredentials$ = [3, n0, _EGRC, 0, [_cPr], [0]];
+var ExpressGatewayScalingTarget$ = [
     3,
     n0,
     _EGST,
@@ -6039,8 +5970,15 @@ var ExpressGatewayScalingTarget = [
     [_mTC, _mTCa, _aSM, _aSTV],
     [1, 1, 0, 1],
 ];
-var ExpressGatewayServiceAwsLogsConfiguration = [3, n0, _EGSALC, 0, [_lGo, _lSP], [0, 0]];
-var ExpressGatewayServiceConfiguration = [
+var ExpressGatewayServiceAwsLogsConfiguration$ = [
+    3,
+    n0,
+    _EGSALC,
+    0,
+    [_lGo, _lSP],
+    [0, 0],
+];
+var ExpressGatewayServiceConfiguration$ = [
     3,
     n0,
     _EGSC,
@@ -6052,15 +5990,15 @@ var ExpressGatewayServiceConfiguration = [
         0,
         0,
         0,
-        () => ExpressGatewayServiceNetworkConfiguration,
+        () => ExpressGatewayServiceNetworkConfiguration$,
         0,
-        () => ExpressGatewayContainer,
-        () => ExpressGatewayScalingTarget,
+        () => ExpressGatewayContainer$,
+        () => ExpressGatewayScalingTarget$,
         () => IngressPathSummaries,
         4,
     ],
 ];
-var ExpressGatewayServiceNetworkConfiguration = [
+var ExpressGatewayServiceNetworkConfiguration$ = [
     3,
     n0,
     _EGSNC,
@@ -6068,20 +6006,20 @@ var ExpressGatewayServiceNetworkConfiguration = [
     [_sG, _su],
     [64 | 0, 64 | 0],
 ];
-var ExpressGatewayServiceStatus = [3, n0, _EGSS, 0, [_sCt, _sR], [0, 0]];
-var Failure = [3, n0, _F, 0, [_ar, _r, _de], [0, 0, 0]];
-var FirelensConfiguration = [3, n0, _FC, 0, [_t, _o], [0, 128 | 0]];
-var FSxWindowsFileServerAuthorizationConfig = [3, n0, _FSWFSAC, 0, [_cPr, _do], [0, 0]];
-var FSxWindowsFileServerVolumeConfiguration = [
+var ExpressGatewayServiceStatus$ = [3, n0, _EGSS, 0, [_sCt, _sR], [0, 0]];
+var Failure$ = [3, n0, _F, 0, [_ar, _r, _de], [0, 0, 0]];
+var FirelensConfiguration$ = [3, n0, _FC, 0, [_t, _o], [0, 128 | 0]];
+var FSxWindowsFileServerAuthorizationConfig$ = [3, n0, _FSWFSAC, 0, [_cPr, _do], [0, 0]];
+var FSxWindowsFileServerVolumeConfiguration$ = [
     3,
     n0,
     _FSWFSVC,
     0,
     [_fSI, _rD, _aCu],
-    [0, 0, () => FSxWindowsFileServerAuthorizationConfig],
+    [0, 0, () => FSxWindowsFileServerAuthorizationConfig$],
 ];
-var GetTaskProtectionRequest = [3, n0, _GTPR, 0, [_cl, _tas], [0, 64 | 0]];
-var GetTaskProtectionResponse = [
+var GetTaskProtectionRequest$ = [3, n0, _GTPR, 0, [_cl, _tas], [0, 64 | 0]];
+var GetTaskProtectionResponse$ = [
     3,
     n0,
     _GTPRe,
@@ -6089,15 +6027,15 @@ var GetTaskProtectionResponse = [
     [_pTro, _fa],
     [() => ProtectedTasks, () => Failures],
 ];
-var HealthCheck = [3, n0, _HC, 0, [_com, _int, _ti, _re, _sP], [64 | 0, 1, 1, 1, 1]];
-var HostEntry = [3, n0, _HE, 0, [_h, _iA], [0, 0]];
-var HostVolumeProperties = [3, n0, _HVP, 0, [_sPo], [0]];
-var InferenceAccelerator = [3, n0, _IA, 0, [_dNe, _dT], [0, 0]];
-var InferenceAcceleratorOverride = [3, n0, _IAO, 0, [_dNe, _dT], [0, 0]];
-var InfrastructureOptimization = [3, n0, _IO, 0, [_sIA], [1]];
-var IngressPathSummary = [3, n0, _IPS, 0, [_aT, _end], [0, 0]];
-var InstanceHealthCheckResult = [3, n0, _IHCR, 0, [_t, _s, _lU, _lSC], [0, 0, 4, 4]];
-var InstanceLaunchTemplate = [
+var HealthCheck$ = [3, n0, _HC, 0, [_com, _int, _ti, _re, _sP], [64 | 0, 1, 1, 1, 1]];
+var HostEntry$ = [3, n0, _HE, 0, [_h, _iA], [0, 0]];
+var HostVolumeProperties$ = [3, n0, _HVP, 0, [_sPo], [0]];
+var InferenceAccelerator$ = [3, n0, _IA, 0, [_dNe, _dT], [0, 0]];
+var InferenceAcceleratorOverride$ = [3, n0, _IAO, 0, [_dNe, _dT], [0, 0]];
+var InfrastructureOptimization$ = [3, n0, _IO, 0, [_sIA], [1]];
+var IngressPathSummary$ = [3, n0, _IPS, 0, [_aT, _end], [0, 0]];
+var InstanceHealthCheckResult$ = [3, n0, _IHCR, 0, [_t, _s, _lU, _lSC], [0, 0, 4, 4]];
+var InstanceLaunchTemplate$ = [
     3,
     n0,
     _ILT,
@@ -6105,13 +6043,13 @@ var InstanceLaunchTemplate = [
     [_eIPA, _nC, _sCto, _mo, _iR],
     [
         0,
-        () => ManagedInstancesNetworkConfiguration,
-        () => ManagedInstancesStorageConfiguration,
+        () => ManagedInstancesNetworkConfiguration$,
+        () => ManagedInstancesStorageConfiguration$,
         0,
-        [() => InstanceRequirementsRequest, 0],
+        [() => InstanceRequirementsRequest$, 0],
     ],
 ];
-var InstanceLaunchTemplateUpdate = [
+var InstanceLaunchTemplateUpdate$ = [
     3,
     n0,
     _ILTU,
@@ -6119,13 +6057,13 @@ var InstanceLaunchTemplateUpdate = [
     [_eIPA, _nC, _sCto, _mo, _iR],
     [
         0,
-        () => ManagedInstancesNetworkConfiguration,
-        () => ManagedInstancesStorageConfiguration,
+        () => ManagedInstancesNetworkConfiguration$,
+        () => ManagedInstancesStorageConfiguration$,
         0,
-        [() => InstanceRequirementsRequest, 0],
+        [() => InstanceRequirementsRequest$, 0],
     ],
 ];
-var InstanceRequirementsRequest = [
+var InstanceRequirementsRequest$ = [
     3,
     n0,
     _IRR,
@@ -6157,106 +6095,48 @@ var InstanceRequirementsRequest = [
         _mSPAPOOODP,
     ],
     [
-        () => VCpuCountRangeRequest,
-        () => MemoryMiBRequest,
-        [
-            () => CpuManufacturerSet,
-            {
-                [_xN]: _CM,
-            },
-        ],
-        () => MemoryGiBPerVCpuRequest,
-        [
-            () => ExcludedInstanceTypeSet,
-            {
-                [_xN]: _EIT,
-            },
-        ],
-        [
-            () => InstanceGenerationSet,
-            {
-                [_xN]: _IG,
-            },
-        ],
+        () => VCpuCountRangeRequest$,
+        () => MemoryMiBRequest$,
+        [() => CpuManufacturerSet, { [_xN]: _CM }],
+        () => MemoryGiBPerVCpuRequest$,
+        [() => ExcludedInstanceTypeSet, { [_xN]: _EIT }],
+        [() => InstanceGenerationSet, { [_xN]: _IG }],
         1,
         1,
         0,
         0,
         2,
-        () => NetworkInterfaceCountRequest,
+        () => NetworkInterfaceCountRequest$,
         0,
-        [
-            () => LocalStorageTypeSet,
-            {
-                [_xN]: _LST,
-            },
-        ],
-        () => TotalLocalStorageGBRequest,
-        () => BaselineEbsBandwidthMbpsRequest,
-        [
-            () => AcceleratorTypeSet,
-            {
-                [_xN]: _AT,
-            },
-        ],
-        () => AcceleratorCountRequest,
-        [
-            () => AcceleratorManufacturerSet,
-            {
-                [_xN]: _AM,
-            },
-        ],
-        [
-            () => AcceleratorNameSet,
-            {
-                [_xN]: _AN,
-            },
-        ],
-        () => AcceleratorTotalMemoryMiBRequest,
-        () => NetworkBandwidthGbpsRequest,
-        [
-            () => AllowedInstanceTypeSet,
-            {
-                [_xN]: _AIT,
-            },
-        ],
+        [() => LocalStorageTypeSet, { [_xN]: _LST }],
+        () => TotalLocalStorageGBRequest$,
+        () => BaselineEbsBandwidthMbpsRequest$,
+        [() => AcceleratorTypeSet, { [_xN]: _AT }],
+        () => AcceleratorCountRequest$,
+        [() => AcceleratorManufacturerSet, { [_xN]: _AM }],
+        [() => AcceleratorNameSet, { [_xN]: _AN }],
+        () => AcceleratorTotalMemoryMiBRequest$,
+        () => NetworkBandwidthGbpsRequest$,
+        [() => AllowedInstanceTypeSet, { [_xN]: _AIT }],
         1,
     ],
 ];
-var InvalidParameterException = [
-    -3,
-    n0,
-    _IPE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(InvalidParameterException, InvalidParameterException$1);
-var KernelCapabilities = [3, n0, _KC, 0, [_ad, _dro], [64 | 0, 64 | 0]];
-var KeyValuePair = [3, n0, _KVP, 0, [_n, _v], [0, 0]];
-var LimitExceededException = [
-    -3,
-    n0,
-    _LEE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(LimitExceededException, LimitExceededException$1);
-var LinearConfiguration = [3, n0, _LC, 0, [_sPt, _sBTIM], [1, 1]];
-var LinuxParameters = [
+var InvalidParameterException$ = [-3, n0, _IPE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(InvalidParameterException$, InvalidParameterException);
+var KernelCapabilities$ = [3, n0, _KC, 0, [_ad, _dro], [64 | 0, 64 | 0]];
+var KeyValuePair$ = [3, n0, _KVP, 0, [_n, _v], [0, 0]];
+var LimitExceededException$ = [-3, n0, _LEE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(LimitExceededException$, LimitExceededException);
+var LinearConfiguration$ = [3, n0, _LC, 0, [_sPt, _sBTIM], [1, 1]];
+var LinuxParameters$ = [
     3,
     n0,
     _LP,
     0,
     [_ca, _dev, _iPE, _sMS, _tm, _mSa, _sw],
-    [() => KernelCapabilities, () => DevicesList, 2, 1, () => TmpfsList, 1, 1],
+    [() => KernelCapabilities$, () => DevicesList, 2, 1, () => TmpfsList, 1, 1],
 ];
-var ListAccountSettingsRequest = [
+var ListAccountSettingsRequest$ = [
     3,
     n0,
     _LASR,
@@ -6264,8 +6144,8 @@ var ListAccountSettingsRequest = [
     [_n, _v, _pA, _eS, _nT, _mRa],
     [0, 0, 0, 2, 0, 1],
 ];
-var ListAccountSettingsResponse = [3, n0, _LASRi, 0, [_se, _nT], [() => Settings, 0]];
-var ListAttributesRequest = [
+var ListAccountSettingsResponse$ = [3, n0, _LASRi, 0, [_se, _nT], [() => Settings, 0]];
+var ListAttributesRequest$ = [
     3,
     n0,
     _LAR,
@@ -6273,10 +6153,10 @@ var ListAttributesRequest = [
     [_cl, _tT, _aNt, _aV, _nT, _mRa],
     [0, 0, 0, 0, 0, 1],
 ];
-var ListAttributesResponse = [3, n0, _LARi, 0, [_at, _nT], [() => Attributes, 0]];
-var ListClustersRequest = [3, n0, _LCR, 0, [_nT, _mRa], [0, 1]];
-var ListClustersResponse = [3, n0, _LCRi, 0, [_cAl, _nT], [64 | 0, 0]];
-var ListContainerInstancesRequest = [
+var ListAttributesResponse$ = [3, n0, _LARi, 0, [_at, _nT], [() => Attributes, 0]];
+var ListClustersRequest$ = [3, n0, _LCR, 0, [_nT, _mRa], [0, 1]];
+var ListClustersResponse$ = [3, n0, _LCRi, 0, [_cAl, _nT], [64 | 0, 0]];
+var ListContainerInstancesRequest$ = [
     3,
     n0,
     _LCIR,
@@ -6284,16 +6164,16 @@ var ListContainerInstancesRequest = [
     [_cl, _fi, _nT, _mRa, _s],
     [0, 0, 0, 1, 0],
 ];
-var ListContainerInstancesResponse = [3, n0, _LCIRi, 0, [_cIAo, _nT], [64 | 0, 0]];
-var ListServiceDeploymentsRequest = [
+var ListContainerInstancesResponse$ = [3, n0, _LCIRi, 0, [_cIAo, _nT], [64 | 0, 0]];
+var ListServiceDeploymentsRequest$ = [
     3,
     n0,
     _LSDR,
     0,
     [_ser, _cl, _s, _cAr, _nT, _mRa],
-    [0, 0, 64 | 0, () => CreatedAt, 0, 1],
+    [0, 0, 64 | 0, () => CreatedAt$, 0, 1],
 ];
-var ListServiceDeploymentsResponse = [
+var ListServiceDeploymentsResponse$ = [
     3,
     n0,
     _LSDRi,
@@ -6301,9 +6181,9 @@ var ListServiceDeploymentsResponse = [
     [_sD, _nT],
     [() => ServiceDeploymentsBrief, 0],
 ];
-var ListServicesByNamespaceRequest = [3, n0, _LSBNR, 0, [_na, _nT, _mRa], [0, 0, 1]];
-var ListServicesByNamespaceResponse = [3, n0, _LSBNRi, 0, [_sAe, _nT], [64 | 0, 0]];
-var ListServicesRequest = [
+var ListServicesByNamespaceRequest$ = [3, n0, _LSBNR, 0, [_na, _nT, _mRa], [0, 0, 1]];
+var ListServicesByNamespaceResponse$ = [3, n0, _LSBNRi, 0, [_sAe, _nT], [64 | 0, 0]];
+var ListServicesRequest$ = [
     3,
     n0,
     _LSR,
@@ -6311,10 +6191,10 @@ var ListServicesRequest = [
     [_cl, _nT, _mRa, _lT, _sS, _rMT],
     [0, 0, 1, 0, 0, 0],
 ];
-var ListServicesResponse = [3, n0, _LSRi, 0, [_sAe, _nT], [64 | 0, 0]];
-var ListTagsForResourceRequest = [3, n0, _LTFRR, 0, [_rAes], [0]];
-var ListTagsForResourceResponse = [3, n0, _LTFRRi, 0, [_ta], [() => Tags]];
-var ListTaskDefinitionFamiliesRequest = [
+var ListServicesResponse$ = [3, n0, _LSRi, 0, [_sAe, _nT], [64 | 0, 0]];
+var ListTagsForResourceRequest$ = [3, n0, _LTFRR, 0, [_rAes], [0]];
+var ListTagsForResourceResponse$ = [3, n0, _LTFRRi, 0, [_ta], [() => Tags]];
+var ListTaskDefinitionFamiliesRequest$ = [
     3,
     n0,
     _LTDFR,
@@ -6322,8 +6202,8 @@ var ListTaskDefinitionFamiliesRequest = [
     [_fP, _s, _nT, _mRa],
     [0, 0, 0, 1],
 ];
-var ListTaskDefinitionFamiliesResponse = [3, n0, _LTDFRi, 0, [_fam, _nT], [64 | 0, 0]];
-var ListTaskDefinitionsRequest = [
+var ListTaskDefinitionFamiliesResponse$ = [3, n0, _LTDFRi, 0, [_fam, _nT], [64 | 0, 0]];
+var ListTaskDefinitionsRequest$ = [
     3,
     n0,
     _LTDR,
@@ -6331,8 +6211,8 @@ var ListTaskDefinitionsRequest = [
     [_fP, _s, _so, _nT, _mRa],
     [0, 0, 0, 0, 1],
 ];
-var ListTaskDefinitionsResponse = [3, n0, _LTDRi, 0, [_tDA, _nT], [64 | 0, 0]];
-var ListTasksRequest = [
+var ListTaskDefinitionsResponse$ = [3, n0, _LTDRi, 0, [_tDA, _nT], [64 | 0, 0]];
+var ListTasksRequest$ = [
     3,
     n0,
     _LTR,
@@ -6340,19 +6220,19 @@ var ListTasksRequest = [
     [_cl, _cI, _fami, _nT, _mRa, _sB, _sN, _dSe, _lT],
     [0, 0, 0, 0, 1, 0, 0, 0, 0],
 ];
-var ListTasksResponse = [3, n0, _LTRi, 0, [_tAa, _nT], [64 | 0, 0]];
-var LoadBalancer = [
+var ListTasksResponse$ = [3, n0, _LTRi, 0, [_tAa, _nT], [64 | 0, 0]];
+var LoadBalancer$ = [
     3,
     n0,
     _LB,
     0,
     [_tGA, _lBN, _cNo, _cPon, _aCd],
-    [0, 0, 0, 1, () => AdvancedConfiguration],
+    [0, 0, 0, 1, () => AdvancedConfiguration$],
 ];
-var LogConfiguration = [3, n0, _LCo, 0, [_lD, _o, _sO], [0, 128 | 0, () => SecretList]];
-var ManagedAgent = [3, n0, _MA, 0, [_lSA, _n, _r, _lS], [4, 0, 0, 0]];
-var ManagedAgentStateChange = [3, n0, _MASC, 0, [_cNo, _mAN, _s, _r], [0, 0, 0, 0]];
-var ManagedApplicationAutoScalingPolicy = [
+var LogConfiguration$ = [3, n0, _LCo, 0, [_lD, _o, _sO], [0, 128 | 0, () => SecretList]];
+var ManagedAgent$ = [3, n0, _MA, 0, [_lSA, _n, _r, _lS], [4, 0, 0, 0]];
+var ManagedAgentStateChange$ = [3, n0, _MASC, 0, [_cNo, _mAN, _s, _r], [0, 0, 0, 0]];
+var ManagedApplicationAutoScalingPolicy$ = [
     3,
     n0,
     _MAASP,
@@ -6360,16 +6240,16 @@ var ManagedApplicationAutoScalingPolicy = [
     [_ar, _s, _sR, _uA, _pTo, _tV, _met],
     [0, 0, 0, 4, 0, 1, 0],
 ];
-var ManagedAutoScaling = [
+var ManagedAutoScaling$ = [
     3,
     n0,
     _MAS,
     0,
     [_sTca, _aASP],
-    [() => ManagedScalableTarget, () => ManagedApplicationAutoScalingPolicies],
+    [() => ManagedScalableTarget$, () => ManagedApplicationAutoScalingPolicies],
 ];
-var ManagedCertificate = [3, n0, _MC, 0, [_ar, _s, _sR, _uA, _dNo], [0, 0, 0, 4, 0]];
-var ManagedIngressPath = [
+var ManagedCertificate$ = [3, n0, _MC, 0, [_ar, _s, _sR, _uA, _dNo], [0, 0, 0, 4, 0]];
+var ManagedIngressPath$ = [
     3,
     n0,
     _MIP,
@@ -6378,15 +6258,15 @@ var ManagedIngressPath = [
     [
         0,
         0,
-        () => ManagedLoadBalancer,
+        () => ManagedLoadBalancer$,
         () => ManagedSecurityGroups,
-        () => ManagedCertificate,
-        () => ManagedListener,
-        () => ManagedListenerRule,
+        () => ManagedCertificate$,
+        () => ManagedListener$,
+        () => ManagedListenerRule$,
         () => ManagedTargetGroups,
     ],
 ];
-var ManagedInstancesNetworkConfiguration = [
+var ManagedInstancesNetworkConfiguration$ = [
     3,
     n0,
     _MINC,
@@ -6394,18 +6274,18 @@ var ManagedInstancesNetworkConfiguration = [
     [_su, _sG],
     [64 | 0, 64 | 0],
 ];
-var ManagedInstancesProvider = [
+var ManagedInstancesProvider$ = [
     3,
     n0,
     _MIPa,
     0,
     [_iRA, _iLT, _pTr, _iO],
-    [0, [() => InstanceLaunchTemplate, 0], 0, () => InfrastructureOptimization],
+    [0, [() => InstanceLaunchTemplate$, 0], 0, () => InfrastructureOptimization$],
 ];
-var ManagedInstancesStorageConfiguration = [3, n0, _MISC, 0, [_sSGB], [1]];
-var ManagedListener = [3, n0, _ML, 0, [_ar, _s, _sR, _uA], [0, 0, 0, 4]];
-var ManagedListenerRule = [3, n0, _MLR, 0, [_ar, _s, _sR, _uA], [0, 0, 0, 4]];
-var ManagedLoadBalancer = [
+var ManagedInstancesStorageConfiguration$ = [3, n0, _MISC, 0, [_sSGB], [1]];
+var ManagedListener$ = [3, n0, _ML, 0, [_ar, _s, _sR, _uA], [0, 0, 0, 4]];
+var ManagedListenerRule$ = [3, n0, _MLR, 0, [_ar, _s, _sR, _uA], [0, 0, 0, 4]];
+var ManagedLoadBalancer$ = [
     3,
     n0,
     _MLB,
@@ -6413,9 +6293,9 @@ var ManagedLoadBalancer = [
     [_ar, _s, _sR, _uA, _sch, _sI, _sGI],
     [0, 0, 0, 4, 0, 64 | 0, 64 | 0],
 ];
-var ManagedLogGroup = [3, n0, _MLG, 0, [_ar, _s, _sR, _uA, _lGN], [0, 0, 0, 4, 0]];
-var ManagedMetricAlarm = [3, n0, _MMA, 0, [_ar, _s, _sR, _uA], [0, 0, 0, 4]];
-var ManagedScalableTarget = [
+var ManagedLogGroup$ = [3, n0, _MLG, 0, [_ar, _s, _sR, _uA, _lGN], [0, 0, 0, 4, 0]];
+var ManagedMetricAlarm$ = [3, n0, _MMA, 0, [_ar, _s, _sR, _uA], [0, 0, 0, 4]];
+var ManagedScalableTarget$ = [
     3,
     n0,
     _MST,
@@ -6423,10 +6303,10 @@ var ManagedScalableTarget = [
     [_ar, _s, _sR, _uA, _mC, _mCa],
     [0, 0, 0, 4, 1, 1],
 ];
-var ManagedScaling = [3, n0, _MS, 0, [_s, _tC, _mSSS, _mSSSa, _iWP], [0, 1, 1, 1, 1]];
-var ManagedSecurityGroup = [3, n0, _MSG, 0, [_ar, _s, _sR, _uA], [0, 0, 0, 4]];
-var ManagedStorageConfiguration = [3, n0, _MSC, 0, [_kKI, _fESKKI], [0, 0]];
-var ManagedTargetGroup = [
+var ManagedScaling$ = [3, n0, _MS, 0, [_s, _tC, _mSSS, _mSSSa, _iWP], [0, 1, 1, 1, 1]];
+var ManagedSecurityGroup$ = [3, n0, _MSG, 0, [_ar, _s, _sR, _uA], [0, 0, 0, 4]];
+var ManagedStorageConfiguration$ = [3, n0, _MSC, 0, [_kKI, _fESKKI], [0, 0]];
+var ManagedTargetGroup$ = [
     3,
     n0,
     _MTG,
@@ -6434,33 +6314,15 @@ var ManagedTargetGroup = [
     [_ar, _s, _sR, _uA, _hCP, _hCPe, _po],
     [0, 0, 0, 4, 0, 1, 1],
 ];
-var MemoryGiBPerVCpuRequest = [3, n0, _MGBPVCR, 0, [_m, _ma], [1, 1]];
-var MemoryMiBRequest = [3, n0, _MMBR, 0, [_m, _ma], [1, 1]];
-var MissingVersionException = [
-    -3,
-    n0,
-    _MVE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(MissingVersionException, MissingVersionException$1);
-var MountPoint = [3, n0, _MP, 0, [_sV, _cPo, _rO], [0, 0, 2]];
-var NamespaceNotFoundException = [
-    -3,
-    n0,
-    _NNFE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(NamespaceNotFoundException, NamespaceNotFoundException$1);
-var NetworkBandwidthGbpsRequest = [3, n0, _NBGR, 0, [_m, _ma], [1, 1]];
-var NetworkBinding = [
+var MemoryGiBPerVCpuRequest$ = [3, n0, _MGBPVCR, 0, [_m, _ma], [1, 1]];
+var MemoryMiBRequest$ = [3, n0, _MMBR, 0, [_m, _ma], [1, 1]];
+var MissingVersionException$ = [-3, n0, _MVE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(MissingVersionException$, MissingVersionException);
+var MountPoint$ = [3, n0, _MP, 0, [_sV, _cPo, _rO], [0, 0, 2]];
+var NamespaceNotFoundException$ = [-3, n0, _NNFE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(NamespaceNotFoundException$, NamespaceNotFoundException);
+var NetworkBandwidthGbpsRequest$ = [3, n0, _NBGR, 0, [_m, _ma], [1, 1]];
+var NetworkBinding$ = [
     3,
     n0,
     _NB,
@@ -6468,48 +6330,28 @@ var NetworkBinding = [
     [_bIP, _cPon, _hPo, _pr, _cPR, _hPR],
     [0, 1, 1, 0, 0, 0],
 ];
-var NetworkConfiguration = [3, n0, _NC, 0, [_aCw], [() => AwsVpcConfiguration]];
-var NetworkInterface = [3, n0, _NI, 0, [_aI, _pIA, _iAp], [0, 0, 0]];
-var NetworkInterfaceCountRequest = [3, n0, _NICR, 0, [_m, _ma], [1, 1]];
-var NoUpdateAvailableException = [
-    -3,
-    n0,
-    _NUAE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(NoUpdateAvailableException, NoUpdateAvailableException$1);
-var PlacementConstraint = [3, n0, _PC, 0, [_t, _ex], [0, 0]];
-var PlacementStrategy = [3, n0, _PS, 0, [_t, _fie], [0, 0]];
-var PlatformDevice = [3, n0, _PD, 0, [_i, _t], [0, 0]];
-var PlatformTaskDefinitionIncompatibilityException = [
+var NetworkConfiguration$ = [3, n0, _NC, 0, [_aCw], [() => AwsVpcConfiguration$]];
+var NetworkInterface$ = [3, n0, _NI, 0, [_aI, _pIA, _iAp], [0, 0, 0]];
+var NetworkInterfaceCountRequest$ = [3, n0, _NICR, 0, [_m, _ma], [1, 1]];
+var NoUpdateAvailableException$ = [-3, n0, _NUAE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(NoUpdateAvailableException$, NoUpdateAvailableException);
+var PlacementConstraint$ = [3, n0, _PC, 0, [_t, _ex], [0, 0]];
+var PlacementStrategy$ = [3, n0, _PS, 0, [_t, _fie], [0, 0]];
+var PlatformDevice$ = [3, n0, _PD, 0, [_i, _t], [0, 0]];
+var PlatformTaskDefinitionIncompatibilityException$ = [
     -3,
     n0,
     _PTDIE,
-    {
-        [_e]: _c,
-    },
+    { [_e]: _c },
     [_me],
     [0],
 ];
-schema.TypeRegistry.for(n0).registerError(PlatformTaskDefinitionIncompatibilityException, PlatformTaskDefinitionIncompatibilityException$1);
-var PlatformUnknownException = [
-    -3,
-    n0,
-    _PUE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(PlatformUnknownException, PlatformUnknownException$1);
-var PortMapping = [3, n0, _PM, 0, [_cPon, _hPo, _pr, _n, _aP, _cPR], [1, 1, 0, 0, 0, 0]];
-var ProtectedTask = [3, n0, _PT, 0, [_tA, _pE, _eD], [0, 2, 4]];
-var ProxyConfiguration = [
+schema.TypeRegistry.for(n0).registerError(PlatformTaskDefinitionIncompatibilityException$, PlatformTaskDefinitionIncompatibilityException);
+var PlatformUnknownException$ = [-3, n0, _PUE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(PlatformUnknownException$, PlatformUnknownException);
+var PortMapping$ = [3, n0, _PM, 0, [_cPon, _hPo, _pr, _n, _aP, _cPR], [1, 1, 0, 0, 0, 0]];
+var ProtectedTask$ = [3, n0, _PT, 0, [_tA, _pE, _eD], [0, 2, 4]];
+var ProxyConfiguration$ = [
     3,
     n0,
     _PCr,
@@ -6517,13 +6359,13 @@ var ProxyConfiguration = [
     [_t, _cNo, _pro],
     [0, 0, () => ProxyConfigurationProperties],
 ];
-var PutAccountSettingDefaultRequest = [3, n0, _PASDR, 0, [_n, _v], [0, 0]];
-var PutAccountSettingDefaultResponse = [3, n0, _PASDRu, 0, [_set], [() => Setting]];
-var PutAccountSettingRequest = [3, n0, _PASR, 0, [_n, _v, _pA], [0, 0, 0]];
-var PutAccountSettingResponse = [3, n0, _PASRu, 0, [_set], [() => Setting]];
-var PutAttributesRequest = [3, n0, _PAR, 0, [_cl, _at], [0, () => Attributes]];
-var PutAttributesResponse = [3, n0, _PARu, 0, [_at], [() => Attributes]];
-var PutClusterCapacityProvidersRequest = [
+var PutAccountSettingDefaultRequest$ = [3, n0, _PASDR, 0, [_n, _v], [0, 0]];
+var PutAccountSettingDefaultResponse$ = [3, n0, _PASDRu, 0, [_set], [() => Setting$]];
+var PutAccountSettingRequest$ = [3, n0, _PASR, 0, [_n, _v, _pA], [0, 0, 0]];
+var PutAccountSettingResponse$ = [3, n0, _PASRu, 0, [_set], [() => Setting$]];
+var PutAttributesRequest$ = [3, n0, _PAR, 0, [_cl, _at], [0, () => Attributes]];
+var PutAttributesResponse$ = [3, n0, _PARu, 0, [_at], [() => Attributes]];
+var PutClusterCapacityProvidersRequest$ = [
     3,
     n0,
     _PCCPR,
@@ -6531,24 +6373,24 @@ var PutClusterCapacityProvidersRequest = [
     [_cl, _cPap, _dCPS],
     [0, 64 | 0, () => CapacityProviderStrategy],
 ];
-var PutClusterCapacityProvidersResponse = [3, n0, _PCCPRu, 0, [_cl], [() => Cluster]];
-var RegisterContainerInstanceRequest = [
+var PutClusterCapacityProvidersResponse$ = [3, n0, _PCCPRu, 0, [_cl], [() => Cluster$]];
+var RegisterContainerInstanceRequest$ = [
     3,
     n0,
     _RCIR,
     0,
     [_cl, _iID, _iIDS, _tR, _vI, _cIA, _at, _pD, _ta],
-    [0, 0, 0, () => Resources, () => VersionInfo, 0, () => Attributes, () => PlatformDevices, () => Tags],
+    [0, 0, 0, () => Resources, () => VersionInfo$, 0, () => Attributes, () => PlatformDevices, () => Tags],
 ];
-var RegisterContainerInstanceResponse = [
+var RegisterContainerInstanceResponse$ = [
     3,
     n0,
     _RCIRe,
     0,
     [_cI],
-    [() => ContainerInstance],
+    [() => ContainerInstance$],
 ];
-var RegisterTaskDefinitionRequest = [
+var RegisterTaskDefinitionRequest$ = [
     3,
     n0,
     _RTDR,
@@ -6568,49 +6410,38 @@ var RegisterTaskDefinitionRequest = [
         () => Tags,
         0,
         0,
-        () => ProxyConfiguration,
+        () => ProxyConfiguration$,
         () => InferenceAccelerators,
-        () => EphemeralStorage,
-        () => RuntimePlatform,
+        () => EphemeralStorage$,
+        () => RuntimePlatform$,
         2,
     ],
 ];
-var RegisterTaskDefinitionResponse = [
+var RegisterTaskDefinitionResponse$ = [
     3,
     n0,
     _RTDRe,
     0,
     [_tD, _ta],
-    [() => TaskDefinition, () => Tags],
+    [() => TaskDefinition$, () => Tags],
 ];
-var RepositoryCredentials = [3, n0, _RC, 0, [_cPr], [0]];
-var ResolvedConfiguration = [3, n0, _RCe, 0, [_lB], [() => ServiceRevisionLoadBalancers]];
-var Resource = [3, n0, _R, 0, [_n, _t, _dV, _lV, _iV, _sSV], [0, 0, 1, 1, 1, 64 | 0]];
-var ResourceInUseException = [
-    -3,
+var RepositoryCredentials$ = [3, n0, _RC, 0, [_cPr], [0]];
+var ResolvedConfiguration$ = [
+    3,
     n0,
-    _RIUE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
+    _RCe,
+    0,
+    [_lB],
+    [() => ServiceRevisionLoadBalancers],
 ];
-schema.TypeRegistry.for(n0).registerError(ResourceInUseException, ResourceInUseException$1);
-var ResourceNotFoundException = [
-    -3,
-    n0,
-    _RNFE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ResourceNotFoundException, ResourceNotFoundException$1);
-var ResourceRequirement = [3, n0, _RR, 0, [_v, _t], [0, 0]];
-var Rollback = [3, n0, _Ro, 0, [_r, _sAt, _sRAe], [0, 4, 0]];
-var RunTaskRequest = [
+var Resource$ = [3, n0, _R, 0, [_n, _t, _dV, _lV, _iV, _sSV], [0, 0, 1, 1, 1, 64 | 0]];
+var ResourceInUseException$ = [-3, n0, _RIUE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ResourceInUseException$, ResourceInUseException);
+var ResourceNotFoundException$ = [-3, n0, _RNFE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ResourceNotFoundException$, ResourceNotFoundException);
+var ResourceRequirement$ = [3, n0, _RR, 0, [_v, _t], [0, 0]];
+var Rollback$ = [3, n0, _Ro, 0, [_r, _sAt, _sRAe], [0, 4, 0]];
+var RunTaskRequest$ = [
     3,
     n0,
     _RTR,
@@ -6624,8 +6455,8 @@ var RunTaskRequest = [
         2,
         0,
         0,
-        () => NetworkConfiguration,
-        () => TaskOverride,
+        () => NetworkConfiguration$,
+        () => TaskOverride$,
         () => PlacementConstraints,
         () => PlacementStrategies,
         0,
@@ -6638,22 +6469,13 @@ var RunTaskRequest = [
         () => TaskVolumeConfigurations,
     ],
 ];
-var RunTaskResponse = [3, n0, _RTRu, 0, [_tas, _fa], [() => Tasks, () => Failures]];
-var RuntimePlatform = [3, n0, _RP, 0, [_cAp, _oSF], [0, 0]];
-var Scale = [3, n0, _S, 0, [_v, _un], [1, 0]];
-var Secret = [3, n0, _Se, 0, [_n, _vFa], [0, 0]];
-var ServerException = [
-    -3,
-    n0,
-    _SE,
-    {
-        [_e]: _serve,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ServerException, ServerException$1);
-var Service = [
+var RunTaskResponse$ = [3, n0, _RTRu, 0, [_tas, _fa], [() => Tasks, () => Failures]];
+var RuntimePlatform$ = [3, n0, _RP, 0, [_cAp, _oSF], [0, 0]];
+var Scale$ = [3, n0, _S, 0, [_v, _un], [1, 0]];
+var Secret$ = [3, n0, _Se, 0, [_n, _vFa], [0, 0]];
+var ServerException$ = [-3, n0, _SE, { [_e]: _serve }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ServerException$, ServerException);
+var Service$ = [
     3,
     n0,
     _Ser,
@@ -6710,7 +6532,7 @@ var Service = [
         0,
         0,
         0,
-        () => DeploymentConfiguration,
+        () => DeploymentConfiguration$,
         () => TaskSets,
         () => Deployments,
         0,
@@ -6720,10 +6542,10 @@ var Service = [
         () => ServiceCurrentRevisionSummaryList,
         () => PlacementConstraints,
         () => PlacementStrategies,
-        () => NetworkConfiguration,
+        () => NetworkConfiguration$,
         1,
         0,
-        () => DeploymentController,
+        () => DeploymentController$,
         () => Tags,
         0,
         2,
@@ -6733,59 +6555,59 @@ var Service = [
         0,
     ],
 ];
-var ServiceConnectAccessLogConfiguration = [3, n0, _SCALC, 0, [_fo, _iQP], [0, 0]];
-var ServiceConnectClientAlias = [
+var ServiceConnectAccessLogConfiguration$ = [3, n0, _SCALC, 0, [_fo, _iQP], [0, 0]];
+var ServiceConnectClientAlias$ = [
     3,
     n0,
     _SCCA,
     0,
     [_po, _dNn, _tTR],
-    [1, 0, () => ServiceConnectTestTrafficRules],
+    [1, 0, () => ServiceConnectTestTrafficRules$],
 ];
-var ServiceConnectConfiguration = [
+var ServiceConnectConfiguration$ = [
     3,
     n0,
     _SCC,
     0,
     [_ena, _na, _serv, _lC, _aLCc],
-    [2, 0, () => ServiceConnectServiceList, () => LogConfiguration, () => ServiceConnectAccessLogConfiguration],
+    [2, 0, () => ServiceConnectServiceList, () => LogConfiguration$, () => ServiceConnectAccessLogConfiguration$],
 ];
-var ServiceConnectService = [
+var ServiceConnectService$ = [
     3,
     n0,
     _SCS,
     0,
     [_pN, _dNi, _cAli, _iPO, _ti, _tl],
-    [0, 0, () => ServiceConnectClientAliasList, 1, () => TimeoutConfiguration, () => ServiceConnectTlsConfiguration],
+    [0, 0, () => ServiceConnectClientAliasList, 1, () => TimeoutConfiguration$, () => ServiceConnectTlsConfiguration$],
 ];
-var ServiceConnectServiceResource = [3, n0, _SCSR, 0, [_dNi, _dA], [0, 0]];
-var ServiceConnectTestTrafficHeaderMatchRules = [3, n0, _SCTTHMR, 0, [_exa], [0]];
-var ServiceConnectTestTrafficHeaderRules = [
+var ServiceConnectServiceResource$ = [3, n0, _SCSR, 0, [_dNi, _dA], [0, 0]];
+var ServiceConnectTestTrafficHeaderMatchRules$ = [3, n0, _SCTTHMR, 0, [_exa], [0]];
+var ServiceConnectTestTrafficHeaderRules$ = [
     3,
     n0,
     _SCTTHR,
     0,
     [_n, _v],
-    [0, () => ServiceConnectTestTrafficHeaderMatchRules],
+    [0, () => ServiceConnectTestTrafficHeaderMatchRules$],
 ];
-var ServiceConnectTestTrafficRules = [
+var ServiceConnectTestTrafficRules$ = [
     3,
     n0,
     _SCTTR,
     0,
     [_he],
-    [() => ServiceConnectTestTrafficHeaderRules],
+    [() => ServiceConnectTestTrafficHeaderRules$],
 ];
-var ServiceConnectTlsCertificateAuthority = [3, n0, _SCTCA, 0, [_aPAA], [0]];
-var ServiceConnectTlsConfiguration = [
+var ServiceConnectTlsCertificateAuthority$ = [3, n0, _SCTCA, 0, [_aPAA], [0]];
+var ServiceConnectTlsConfiguration$ = [
     3,
     n0,
     _SCTC,
     0,
     [_iCA, _kK, _rA],
-    [() => ServiceConnectTlsCertificateAuthority, 0, 0],
+    [() => ServiceConnectTlsCertificateAuthority$, 0, 0],
 ];
-var ServiceCurrentRevisionSummary = [
+var ServiceCurrentRevisionSummary$ = [
     3,
     n0,
     _SCRS,
@@ -6793,7 +6615,7 @@ var ServiceCurrentRevisionSummary = [
     [_ar, _rTCe, _rTCu, _pTCe],
     [0, 1, 1, 1],
 ];
-var ServiceDeployment = [
+var ServiceDeployment$ = [
     3,
     n0,
     _SD,
@@ -6809,18 +6631,18 @@ var ServiceDeployment = [
         4,
         4,
         () => ServiceRevisionsSummaryList,
-        () => ServiceRevisionSummary,
+        () => ServiceRevisionSummary$,
         0,
         0,
         0,
-        () => DeploymentConfiguration,
-        () => Rollback,
-        () => ServiceDeploymentCircuitBreaker,
-        () => ServiceDeploymentAlarms,
+        () => DeploymentConfiguration$,
+        () => Rollback$,
+        () => ServiceDeploymentCircuitBreaker$,
+        () => ServiceDeploymentAlarms$,
     ],
 ];
-var ServiceDeploymentAlarms = [3, n0, _SDA, 0, [_s, _aN, _tAN], [0, 64 | 0, 64 | 0]];
-var ServiceDeploymentBrief = [
+var ServiceDeploymentAlarms$ = [3, n0, _SDA, 0, [_s, _aN, _tAN], [0, 64 | 0, 64 | 0]];
+var ServiceDeploymentBrief$ = [
     3,
     n0,
     _SDB,
@@ -6828,20 +6650,11 @@ var ServiceDeploymentBrief = [
     [_sDAe, _sA, _cA, _sAt, _cAr, _fA, _tSRA, _s, _sR],
     [0, 0, 0, 4, 4, 4, 0, 0, 0],
 ];
-var ServiceDeploymentCircuitBreaker = [3, n0, _SDCB, 0, [_s, _fCa, _th], [0, 1, 1]];
-var ServiceDeploymentNotFoundException = [
-    -3,
-    n0,
-    _SDNFE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ServiceDeploymentNotFoundException, ServiceDeploymentNotFoundException$1);
-var ServiceEvent = [3, n0, _SEe, 0, [_i, _cAr, _me], [0, 4, 0]];
-var ServiceManagedEBSVolumeConfiguration = [
+var ServiceDeploymentCircuitBreaker$ = [3, n0, _SDCB, 0, [_s, _fCa, _th], [0, 1, 1]];
+var ServiceDeploymentNotFoundException$ = [-3, n0, _SDNFE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ServiceDeploymentNotFoundException$, ServiceDeploymentNotFoundException);
+var ServiceEvent$ = [3, n0, _SEe, 0, [_i, _cAr, _me], [0, 4, 0]];
+var ServiceManagedEBSVolumeConfiguration$ = [
     3,
     n0,
     _SMEBSVC,
@@ -6849,30 +6662,12 @@ var ServiceManagedEBSVolumeConfiguration = [
     [_enc, _kKI, _vT, _sIGB, _sIn, _vIR, _io, _thr, _tSag, _rA, _fTi],
     [2, 0, 0, 1, 0, 1, 1, 1, () => EBSTagSpecifications, 0, 0],
 ];
-var ServiceNotActiveException = [
-    -3,
-    n0,
-    _SNAE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ServiceNotActiveException, ServiceNotActiveException$1);
-var ServiceNotFoundException = [
-    -3,
-    n0,
-    _SNFE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(ServiceNotFoundException, ServiceNotFoundException$1);
-var ServiceRegistry = [3, n0, _SR, 0, [_rAeg, _po, _cNo, _cPon], [0, 1, 0, 1]];
-var ServiceRevision = [
+var ServiceNotActiveException$ = [-3, n0, _SNAE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ServiceNotActiveException$, ServiceNotActiveException);
+var ServiceNotFoundException$ = [-3, n0, _SNFE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(ServiceNotFoundException$, ServiceNotFoundException);
+var ServiceRegistry$ = [3, n0, _SR, 0, [_rAeg, _po, _cNo, _cPon], [0, 1, 0, 1]];
+var ServiceRevision$ = [
     3,
     n0,
     _SRe,
@@ -6889,20 +6684,20 @@ var ServiceRevision = [
         0,
         () => LoadBalancers,
         () => ServiceRegistries,
-        () => NetworkConfiguration,
+        () => NetworkConfiguration$,
         () => ContainerImages,
         2,
-        () => ServiceConnectConfiguration,
+        () => ServiceConnectConfiguration$,
         () => ServiceVolumeConfigurations,
-        () => DeploymentEphemeralStorage,
+        () => DeploymentEphemeralStorage$,
         4,
         () => VpcLatticeConfigurations,
-        () => ResolvedConfiguration,
-        () => ECSManagedResources,
+        () => ResolvedConfiguration$,
+        () => ECSManagedResources$,
     ],
 ];
-var ServiceRevisionLoadBalancer = [3, n0, _SRLB, 0, [_tGA, _pLR], [0, 0]];
-var ServiceRevisionSummary = [
+var ServiceRevisionLoadBalancer$ = [3, n0, _SRLB, 0, [_tGA, _pLR], [0, 0]];
+var ServiceRevisionSummary$ = [
     3,
     n0,
     _SRS,
@@ -6910,17 +6705,17 @@ var ServiceRevisionSummary = [
     [_ar, _rTCe, _rTCu, _pTCe, _rTTW, _rPTW],
     [0, 1, 1, 1, 1, 1],
 ];
-var ServiceVolumeConfiguration = [
+var ServiceVolumeConfiguration$ = [
     3,
     n0,
     _SVC,
     0,
     [_n, _mEBSV],
-    [0, () => ServiceManagedEBSVolumeConfiguration],
+    [0, () => ServiceManagedEBSVolumeConfiguration$],
 ];
-var Session = [3, n0, _Ses, 0, [_sIe, _sU, _tVo], [0, 0, [() => SensitiveString, 0]]];
-var Setting = [3, n0, _Set, 0, [_n, _v, _pA, _t], [0, 0, 0, 0]];
-var StartTaskRequest = [
+var Session$ = [3, n0, _Ses, 0, [_sIe, _sU, _tVo], [0, 0, [() => SensitiveString, 0]]];
+var Setting$ = [3, n0, _Set, 0, [_n, _v, _pA, _t], [0, 0, 0, 0]];
+var StartTaskRequest$ = [
     3,
     n0,
     _STR,
@@ -6932,8 +6727,8 @@ var StartTaskRequest = [
         2,
         2,
         0,
-        () => NetworkConfiguration,
-        () => TaskOverride,
+        () => NetworkConfiguration$,
+        () => TaskOverride$,
         0,
         0,
         0,
@@ -6942,12 +6737,12 @@ var StartTaskRequest = [
         () => TaskVolumeConfigurations,
     ],
 ];
-var StartTaskResponse = [3, n0, _STRt, 0, [_tas, _fa], [() => Tasks, () => Failures]];
-var StopServiceDeploymentRequest = [3, n0, _SSDR, 0, [_sDAe, _sTto], [0, 0]];
-var StopServiceDeploymentResponse = [3, n0, _SSDRt, 0, [_sDAe], [0]];
-var StopTaskRequest = [3, n0, _STRto, 0, [_cl, _task, _r], [0, 0, 0]];
-var StopTaskResponse = [3, n0, _STRtop, 0, [_task], [() => Task]];
-var SubmitAttachmentStateChangesRequest = [
+var StartTaskResponse$ = [3, n0, _STRt, 0, [_tas, _fa], [() => Tasks, () => Failures]];
+var StopServiceDeploymentRequest$ = [3, n0, _SSDR, 0, [_sDAe, _sTto], [0, 0]];
+var StopServiceDeploymentResponse$ = [3, n0, _SSDRt, 0, [_sDAe], [0]];
+var StopTaskRequest$ = [3, n0, _STRto, 0, [_cl, _task, _r], [0, 0, 0]];
+var StopTaskResponse$ = [3, n0, _STRtop, 0, [_task], [() => Task$]];
+var SubmitAttachmentStateChangesRequest$ = [
     3,
     n0,
     _SASCR,
@@ -6955,8 +6750,8 @@ var SubmitAttachmentStateChangesRequest = [
     [_cl, _a],
     [0, () => AttachmentStateChanges],
 ];
-var SubmitAttachmentStateChangesResponse = [3, n0, _SASCRu, 0, [_ac], [0]];
-var SubmitContainerStateChangeRequest = [
+var SubmitAttachmentStateChangesResponse$ = [3, n0, _SASCRu, 0, [_ac], [0]];
+var SubmitContainerStateChangeRequest$ = [
     3,
     n0,
     _SCSCR,
@@ -6964,8 +6759,8 @@ var SubmitContainerStateChangeRequest = [
     [_cl, _task, _cNo, _rIu, _s, _eC, _r, _nB],
     [0, 0, 0, 0, 0, 1, 0, () => NetworkBindings],
 ];
-var SubmitContainerStateChangeResponse = [3, n0, _SCSCRu, 0, [_ac], [0]];
-var SubmitTaskStateChangeRequest = [
+var SubmitContainerStateChangeResponse$ = [3, n0, _SCSCRu, 0, [_ac], [0]];
+var SubmitTaskStateChangeRequest$ = [
     3,
     n0,
     _STSCR,
@@ -6973,34 +6768,16 @@ var SubmitTaskStateChangeRequest = [
     [_cl, _task, _s, _r, _conta, _a, _mA, _pSA, _pSAu, _eSA],
     [0, 0, 0, 0, () => ContainerStateChanges, () => AttachmentStateChanges, () => ManagedAgentStateChanges, 4, 4, 4],
 ];
-var SubmitTaskStateChangeResponse = [3, n0, _STSCRu, 0, [_ac], [0]];
-var SystemControl = [3, n0, _SC, 0, [_na, _v], [0, 0]];
-var Tag = [3, n0, _T, 0, [_k, _v], [0, 0]];
-var TagResourceRequest = [3, n0, _TRR, 0, [_rAes, _ta], [0, () => Tags]];
-var TagResourceResponse = [3, n0, _TRRa, 0, [], []];
-var TargetNotConnectedException = [
-    -3,
-    n0,
-    _TNCE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(TargetNotConnectedException, TargetNotConnectedException$1);
-var TargetNotFoundException = [
-    -3,
-    n0,
-    _TNFE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(TargetNotFoundException, TargetNotFoundException$1);
-var Task = [
+var SubmitTaskStateChangeResponse$ = [3, n0, _STSCRu, 0, [_ac], [0]];
+var SystemControl$ = [3, n0, _SC, 0, [_na, _v], [0, 0]];
+var Tag$ = [3, n0, _T, 0, [_k, _v], [0, 0]];
+var TagResourceRequest$ = [3, n0, _TRR, 0, [_rAes, _ta], [0, () => Tags]];
+var TagResourceResponse$ = [3, n0, _TRRa, 0, [], []];
+var TargetNotConnectedException$ = [-3, n0, _TNCE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(TargetNotConnectedException$, TargetNotConnectedException);
+var TargetNotFoundException$ = [-3, n0, _TNFE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(TargetNotFoundException$, TargetNotFoundException);
+var Task$ = [
     3,
     n0,
     _Ta,
@@ -7065,7 +6842,7 @@ var Task = [
         0,
         0,
         0,
-        () => TaskOverride,
+        () => TaskOverride$,
         0,
         0,
         4,
@@ -7080,11 +6857,11 @@ var Task = [
         0,
         0,
         1,
-        () => EphemeralStorage,
-        () => TaskEphemeralStorage,
+        () => EphemeralStorage$,
+        () => TaskEphemeralStorage$,
     ],
 ];
-var TaskDefinition = [
+var TaskDefinition$ = [
     3,
     n0,
     _TD,
@@ -7129,41 +6906,41 @@ var TaskDefinition = [
         () => RequiresAttributes,
         () => TaskDefinitionPlacementConstraints,
         64 | 0,
-        () => RuntimePlatform,
+        () => RuntimePlatform$,
         64 | 0,
         0,
         0,
         () => InferenceAccelerators,
         0,
         0,
-        () => ProxyConfiguration,
+        () => ProxyConfiguration$,
         4,
         4,
         0,
-        () => EphemeralStorage,
+        () => EphemeralStorage$,
         2,
     ],
 ];
-var TaskDefinitionPlacementConstraint = [3, n0, _TDPC, 0, [_t, _ex], [0, 0]];
-var TaskEphemeralStorage = [3, n0, _TES, 0, [_sIGB, _kKI], [1, 0]];
-var TaskManagedEBSVolumeConfiguration = [
+var TaskDefinitionPlacementConstraint$ = [3, n0, _TDPC, 0, [_t, _ex], [0, 0]];
+var TaskEphemeralStorage$ = [3, n0, _TES, 0, [_sIGB, _kKI], [1, 0]];
+var TaskManagedEBSVolumeConfiguration$ = [
     3,
     n0,
     _TMEBSVC,
     0,
     [_enc, _kKI, _vT, _sIGB, _sIn, _vIR, _io, _thr, _tSag, _rA, _tP, _fTi],
-    [2, 0, 0, 1, 0, 1, 1, 1, () => EBSTagSpecifications, 0, () => TaskManagedEBSVolumeTerminationPolicy, 0],
+    [2, 0, 0, 1, 0, 1, 1, 1, () => EBSTagSpecifications, 0, () => TaskManagedEBSVolumeTerminationPolicy$, 0],
 ];
-var TaskManagedEBSVolumeTerminationPolicy = [3, n0, _TMEBSVTP, 0, [_dOT], [2]];
-var TaskOverride = [
+var TaskManagedEBSVolumeTerminationPolicy$ = [3, n0, _TMEBSVTP, 0, [_dOT], [2]];
+var TaskOverride$ = [
     3,
     n0,
     _TO,
     0,
     [_cO, _cp, _iAO, _eRA, _mem, _tRA, _eSp],
-    [() => ContainerOverrides, 0, () => InferenceAcceleratorOverrides, 0, 0, 0, () => EphemeralStorage],
+    [() => ContainerOverrides, 0, () => InferenceAcceleratorOverrides, 0, 0, 0, () => EphemeralStorage$],
 ];
-var TaskSet = [
+var TaskSet$ = [
     3,
     n0,
     _TS,
@@ -7213,78 +6990,60 @@ var TaskSet = [
         () => CapacityProviderStrategy,
         0,
         0,
-        () => NetworkConfiguration,
+        () => NetworkConfiguration$,
         () => LoadBalancers,
         () => ServiceRegistries,
-        () => Scale,
+        () => Scale$,
         0,
         4,
         () => Tags,
-        () => DeploymentEphemeralStorage,
+        () => DeploymentEphemeralStorage$,
     ],
 ];
-var TaskSetNotFoundException = [
-    -3,
-    n0,
-    _TSNFE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(TaskSetNotFoundException, TaskSetNotFoundException$1);
-var TaskVolumeConfiguration = [
+var TaskSetNotFoundException$ = [-3, n0, _TSNFE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(TaskSetNotFoundException$, TaskSetNotFoundException);
+var TaskVolumeConfiguration$ = [
     3,
     n0,
     _TVC,
     0,
     [_n, _mEBSV],
-    [0, () => TaskManagedEBSVolumeConfiguration],
+    [0, () => TaskManagedEBSVolumeConfiguration$],
 ];
-var TimeoutConfiguration = [3, n0, _TC, 0, [_iTS, _pRTS], [1, 1]];
-var Tmpfs = [3, n0, _Tm, 0, [_cPo, _si, _mO], [0, 1, 64 | 0]];
-var TotalLocalStorageGBRequest = [3, n0, _TLSGBR, 0, [_m, _ma], [1, 1]];
-var Ulimit = [3, n0, _U, 0, [_n, _sL, _hL], [0, 1, 1]];
-var UnsupportedFeatureException = [
-    -3,
-    n0,
-    _UFE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(UnsupportedFeatureException, UnsupportedFeatureException$1);
-var UntagResourceRequest = [3, n0, _URR, 0, [_rAes, _tK], [0, 64 | 0]];
-var UntagResourceResponse = [3, n0, _URRn, 0, [], []];
-var UpdateCapacityProviderRequest = [
+var TimeoutConfiguration$ = [3, n0, _TC, 0, [_iTS, _pRTS], [1, 1]];
+var Tmpfs$ = [3, n0, _Tm, 0, [_cPo, _si, _mO], [0, 1, 64 | 0]];
+var TotalLocalStorageGBRequest$ = [3, n0, _TLSGBR, 0, [_m, _ma], [1, 1]];
+var Ulimit$ = [3, n0, _U, 0, [_n, _sL, _hL], [0, 1, 1]];
+var UnsupportedFeatureException$ = [-3, n0, _UFE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(UnsupportedFeatureException$, UnsupportedFeatureException);
+var UntagResourceRequest$ = [3, n0, _URR, 0, [_rAes, _tK], [0, 64 | 0]];
+var UntagResourceResponse$ = [3, n0, _URRn, 0, [], []];
+var UpdateCapacityProviderRequest$ = [
     3,
     n0,
     _UCPR,
     0,
     [_n, _cl, _aSGP, _mIP],
-    [0, 0, () => AutoScalingGroupProviderUpdate, [() => UpdateManagedInstancesProviderConfiguration, 0]],
+    [0, 0, () => AutoScalingGroupProviderUpdate$, [() => UpdateManagedInstancesProviderConfiguration$, 0]],
 ];
-var UpdateCapacityProviderResponse = [
+var UpdateCapacityProviderResponse$ = [
     3,
     n0,
     _UCPRp,
     0,
     [_cPa],
-    [[() => CapacityProvider, 0]],
+    [[() => CapacityProvider$, 0]],
 ];
-var UpdateClusterRequest = [
+var UpdateClusterRequest$ = [
     3,
     n0,
     _UCR,
     0,
     [_cl, _se, _co, _sCD],
-    [0, () => ClusterSettings, () => ClusterConfiguration, () => ClusterServiceConnectDefaultsRequest],
+    [0, () => ClusterSettings, () => ClusterConfiguration$, () => ClusterServiceConnectDefaultsRequest$],
 ];
-var UpdateClusterResponse = [3, n0, _UCRp, 0, [_cl], [() => Cluster]];
-var UpdateClusterSettingsRequest = [
+var UpdateClusterResponse$ = [3, n0, _UCRp, 0, [_cl], [() => Cluster$]];
+var UpdateClusterSettingsRequest$ = [
     3,
     n0,
     _UCSR,
@@ -7292,10 +7051,10 @@ var UpdateClusterSettingsRequest = [
     [_cl, _se],
     [0, () => ClusterSettings],
 ];
-var UpdateClusterSettingsResponse = [3, n0, _UCSRp, 0, [_cl], [() => Cluster]];
-var UpdateContainerAgentRequest = [3, n0, _UCAR, 0, [_cl, _cI], [0, 0]];
-var UpdateContainerAgentResponse = [3, n0, _UCARp, 0, [_cI], [() => ContainerInstance]];
-var UpdateContainerInstancesStateRequest = [
+var UpdateClusterSettingsResponse$ = [3, n0, _UCSRp, 0, [_cl], [() => Cluster$]];
+var UpdateContainerAgentRequest$ = [3, n0, _UCAR, 0, [_cl, _cI], [0, 0]];
+var UpdateContainerAgentResponse$ = [3, n0, _UCARp, 0, [_cI], [() => ContainerInstance$]];
+var UpdateContainerInstancesStateRequest$ = [
     3,
     n0,
     _UCISR,
@@ -7303,7 +7062,7 @@ var UpdateContainerInstancesStateRequest = [
     [_cl, _cIo, _s],
     [0, 64 | 0, 0],
 ];
-var UpdateContainerInstancesStateResponse = [
+var UpdateContainerInstancesStateResponse$ = [
     3,
     n0,
     _UCISRp,
@@ -7311,15 +7070,15 @@ var UpdateContainerInstancesStateResponse = [
     [_cIo, _fa],
     [() => ContainerInstances, () => Failures],
 ];
-var UpdatedExpressGatewayService = [
+var UpdatedExpressGatewayService$ = [
     3,
     n0,
     _UEGS,
     0,
     [_sA, _cl, _sN, _s, _tCa, _cAr, _uA],
-    [0, 0, 0, () => ExpressGatewayServiceStatus, () => ExpressGatewayServiceConfiguration, 4, 4],
+    [0, 0, 0, () => ExpressGatewayServiceStatus$, () => ExpressGatewayServiceConfiguration$, 4, 4],
 ];
-var UpdateExpressGatewayServiceRequest = [
+var UpdateExpressGatewayServiceRequest$ = [
     3,
     n0,
     _UEGSR,
@@ -7329,42 +7088,33 @@ var UpdateExpressGatewayServiceRequest = [
         0,
         0,
         0,
-        () => ExpressGatewayContainer,
+        () => ExpressGatewayContainer$,
         0,
-        () => ExpressGatewayServiceNetworkConfiguration,
+        () => ExpressGatewayServiceNetworkConfiguration$,
         0,
         0,
-        () => ExpressGatewayScalingTarget,
+        () => ExpressGatewayScalingTarget$,
     ],
 ];
-var UpdateExpressGatewayServiceResponse = [
+var UpdateExpressGatewayServiceResponse$ = [
     3,
     n0,
     _UEGSRp,
     0,
     [_ser],
-    [() => UpdatedExpressGatewayService],
+    [() => UpdatedExpressGatewayService$],
 ];
-var UpdateInProgressException = [
-    -3,
-    n0,
-    _UIPE,
-    {
-        [_e]: _c,
-    },
-    [_me],
-    [0],
-];
-schema.TypeRegistry.for(n0).registerError(UpdateInProgressException, UpdateInProgressException$1);
-var UpdateManagedInstancesProviderConfiguration = [
+var UpdateInProgressException$ = [-3, n0, _UIPE, { [_e]: _c }, [_me], [0]];
+schema.TypeRegistry.for(n0).registerError(UpdateInProgressException$, UpdateInProgressException);
+var UpdateManagedInstancesProviderConfiguration$ = [
     3,
     n0,
     _UMIPC,
     0,
     [_iRA, _iLT, _pTr, _iO],
-    [0, [() => InstanceLaunchTemplateUpdate, 0], 0, () => InfrastructureOptimization],
+    [0, [() => InstanceLaunchTemplateUpdate$, 0], 0, () => InfrastructureOptimization$],
 ];
-var UpdateServicePrimaryTaskSetRequest = [
+var UpdateServicePrimaryTaskSetRequest$ = [
     3,
     n0,
     _USPTSR,
@@ -7372,8 +7122,8 @@ var UpdateServicePrimaryTaskSetRequest = [
     [_cl, _ser, _pTS],
     [0, 0, 0],
 ];
-var UpdateServicePrimaryTaskSetResponse = [3, n0, _USPTSRp, 0, [_tS], [() => TaskSet]];
-var UpdateServiceRequest = [
+var UpdateServicePrimaryTaskSetResponse$ = [3, n0, _USPTSRp, 0, [_tS], [() => TaskSet$]];
+var UpdateServiceRequest$ = [
     3,
     n0,
     _USR,
@@ -7408,27 +7158,27 @@ var UpdateServiceRequest = [
         1,
         0,
         () => CapacityProviderStrategy,
-        () => DeploymentConfiguration,
+        () => DeploymentConfiguration$,
         0,
-        () => NetworkConfiguration,
+        () => NetworkConfiguration$,
         () => PlacementConstraints,
         () => PlacementStrategies,
         0,
         2,
         1,
-        () => DeploymentController,
+        () => DeploymentController$,
         2,
         2,
         () => LoadBalancers,
         0,
         () => ServiceRegistries,
-        () => ServiceConnectConfiguration,
+        () => ServiceConnectConfiguration$,
         () => ServiceVolumeConfigurations,
         () => VpcLatticeConfigurations,
     ],
 ];
-var UpdateServiceResponse = [3, n0, _USRp, 0, [_ser], [() => Service]];
-var UpdateTaskProtectionRequest = [
+var UpdateServiceResponse$ = [3, n0, _USRp, 0, [_ser], [() => Service$]];
+var UpdateTaskProtectionRequest$ = [
     3,
     n0,
     _UTPR,
@@ -7436,7 +7186,7 @@ var UpdateTaskProtectionRequest = [
     [_cl, _tas, _pE, _eIM],
     [0, 64 | 0, 2, 1],
 ];
-var UpdateTaskProtectionResponse = [
+var UpdateTaskProtectionResponse$ = [
     3,
     n0,
     _UTPRp,
@@ -7444,18 +7194,18 @@ var UpdateTaskProtectionResponse = [
     [_pTro, _fa],
     [() => ProtectedTasks, () => Failures],
 ];
-var UpdateTaskSetRequest = [
+var UpdateTaskSetRequest$ = [
     3,
     n0,
     _UTSR,
     0,
     [_cl, _ser, _tS, _sc],
-    [0, 0, 0, () => Scale],
+    [0, 0, 0, () => Scale$],
 ];
-var UpdateTaskSetResponse = [3, n0, _UTSRp, 0, [_tS], [() => TaskSet]];
-var VCpuCountRangeRequest = [3, n0, _VCCRR, 0, [_m, _ma], [1, 1]];
-var VersionInfo = [3, n0, _VI, 0, [_aVg, _aH, _dVo], [0, 0, 0]];
-var Volume = [
+var UpdateTaskSetResponse$ = [3, n0, _UTSRp, 0, [_tS], [() => TaskSet$]];
+var VCpuCountRangeRequest$ = [3, n0, _VCCRR, 0, [_m, _ma], [1, 1]];
+var VersionInfo$ = [3, n0, _VI, 0, [_aVg, _aH, _dVo], [0, 0, 0]];
+var Volume$ = [
     3,
     n0,
     _V,
@@ -7463,689 +7213,590 @@ var Volume = [
     [_n, _ho, _dVC, _eVC, _fWFSVC, _cAL],
     [
         0,
-        () => HostVolumeProperties,
-        () => DockerVolumeConfiguration,
-        () => EFSVolumeConfiguration,
-        () => FSxWindowsFileServerVolumeConfiguration,
+        () => HostVolumeProperties$,
+        () => DockerVolumeConfiguration$,
+        () => EFSVolumeConfiguration$,
+        () => FSxWindowsFileServerVolumeConfiguration$,
         2,
     ],
 ];
-var VolumeFrom = [3, n0, _VF, 0, [_sCo, _rO], [0, 2]];
-var VpcLatticeConfiguration = [3, n0, _VLC, 0, [_rA, _tGA, _pN], [0, 0, 0]];
-var ECSServiceException = [-3, _sm, "ECSServiceException", 0, [], []];
-schema.TypeRegistry.for(_sm).registerError(ECSServiceException, ECSServiceException$1);
-var AcceleratorManufacturerSet = [
-    1,
-    n0,
-    _AMS,
-    0,
-    [
-        0,
-        {
-            [_xN]: _it,
-        },
-    ],
-];
-var AcceleratorNameSet = [
-    1,
-    n0,
-    _ANS,
-    0,
-    [
-        0,
-        {
-            [_xN]: _it,
-        },
-    ],
-];
-var AcceleratorTypeSet = [
-    1,
-    n0,
-    _ATS,
-    0,
-    [
-        0,
-        {
-            [_xN]: _it,
-        },
-    ],
-];
-var AllowedInstanceTypeSet = [
-    1,
-    n0,
-    _AITS,
-    0,
-    [
-        0,
-        {
-            [_xN]: _it,
-        },
-    ],
-];
-var AttachmentDetails = [1, n0, _AD, 0, () => KeyValuePair];
-var Attachments = [1, n0, _Att, 0, () => Attachment];
-var AttachmentStateChanges = [1, n0, _ASCt, 0, () => AttachmentStateChange];
-var Attributes = [1, n0, _Attr, 0, () => Attribute];
-var CapacityProviders = [1, n0, _CPa, 0, [() => CapacityProvider, 0]];
-var CapacityProviderStrategy = [1, n0, _CPS, 0, () => CapacityProviderStrategyItem];
-var Clusters = [1, n0, _Cl, 0, () => Cluster];
-var ClusterSettings = [1, n0, _CSl, 0, () => ClusterSetting];
-var ContainerDefinitions = [1, n0, _CDon, 0, () => ContainerDefinition];
-var ContainerDependencies = [1, n0, _CDont, 0, () => ContainerDependency];
-var ContainerImages = [1, n0, _CIon, 0, () => ContainerImage];
-var ContainerInstances = [1, n0, _CIont, 0, () => ContainerInstance];
-var ContainerOverrides = [1, n0, _COo, 0, () => ContainerOverride];
-var Containers = [1, n0, _Con, 0, () => Container];
-var ContainerStateChanges = [1, n0, _CSCo, 0, () => ContainerStateChange];
-var CpuManufacturerSet = [
-    1,
-    n0,
-    _CMS,
-    0,
-    [
-        0,
-        {
-            [_xN]: _it,
-        },
-    ],
-];
-var DeploymentLifecycleHookList = [1, n0, _DLHL, 0, () => DeploymentLifecycleHook];
-var Deployments = [1, n0, _Dep, 0, () => Deployment];
-var DevicesList = [1, n0, _DL, 0, () => Device];
-var EBSTagSpecifications = [1, n0, _EBSTSa, 0, () => EBSTagSpecification];
-var EnvironmentFiles = [1, n0, _EFn, 0, () => EnvironmentFile];
-var EnvironmentVariables = [1, n0, _EV, 0, () => KeyValuePair];
-var ExcludedInstanceTypeSet = [
-    1,
-    n0,
-    _EITS,
-    0,
-    [
-        0,
-        {
-            [_xN]: _it,
-        },
-    ],
-];
+var VolumeFrom$ = [3, n0, _VF, 0, [_sCo, _rO], [0, 2]];
+var VpcLatticeConfiguration$ = [3, n0, _VLC, 0, [_rA, _tGA, _pN], [0, 0, 0]];
+var ECSServiceException$ = [-3, _sm, "ECSServiceException", 0, [], []];
+schema.TypeRegistry.for(_sm).registerError(ECSServiceException$, ECSServiceException);
+var AcceleratorManufacturerSet = [1, n0, _AMS, 0, [0, { [_xN]: _it }]];
+var AcceleratorNameSet = [1, n0, _ANS, 0, [0, { [_xN]: _it }]];
+var AcceleratorTypeSet = [1, n0, _ATS, 0, [0, { [_xN]: _it }]];
+var AllowedInstanceTypeSet = [1, n0, _AITS, 0, [0, { [_xN]: _it }]];
+var AttachmentDetails = [1, n0, _AD, 0, () => KeyValuePair$];
+var Attachments = [1, n0, _Att, 0, () => Attachment$];
+var AttachmentStateChanges = [1, n0, _ASCt, 0, () => AttachmentStateChange$];
+var Attributes = [1, n0, _Attr, 0, () => Attribute$];
+var CapacityProviders = [1, n0, _CPa, 0, [() => CapacityProvider$, 0]];
+var CapacityProviderStrategy = [1, n0, _CPS, 0, () => CapacityProviderStrategyItem$];
+var Clusters = [1, n0, _Cl, 0, () => Cluster$];
+var ClusterSettings = [1, n0, _CSl, 0, () => ClusterSetting$];
+var ContainerDefinitions = [1, n0, _CDon, 0, () => ContainerDefinition$];
+var ContainerDependencies = [1, n0, _CDont, 0, () => ContainerDependency$];
+var ContainerImages = [1, n0, _CIon, 0, () => ContainerImage$];
+var ContainerInstances = [1, n0, _CIont, 0, () => ContainerInstance$];
+var ContainerOverrides = [1, n0, _COo, 0, () => ContainerOverride$];
+var Containers = [1, n0, _Con, 0, () => Container$];
+var ContainerStateChanges = [1, n0, _CSCo, 0, () => ContainerStateChange$];
+var CpuManufacturerSet = [1, n0, _CMS, 0, [0, { [_xN]: _it }]];
+var DeploymentLifecycleHookList = [1, n0, _DLHL, 0, () => DeploymentLifecycleHook$];
+var Deployments = [1, n0, _Dep, 0, () => Deployment$];
+var DevicesList = [1, n0, _DL, 0, () => Device$];
+var EBSTagSpecifications = [1, n0, _EBSTSa, 0, () => EBSTagSpecification$];
+var EnvironmentFiles = [1, n0, _EFn, 0, () => EnvironmentFile$];
+var EnvironmentVariables = [1, n0, _EV, 0, () => KeyValuePair$];
+var ExcludedInstanceTypeSet = [1, n0, _EITS, 0, [0, { [_xN]: _it }]];
 var ExpressGatewayServiceConfigurations = [
     1,
     n0,
     _EGSCx,
     0,
-    () => ExpressGatewayServiceConfiguration,
+    () => ExpressGatewayServiceConfiguration$,
 ];
-var Failures = [1, n0, _Fa, 0, () => Failure];
-var HostEntryList = [1, n0, _HEL, 0, () => HostEntry];
-var InferenceAcceleratorOverrides = [1, n0, _IAOn, 0, () => InferenceAcceleratorOverride];
-var InferenceAccelerators = [1, n0, _IAn, 0, () => InferenceAccelerator];
-var IngressPathSummaries = [1, n0, _IPSn, 0, () => IngressPathSummary];
-var InstanceGenerationSet = [
-    1,
-    n0,
-    _IGS,
-    0,
-    [
-        0,
-        {
-            [_xN]: _it,
-        },
-    ],
-];
-var InstanceHealthCheckResultList = [1, n0, _IHCRL, 0, () => InstanceHealthCheckResult];
-var LoadBalancers = [1, n0, _LBo, 0, () => LoadBalancer];
-var LocalStorageTypeSet = [
-    1,
-    n0,
-    _LSTS,
-    0,
-    [
-        0,
-        {
-            [_xN]: _it,
-        },
-    ],
-];
-var ManagedAgents = [1, n0, _MAa, 0, () => ManagedAgent];
-var ManagedAgentStateChanges = [1, n0, _MASCa, 0, () => ManagedAgentStateChange];
+var Failures = [1, n0, _Fa, 0, () => Failure$];
+var HostEntryList = [1, n0, _HEL, 0, () => HostEntry$];
+var InferenceAcceleratorOverrides = [1, n0, _IAOn, 0, () => InferenceAcceleratorOverride$];
+var InferenceAccelerators = [1, n0, _IAn, 0, () => InferenceAccelerator$];
+var IngressPathSummaries = [1, n0, _IPSn, 0, () => IngressPathSummary$];
+var InstanceGenerationSet = [1, n0, _IGS, 0, [0, { [_xN]: _it }]];
+var InstanceHealthCheckResultList = [1, n0, _IHCRL, 0, () => InstanceHealthCheckResult$];
+var LoadBalancers = [1, n0, _LBo, 0, () => LoadBalancer$];
+var LocalStorageTypeSet = [1, n0, _LSTS, 0, [0, { [_xN]: _it }]];
+var ManagedAgents = [1, n0, _MAa, 0, () => ManagedAgent$];
+var ManagedAgentStateChanges = [1, n0, _MASCa, 0, () => ManagedAgentStateChange$];
 var ManagedApplicationAutoScalingPolicies = [
     1,
     n0,
     _MAASPa,
     0,
-    () => ManagedApplicationAutoScalingPolicy,
+    () => ManagedApplicationAutoScalingPolicy$,
 ];
-var ManagedIngressPaths = [1, n0, _MIPan, 0, () => ManagedIngressPath];
-var ManagedLogGroups = [1, n0, _MLGa, 0, () => ManagedLogGroup];
-var ManagedMetricAlarms = [1, n0, _MMAa, 0, () => ManagedMetricAlarm];
-var ManagedSecurityGroups = [1, n0, _MSGa, 0, () => ManagedSecurityGroup];
-var ManagedTargetGroups = [1, n0, _MTGa, 0, () => ManagedTargetGroup];
-var MountPointList = [1, n0, _MPL, 0, () => MountPoint];
-var NetworkBindings = [1, n0, _NBe, 0, () => NetworkBinding];
-var NetworkInterfaces = [1, n0, _NIe, 0, () => NetworkInterface];
-var PlacementConstraints = [1, n0, _PCl, 0, () => PlacementConstraint];
-var PlacementStrategies = [1, n0, _PSl, 0, () => PlacementStrategy];
-var PlatformDevices = [1, n0, _PDl, 0, () => PlatformDevice];
-var PortMappingList = [1, n0, _PML, 0, () => PortMapping];
-var ProtectedTasks = [1, n0, _PTr, 0, () => ProtectedTask];
-var ProxyConfigurationProperties = [1, n0, _PCP, 0, () => KeyValuePair];
-var RequiresAttributes = [1, n0, _RA, 0, () => Attribute];
-var ResourceRequirements = [1, n0, _RRe, 0, () => ResourceRequirement];
-var Resources = [1, n0, _Re, 0, () => Resource];
-var SecretList = [1, n0, _SL, 0, () => Secret];
-var ServiceConnectClientAliasList = [1, n0, _SCCAL, 0, () => ServiceConnectClientAlias];
-var ServiceConnectServiceList = [1, n0, _SCSL, 0, () => ServiceConnectService];
-var ServiceConnectServiceResourceList = [
-    1,
-    n0,
-    _SCSRL,
-    0,
-    () => ServiceConnectServiceResource,
-];
-var ServiceCurrentRevisionSummaryList = [
-    1,
-    n0,
-    _SCRSL,
-    0,
-    () => ServiceCurrentRevisionSummary,
-];
-var ServiceDeployments = [1, n0, _SDe, 0, () => ServiceDeployment];
-var ServiceDeploymentsBrief = [1, n0, _SDBe, 0, () => ServiceDeploymentBrief];
-var ServiceEvents = [1, n0, _SEer, 0, () => ServiceEvent];
-var ServiceRegistries = [1, n0, _SRer, 0, () => ServiceRegistry];
-var ServiceRevisionLoadBalancers = [1, n0, _SRLBe, 0, () => ServiceRevisionLoadBalancer];
-var ServiceRevisions = [1, n0, _SRerv, 0, () => ServiceRevision];
-var ServiceRevisionsSummaryList = [1, n0, _SRSL, 0, () => ServiceRevisionSummary];
-var Services = [1, n0, _Serv, 0, () => Service];
-var ServiceVolumeConfigurations = [1, n0, _SVCe, 0, () => ServiceVolumeConfiguration];
-var Settings = [1, n0, _Sett, 0, () => Setting];
-var Statistics = [1, n0, _St, 0, () => KeyValuePair];
-var SystemControls = [1, n0, _SCy, 0, () => SystemControl];
-var Tags = [1, n0, _Tag, 0, () => Tag];
-var TaskDefinitionList = [1, n0, _TDL, 0, () => TaskDefinition];
-var TaskDefinitionPlacementConstraints = [
-    1,
-    n0,
-    _TDPCa,
-    0,
-    () => TaskDefinitionPlacementConstraint,
-];
-var Tasks = [1, n0, _Tas, 0, () => Task];
-var TaskSets = [1, n0, _TSa, 0, () => TaskSet];
-var TaskVolumeConfigurations = [1, n0, _TVCa, 0, () => TaskVolumeConfiguration];
-var TmpfsList = [1, n0, _TL, 0, () => Tmpfs];
-var UlimitList = [1, n0, _UL, 0, () => Ulimit];
-var VolumeFromList = [1, n0, _VFL, 0, () => VolumeFrom];
-var VolumeList = [1, n0, _VL, 0, () => Volume];
-var VpcLatticeConfigurations = [1, n0, _VLCp, 0, () => VpcLatticeConfiguration];
-var CreateCapacityProvider = [
+var ManagedIngressPaths = [1, n0, _MIPan, 0, () => ManagedIngressPath$];
+var ManagedLogGroups = [1, n0, _MLGa, 0, () => ManagedLogGroup$];
+var ManagedMetricAlarms = [1, n0, _MMAa, 0, () => ManagedMetricAlarm$];
+var ManagedSecurityGroups = [1, n0, _MSGa, 0, () => ManagedSecurityGroup$];
+var ManagedTargetGroups = [1, n0, _MTGa, 0, () => ManagedTargetGroup$];
+var MountPointList = [1, n0, _MPL, 0, () => MountPoint$];
+var NetworkBindings = [1, n0, _NBe, 0, () => NetworkBinding$];
+var NetworkInterfaces = [1, n0, _NIe, 0, () => NetworkInterface$];
+var PlacementConstraints = [1, n0, _PCl, 0, () => PlacementConstraint$];
+var PlacementStrategies = [1, n0, _PSl, 0, () => PlacementStrategy$];
+var PlatformDevices = [1, n0, _PDl, 0, () => PlatformDevice$];
+var PortMappingList = [1, n0, _PML, 0, () => PortMapping$];
+var ProtectedTasks = [1, n0, _PTr, 0, () => ProtectedTask$];
+var ProxyConfigurationProperties = [1, n0, _PCP, 0, () => KeyValuePair$];
+var RequiresAttributes = [1, n0, _RA, 0, () => Attribute$];
+var ResourceRequirements = [1, n0, _RRe, 0, () => ResourceRequirement$];
+var Resources = [1, n0, _Re, 0, () => Resource$];
+var SecretList = [1, n0, _SL, 0, () => Secret$];
+var ServiceConnectClientAliasList = [1, n0, _SCCAL, 0, () => ServiceConnectClientAlias$];
+var ServiceConnectServiceList = [1, n0, _SCSL, 0, () => ServiceConnectService$];
+var ServiceConnectServiceResourceList = [1, n0, _SCSRL, 0, () => ServiceConnectServiceResource$];
+var ServiceCurrentRevisionSummaryList = [1, n0, _SCRSL, 0, () => ServiceCurrentRevisionSummary$];
+var ServiceDeployments = [1, n0, _SDe, 0, () => ServiceDeployment$];
+var ServiceDeploymentsBrief = [1, n0, _SDBe, 0, () => ServiceDeploymentBrief$];
+var ServiceEvents = [1, n0, _SEer, 0, () => ServiceEvent$];
+var ServiceRegistries = [1, n0, _SRer, 0, () => ServiceRegistry$];
+var ServiceRevisionLoadBalancers = [1, n0, _SRLBe, 0, () => ServiceRevisionLoadBalancer$];
+var ServiceRevisions = [1, n0, _SRerv, 0, () => ServiceRevision$];
+var ServiceRevisionsSummaryList = [1, n0, _SRSL, 0, () => ServiceRevisionSummary$];
+var Services = [1, n0, _Serv, 0, () => Service$];
+var ServiceVolumeConfigurations = [1, n0, _SVCe, 0, () => ServiceVolumeConfiguration$];
+var Settings = [1, n0, _Sett, 0, () => Setting$];
+var Statistics = [1, n0, _St, 0, () => KeyValuePair$];
+var SystemControls = [1, n0, _SCy, 0, () => SystemControl$];
+var Tags = [1, n0, _Tag, 0, () => Tag$];
+var TaskDefinitionList = [1, n0, _TDL, 0, () => TaskDefinition$];
+var TaskDefinitionPlacementConstraints = [1, n0, _TDPCa, 0, () => TaskDefinitionPlacementConstraint$];
+var Tasks = [1, n0, _Tas, 0, () => Task$];
+var TaskSets = [1, n0, _TSa, 0, () => TaskSet$];
+var TaskVolumeConfigurations = [1, n0, _TVCa, 0, () => TaskVolumeConfiguration$];
+var TmpfsList = [1, n0, _TL, 0, () => Tmpfs$];
+var UlimitList = [1, n0, _UL, 0, () => Ulimit$];
+var VolumeFromList = [1, n0, _VFL, 0, () => VolumeFrom$];
+var VolumeList = [1, n0, _VL, 0, () => Volume$];
+var VpcLatticeConfigurations = [1, n0, _VLCp, 0, () => VpcLatticeConfiguration$];
+var CreateCapacityProvider$ = [
     9,
     n0,
     _CCP,
     0,
-    () => CreateCapacityProviderRequest,
-    () => CreateCapacityProviderResponse,
+    () => CreateCapacityProviderRequest$,
+    () => CreateCapacityProviderResponse$,
 ];
-var CreateCluster = [
+var CreateCluster$ = [
     9,
     n0,
     _CCr,
     0,
-    () => CreateClusterRequest,
-    () => CreateClusterResponse,
+    () => CreateClusterRequest$,
+    () => CreateClusterResponse$,
 ];
-var CreateExpressGatewayService = [
+var CreateExpressGatewayService$ = [
     9,
     n0,
     _CEGS,
     0,
-    () => CreateExpressGatewayServiceRequest,
-    () => CreateExpressGatewayServiceResponse,
+    () => CreateExpressGatewayServiceRequest$,
+    () => CreateExpressGatewayServiceResponse$,
 ];
-var CreateService = [
+var CreateService$ = [
     9,
     n0,
     _CSr,
     0,
-    () => CreateServiceRequest,
-    () => CreateServiceResponse,
+    () => CreateServiceRequest$,
+    () => CreateServiceResponse$,
 ];
-var CreateTaskSet = [
+var CreateTaskSet$ = [
     9,
     n0,
     _CTS,
     0,
-    () => CreateTaskSetRequest,
-    () => CreateTaskSetResponse,
+    () => CreateTaskSetRequest$,
+    () => CreateTaskSetResponse$,
 ];
-var DeleteAccountSetting = [
+var DeleteAccountSetting$ = [
     9,
     n0,
     _DAS,
     0,
-    () => DeleteAccountSettingRequest,
-    () => DeleteAccountSettingResponse,
+    () => DeleteAccountSettingRequest$,
+    () => DeleteAccountSettingResponse$,
 ];
-var DeleteAttributes = [
+var DeleteAttributes$ = [
     9,
     n0,
     _DAe,
     0,
-    () => DeleteAttributesRequest,
-    () => DeleteAttributesResponse,
+    () => DeleteAttributesRequest$,
+    () => DeleteAttributesResponse$,
 ];
-var DeleteCapacityProvider = [
+var DeleteCapacityProvider$ = [
     9,
     n0,
     _DCP,
     0,
-    () => DeleteCapacityProviderRequest,
-    () => DeleteCapacityProviderResponse,
+    () => DeleteCapacityProviderRequest$,
+    () => DeleteCapacityProviderResponse$,
 ];
-var DeleteCluster = [
+var DeleteCluster$ = [
     9,
     n0,
     _DCel,
     0,
-    () => DeleteClusterRequest,
-    () => DeleteClusterResponse,
+    () => DeleteClusterRequest$,
+    () => DeleteClusterResponse$,
 ];
-var DeleteExpressGatewayService = [
+var DeleteExpressGatewayService$ = [
     9,
     n0,
     _DEGS,
     0,
-    () => DeleteExpressGatewayServiceRequest,
-    () => DeleteExpressGatewayServiceResponse,
+    () => DeleteExpressGatewayServiceRequest$,
+    () => DeleteExpressGatewayServiceResponse$,
 ];
-var DeleteService = [
+var DeleteService$ = [
     9,
     n0,
     _DS,
     0,
-    () => DeleteServiceRequest,
-    () => DeleteServiceResponse,
+    () => DeleteServiceRequest$,
+    () => DeleteServiceResponse$,
 ];
-var DeleteTaskDefinitions = [
+var DeleteTaskDefinitions$ = [
     9,
     n0,
     _DTD,
     0,
-    () => DeleteTaskDefinitionsRequest,
-    () => DeleteTaskDefinitionsResponse,
+    () => DeleteTaskDefinitionsRequest$,
+    () => DeleteTaskDefinitionsResponse$,
 ];
-var DeleteTaskSet = [
+var DeleteTaskSet$ = [
     9,
     n0,
     _DTS,
     0,
-    () => DeleteTaskSetRequest,
-    () => DeleteTaskSetResponse,
+    () => DeleteTaskSetRequest$,
+    () => DeleteTaskSetResponse$,
 ];
-var DeregisterContainerInstance = [
+var DeregisterContainerInstance$ = [
     9,
     n0,
     _DCI,
     0,
-    () => DeregisterContainerInstanceRequest,
-    () => DeregisterContainerInstanceResponse,
+    () => DeregisterContainerInstanceRequest$,
+    () => DeregisterContainerInstanceResponse$,
 ];
-var DeregisterTaskDefinition = [
+var DeregisterTaskDefinition$ = [
     9,
     n0,
     _DTDe,
     0,
-    () => DeregisterTaskDefinitionRequest,
-    () => DeregisterTaskDefinitionResponse,
+    () => DeregisterTaskDefinitionRequest$,
+    () => DeregisterTaskDefinitionResponse$,
 ];
-var DescribeCapacityProviders = [
+var DescribeCapacityProviders$ = [
     9,
     n0,
     _DCPe,
     0,
-    () => DescribeCapacityProvidersRequest,
-    () => DescribeCapacityProvidersResponse,
+    () => DescribeCapacityProvidersRequest$,
+    () => DescribeCapacityProvidersResponse$,
 ];
-var DescribeClusters = [
+var DescribeClusters$ = [
     9,
     n0,
     _DCes,
     0,
-    () => DescribeClustersRequest,
-    () => DescribeClustersResponse,
+    () => DescribeClustersRequest$,
+    () => DescribeClustersResponse$,
 ];
-var DescribeContainerInstances = [
+var DescribeContainerInstances$ = [
     9,
     n0,
     _DCIe,
     0,
-    () => DescribeContainerInstancesRequest,
-    () => DescribeContainerInstancesResponse,
+    () => DescribeContainerInstancesRequest$,
+    () => DescribeContainerInstancesResponse$,
 ];
-var DescribeExpressGatewayService = [
+var DescribeExpressGatewayService$ = [
     9,
     n0,
     _DEGSe,
     0,
-    () => DescribeExpressGatewayServiceRequest,
-    () => DescribeExpressGatewayServiceResponse,
+    () => DescribeExpressGatewayServiceRequest$,
+    () => DescribeExpressGatewayServiceResponse$,
 ];
-var DescribeServiceDeployments = [
+var DescribeServiceDeployments$ = [
     9,
     n0,
     _DSD,
     0,
-    () => DescribeServiceDeploymentsRequest,
-    () => DescribeServiceDeploymentsResponse,
+    () => DescribeServiceDeploymentsRequest$,
+    () => DescribeServiceDeploymentsResponse$,
 ];
-var DescribeServiceRevisions = [
+var DescribeServiceRevisions$ = [
     9,
     n0,
     _DSRescr,
     0,
-    () => DescribeServiceRevisionsRequest,
-    () => DescribeServiceRevisionsResponse,
+    () => DescribeServiceRevisionsRequest$,
+    () => DescribeServiceRevisionsResponse$,
 ];
-var DescribeServices = [
+var DescribeServices$ = [
     9,
     n0,
     _DSe,
     0,
-    () => DescribeServicesRequest,
-    () => DescribeServicesResponse,
+    () => DescribeServicesRequest$,
+    () => DescribeServicesResponse$,
 ];
-var DescribeTaskDefinition = [
+var DescribeTaskDefinition$ = [
     9,
     n0,
     _DTDes,
     0,
-    () => DescribeTaskDefinitionRequest,
-    () => DescribeTaskDefinitionResponse,
+    () => DescribeTaskDefinitionRequest$,
+    () => DescribeTaskDefinitionResponse$,
 ];
-var DescribeTasks = [
+var DescribeTasks$ = [
     9,
     n0,
     _DT,
     0,
-    () => DescribeTasksRequest,
-    () => DescribeTasksResponse,
+    () => DescribeTasksRequest$,
+    () => DescribeTasksResponse$,
 ];
-var DescribeTaskSets = [
+var DescribeTaskSets$ = [
     9,
     n0,
     _DTSe,
     0,
-    () => DescribeTaskSetsRequest,
-    () => DescribeTaskSetsResponse,
+    () => DescribeTaskSetsRequest$,
+    () => DescribeTaskSetsResponse$,
 ];
-var DiscoverPollEndpoint = [
+var DiscoverPollEndpoint$ = [
     9,
     n0,
     _DPE,
     0,
-    () => DiscoverPollEndpointRequest,
-    () => DiscoverPollEndpointResponse,
+    () => DiscoverPollEndpointRequest$,
+    () => DiscoverPollEndpointResponse$,
 ];
-var ExecuteCommand = [
+var ExecuteCommand$ = [
     9,
     n0,
     _EC,
     0,
-    () => ExecuteCommandRequest,
-    () => ExecuteCommandResponse,
+    () => ExecuteCommandRequest$,
+    () => ExecuteCommandResponse$,
 ];
-var GetTaskProtection = [
+var GetTaskProtection$ = [
     9,
     n0,
     _GTP,
     0,
-    () => GetTaskProtectionRequest,
-    () => GetTaskProtectionResponse,
+    () => GetTaskProtectionRequest$,
+    () => GetTaskProtectionResponse$,
 ];
-var ListAccountSettings = [
+var ListAccountSettings$ = [
     9,
     n0,
     _LAS,
     0,
-    () => ListAccountSettingsRequest,
-    () => ListAccountSettingsResponse,
+    () => ListAccountSettingsRequest$,
+    () => ListAccountSettingsResponse$,
 ];
-var ListAttributes = [
+var ListAttributes$ = [
     9,
     n0,
     _LA,
     0,
-    () => ListAttributesRequest,
-    () => ListAttributesResponse,
+    () => ListAttributesRequest$,
+    () => ListAttributesResponse$,
 ];
-var ListClusters = [
+var ListClusters$ = [
     9,
     n0,
     _LCi,
     0,
-    () => ListClustersRequest,
-    () => ListClustersResponse,
+    () => ListClustersRequest$,
+    () => ListClustersResponse$,
 ];
-var ListContainerInstances = [
+var ListContainerInstances$ = [
     9,
     n0,
     _LCI,
     0,
-    () => ListContainerInstancesRequest,
-    () => ListContainerInstancesResponse,
+    () => ListContainerInstancesRequest$,
+    () => ListContainerInstancesResponse$,
 ];
-var ListServiceDeployments = [
+var ListServiceDeployments$ = [
     9,
     n0,
     _LSD,
     0,
-    () => ListServiceDeploymentsRequest,
-    () => ListServiceDeploymentsResponse,
+    () => ListServiceDeploymentsRequest$,
+    () => ListServiceDeploymentsResponse$,
 ];
-var ListServices = [9, n0, _LS, 0, () => ListServicesRequest, () => ListServicesResponse];
-var ListServicesByNamespace = [
+var ListServices$ = [
+    9,
+    n0,
+    _LS,
+    0,
+    () => ListServicesRequest$,
+    () => ListServicesResponse$,
+];
+var ListServicesByNamespace$ = [
     9,
     n0,
     _LSBN,
     0,
-    () => ListServicesByNamespaceRequest,
-    () => ListServicesByNamespaceResponse,
+    () => ListServicesByNamespaceRequest$,
+    () => ListServicesByNamespaceResponse$,
 ];
-var ListTagsForResource = [
+var ListTagsForResource$ = [
     9,
     n0,
     _LTFR,
     0,
-    () => ListTagsForResourceRequest,
-    () => ListTagsForResourceResponse,
+    () => ListTagsForResourceRequest$,
+    () => ListTagsForResourceResponse$,
 ];
-var ListTaskDefinitionFamilies = [
+var ListTaskDefinitionFamilies$ = [
     9,
     n0,
     _LTDF,
     0,
-    () => ListTaskDefinitionFamiliesRequest,
-    () => ListTaskDefinitionFamiliesResponse,
+    () => ListTaskDefinitionFamiliesRequest$,
+    () => ListTaskDefinitionFamiliesResponse$,
 ];
-var ListTaskDefinitions = [
+var ListTaskDefinitions$ = [
     9,
     n0,
     _LTD,
     0,
-    () => ListTaskDefinitionsRequest,
-    () => ListTaskDefinitionsResponse,
+    () => ListTaskDefinitionsRequest$,
+    () => ListTaskDefinitionsResponse$,
 ];
-var ListTasks = [9, n0, _LT, 0, () => ListTasksRequest, () => ListTasksResponse];
-var PutAccountSetting = [
+var ListTasks$ = [9, n0, _LT, 0, () => ListTasksRequest$, () => ListTasksResponse$];
+var PutAccountSetting$ = [
     9,
     n0,
     _PAS,
     0,
-    () => PutAccountSettingRequest,
-    () => PutAccountSettingResponse,
+    () => PutAccountSettingRequest$,
+    () => PutAccountSettingResponse$,
 ];
-var PutAccountSettingDefault = [
+var PutAccountSettingDefault$ = [
     9,
     n0,
     _PASD,
     0,
-    () => PutAccountSettingDefaultRequest,
-    () => PutAccountSettingDefaultResponse,
+    () => PutAccountSettingDefaultRequest$,
+    () => PutAccountSettingDefaultResponse$,
 ];
-var PutAttributes = [
+var PutAttributes$ = [
     9,
     n0,
     _PA,
     0,
-    () => PutAttributesRequest,
-    () => PutAttributesResponse,
+    () => PutAttributesRequest$,
+    () => PutAttributesResponse$,
 ];
-var PutClusterCapacityProviders = [
+var PutClusterCapacityProviders$ = [
     9,
     n0,
     _PCCP,
     0,
-    () => PutClusterCapacityProvidersRequest,
-    () => PutClusterCapacityProvidersResponse,
+    () => PutClusterCapacityProvidersRequest$,
+    () => PutClusterCapacityProvidersResponse$,
 ];
-var RegisterContainerInstance = [
+var RegisterContainerInstance$ = [
     9,
     n0,
     _RCI,
     0,
-    () => RegisterContainerInstanceRequest,
-    () => RegisterContainerInstanceResponse,
+    () => RegisterContainerInstanceRequest$,
+    () => RegisterContainerInstanceResponse$,
 ];
-var RegisterTaskDefinition = [
+var RegisterTaskDefinition$ = [
     9,
     n0,
     _RTD,
     0,
-    () => RegisterTaskDefinitionRequest,
-    () => RegisterTaskDefinitionResponse,
+    () => RegisterTaskDefinitionRequest$,
+    () => RegisterTaskDefinitionResponse$,
 ];
-var RunTask = [9, n0, _RT, 0, () => RunTaskRequest, () => RunTaskResponse];
-var StartTask = [9, n0, _ST, 0, () => StartTaskRequest, () => StartTaskResponse];
-var StopServiceDeployment = [
+var RunTask$ = [9, n0, _RT, 0, () => RunTaskRequest$, () => RunTaskResponse$];
+var StartTask$ = [9, n0, _ST, 0, () => StartTaskRequest$, () => StartTaskResponse$];
+var StopServiceDeployment$ = [
     9,
     n0,
     _SSD,
     0,
-    () => StopServiceDeploymentRequest,
-    () => StopServiceDeploymentResponse,
+    () => StopServiceDeploymentRequest$,
+    () => StopServiceDeploymentResponse$,
 ];
-var StopTask = [9, n0, _STt, 0, () => StopTaskRequest, () => StopTaskResponse];
-var SubmitAttachmentStateChanges = [
+var StopTask$ = [9, n0, _STt, 0, () => StopTaskRequest$, () => StopTaskResponse$];
+var SubmitAttachmentStateChanges$ = [
     9,
     n0,
     _SASC,
     0,
-    () => SubmitAttachmentStateChangesRequest,
-    () => SubmitAttachmentStateChangesResponse,
+    () => SubmitAttachmentStateChangesRequest$,
+    () => SubmitAttachmentStateChangesResponse$,
 ];
-var SubmitContainerStateChange = [
+var SubmitContainerStateChange$ = [
     9,
     n0,
     _SCSC,
     0,
-    () => SubmitContainerStateChangeRequest,
-    () => SubmitContainerStateChangeResponse,
+    () => SubmitContainerStateChangeRequest$,
+    () => SubmitContainerStateChangeResponse$,
 ];
-var SubmitTaskStateChange = [
+var SubmitTaskStateChange$ = [
     9,
     n0,
     _STSC,
     0,
-    () => SubmitTaskStateChangeRequest,
-    () => SubmitTaskStateChangeResponse,
+    () => SubmitTaskStateChangeRequest$,
+    () => SubmitTaskStateChangeResponse$,
 ];
-var TagResource = [9, n0, _TR, 0, () => TagResourceRequest, () => TagResourceResponse];
-var UntagResource = [
+var TagResource$ = [9, n0, _TR, 0, () => TagResourceRequest$, () => TagResourceResponse$];
+var UntagResource$ = [
     9,
     n0,
     _UR,
     0,
-    () => UntagResourceRequest,
-    () => UntagResourceResponse,
+    () => UntagResourceRequest$,
+    () => UntagResourceResponse$,
 ];
-var UpdateCapacityProvider = [
+var UpdateCapacityProvider$ = [
     9,
     n0,
     _UCP,
     0,
-    () => UpdateCapacityProviderRequest,
-    () => UpdateCapacityProviderResponse,
+    () => UpdateCapacityProviderRequest$,
+    () => UpdateCapacityProviderResponse$,
 ];
-var UpdateCluster = [
+var UpdateCluster$ = [
     9,
     n0,
     _UC,
     0,
-    () => UpdateClusterRequest,
-    () => UpdateClusterResponse,
+    () => UpdateClusterRequest$,
+    () => UpdateClusterResponse$,
 ];
-var UpdateClusterSettings = [
+var UpdateClusterSettings$ = [
     9,
     n0,
     _UCS,
     0,
-    () => UpdateClusterSettingsRequest,
-    () => UpdateClusterSettingsResponse,
+    () => UpdateClusterSettingsRequest$,
+    () => UpdateClusterSettingsResponse$,
 ];
-var UpdateContainerAgent = [
+var UpdateContainerAgent$ = [
     9,
     n0,
     _UCA,
     0,
-    () => UpdateContainerAgentRequest,
-    () => UpdateContainerAgentResponse,
+    () => UpdateContainerAgentRequest$,
+    () => UpdateContainerAgentResponse$,
 ];
-var UpdateContainerInstancesState = [
+var UpdateContainerInstancesState$ = [
     9,
     n0,
     _UCIS,
     0,
-    () => UpdateContainerInstancesStateRequest,
-    () => UpdateContainerInstancesStateResponse,
+    () => UpdateContainerInstancesStateRequest$,
+    () => UpdateContainerInstancesStateResponse$,
 ];
-var UpdateExpressGatewayService = [
+var UpdateExpressGatewayService$ = [
     9,
     n0,
     _UEGSp,
     0,
-    () => UpdateExpressGatewayServiceRequest,
-    () => UpdateExpressGatewayServiceResponse,
+    () => UpdateExpressGatewayServiceRequest$,
+    () => UpdateExpressGatewayServiceResponse$,
 ];
-var UpdateService = [
+var UpdateService$ = [
     9,
     n0,
     _US,
     0,
-    () => UpdateServiceRequest,
-    () => UpdateServiceResponse,
+    () => UpdateServiceRequest$,
+    () => UpdateServiceResponse$,
 ];
-var UpdateServicePrimaryTaskSet = [
+var UpdateServicePrimaryTaskSet$ = [
     9,
     n0,
     _USPTS,
     0,
-    () => UpdateServicePrimaryTaskSetRequest,
-    () => UpdateServicePrimaryTaskSetResponse,
+    () => UpdateServicePrimaryTaskSetRequest$,
+    () => UpdateServicePrimaryTaskSetResponse$,
 ];
-var UpdateTaskProtection = [
+var UpdateTaskProtection$ = [
     9,
     n0,
     _UTP,
     0,
-    () => UpdateTaskProtectionRequest,
-    () => UpdateTaskProtectionResponse,
+    () => UpdateTaskProtectionRequest$,
+    () => UpdateTaskProtectionResponse$,
 ];
-var UpdateTaskSet = [
+var UpdateTaskSet$ = [
     9,
     n0,
     _UTS,
     0,
-    () => UpdateTaskSetRequest,
-    () => UpdateTaskSetResponse,
+    () => UpdateTaskSetRequest$,
+    () => UpdateTaskSetResponse$,
 ];
 
 class CreateCapacityProviderCommand extends smithyClient.Command
@@ -8156,7 +7807,7 @@ class CreateCapacityProviderCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "CreateCapacityProvider", {})
     .n("ECSClient", "CreateCapacityProviderCommand")
-    .sc(CreateCapacityProvider)
+    .sc(CreateCapacityProvider$)
     .build() {
 }
 
@@ -8168,7 +7819,7 @@ class CreateClusterCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "CreateCluster", {})
     .n("ECSClient", "CreateClusterCommand")
-    .sc(CreateCluster)
+    .sc(CreateCluster$)
     .build() {
 }
 
@@ -8180,7 +7831,7 @@ class CreateExpressGatewayServiceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "CreateExpressGatewayService", {})
     .n("ECSClient", "CreateExpressGatewayServiceCommand")
-    .sc(CreateExpressGatewayService)
+    .sc(CreateExpressGatewayService$)
     .build() {
 }
 
@@ -8192,7 +7843,7 @@ class CreateServiceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "CreateService", {})
     .n("ECSClient", "CreateServiceCommand")
-    .sc(CreateService)
+    .sc(CreateService$)
     .build() {
 }
 
@@ -8204,7 +7855,7 @@ class CreateTaskSetCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "CreateTaskSet", {})
     .n("ECSClient", "CreateTaskSetCommand")
-    .sc(CreateTaskSet)
+    .sc(CreateTaskSet$)
     .build() {
 }
 
@@ -8216,7 +7867,7 @@ class DeleteAccountSettingCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeleteAccountSetting", {})
     .n("ECSClient", "DeleteAccountSettingCommand")
-    .sc(DeleteAccountSetting)
+    .sc(DeleteAccountSetting$)
     .build() {
 }
 
@@ -8228,7 +7879,7 @@ class DeleteAttributesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeleteAttributes", {})
     .n("ECSClient", "DeleteAttributesCommand")
-    .sc(DeleteAttributes)
+    .sc(DeleteAttributes$)
     .build() {
 }
 
@@ -8240,7 +7891,7 @@ class DeleteCapacityProviderCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeleteCapacityProvider", {})
     .n("ECSClient", "DeleteCapacityProviderCommand")
-    .sc(DeleteCapacityProvider)
+    .sc(DeleteCapacityProvider$)
     .build() {
 }
 
@@ -8252,7 +7903,7 @@ class DeleteClusterCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeleteCluster", {})
     .n("ECSClient", "DeleteClusterCommand")
-    .sc(DeleteCluster)
+    .sc(DeleteCluster$)
     .build() {
 }
 
@@ -8264,7 +7915,7 @@ class DeleteExpressGatewayServiceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeleteExpressGatewayService", {})
     .n("ECSClient", "DeleteExpressGatewayServiceCommand")
-    .sc(DeleteExpressGatewayService)
+    .sc(DeleteExpressGatewayService$)
     .build() {
 }
 
@@ -8276,7 +7927,7 @@ class DeleteServiceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeleteService", {})
     .n("ECSClient", "DeleteServiceCommand")
-    .sc(DeleteService)
+    .sc(DeleteService$)
     .build() {
 }
 
@@ -8288,7 +7939,7 @@ class DeleteTaskDefinitionsCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeleteTaskDefinitions", {})
     .n("ECSClient", "DeleteTaskDefinitionsCommand")
-    .sc(DeleteTaskDefinitions)
+    .sc(DeleteTaskDefinitions$)
     .build() {
 }
 
@@ -8300,7 +7951,7 @@ class DeleteTaskSetCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeleteTaskSet", {})
     .n("ECSClient", "DeleteTaskSetCommand")
-    .sc(DeleteTaskSet)
+    .sc(DeleteTaskSet$)
     .build() {
 }
 
@@ -8312,7 +7963,7 @@ class DeregisterContainerInstanceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeregisterContainerInstance", {})
     .n("ECSClient", "DeregisterContainerInstanceCommand")
-    .sc(DeregisterContainerInstance)
+    .sc(DeregisterContainerInstance$)
     .build() {
 }
 
@@ -8324,7 +7975,7 @@ class DeregisterTaskDefinitionCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DeregisterTaskDefinition", {})
     .n("ECSClient", "DeregisterTaskDefinitionCommand")
-    .sc(DeregisterTaskDefinition)
+    .sc(DeregisterTaskDefinition$)
     .build() {
 }
 
@@ -8336,7 +7987,7 @@ class DescribeCapacityProvidersCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeCapacityProviders", {})
     .n("ECSClient", "DescribeCapacityProvidersCommand")
-    .sc(DescribeCapacityProviders)
+    .sc(DescribeCapacityProviders$)
     .build() {
 }
 
@@ -8348,7 +7999,7 @@ class DescribeClustersCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeClusters", {})
     .n("ECSClient", "DescribeClustersCommand")
-    .sc(DescribeClusters)
+    .sc(DescribeClusters$)
     .build() {
 }
 
@@ -8360,7 +8011,7 @@ class DescribeContainerInstancesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeContainerInstances", {})
     .n("ECSClient", "DescribeContainerInstancesCommand")
-    .sc(DescribeContainerInstances)
+    .sc(DescribeContainerInstances$)
     .build() {
 }
 
@@ -8372,7 +8023,7 @@ class DescribeExpressGatewayServiceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeExpressGatewayService", {})
     .n("ECSClient", "DescribeExpressGatewayServiceCommand")
-    .sc(DescribeExpressGatewayService)
+    .sc(DescribeExpressGatewayService$)
     .build() {
 }
 
@@ -8384,7 +8035,7 @@ class DescribeServiceDeploymentsCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeServiceDeployments", {})
     .n("ECSClient", "DescribeServiceDeploymentsCommand")
-    .sc(DescribeServiceDeployments)
+    .sc(DescribeServiceDeployments$)
     .build() {
 }
 
@@ -8396,7 +8047,7 @@ class DescribeServiceRevisionsCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeServiceRevisions", {})
     .n("ECSClient", "DescribeServiceRevisionsCommand")
-    .sc(DescribeServiceRevisions)
+    .sc(DescribeServiceRevisions$)
     .build() {
 }
 
@@ -8408,7 +8059,7 @@ class DescribeServicesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeServices", {})
     .n("ECSClient", "DescribeServicesCommand")
-    .sc(DescribeServices)
+    .sc(DescribeServices$)
     .build() {
 }
 
@@ -8420,7 +8071,7 @@ class DescribeTaskDefinitionCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeTaskDefinition", {})
     .n("ECSClient", "DescribeTaskDefinitionCommand")
-    .sc(DescribeTaskDefinition)
+    .sc(DescribeTaskDefinition$)
     .build() {
 }
 
@@ -8432,7 +8083,7 @@ class DescribeTasksCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeTasks", {})
     .n("ECSClient", "DescribeTasksCommand")
-    .sc(DescribeTasks)
+    .sc(DescribeTasks$)
     .build() {
 }
 
@@ -8444,7 +8095,7 @@ class DescribeTaskSetsCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DescribeTaskSets", {})
     .n("ECSClient", "DescribeTaskSetsCommand")
-    .sc(DescribeTaskSets)
+    .sc(DescribeTaskSets$)
     .build() {
 }
 
@@ -8456,7 +8107,7 @@ class DiscoverPollEndpointCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "DiscoverPollEndpoint", {})
     .n("ECSClient", "DiscoverPollEndpointCommand")
-    .sc(DiscoverPollEndpoint)
+    .sc(DiscoverPollEndpoint$)
     .build() {
 }
 
@@ -8468,7 +8119,7 @@ class ExecuteCommandCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ExecuteCommand", {})
     .n("ECSClient", "ExecuteCommandCommand")
-    .sc(ExecuteCommand)
+    .sc(ExecuteCommand$)
     .build() {
 }
 
@@ -8480,7 +8131,7 @@ class GetTaskProtectionCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "GetTaskProtection", {})
     .n("ECSClient", "GetTaskProtectionCommand")
-    .sc(GetTaskProtection)
+    .sc(GetTaskProtection$)
     .build() {
 }
 
@@ -8492,7 +8143,7 @@ class ListAccountSettingsCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListAccountSettings", {})
     .n("ECSClient", "ListAccountSettingsCommand")
-    .sc(ListAccountSettings)
+    .sc(ListAccountSettings$)
     .build() {
 }
 
@@ -8504,7 +8155,7 @@ class ListAttributesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListAttributes", {})
     .n("ECSClient", "ListAttributesCommand")
-    .sc(ListAttributes)
+    .sc(ListAttributes$)
     .build() {
 }
 
@@ -8516,7 +8167,7 @@ class ListClustersCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListClusters", {})
     .n("ECSClient", "ListClustersCommand")
-    .sc(ListClusters)
+    .sc(ListClusters$)
     .build() {
 }
 
@@ -8528,7 +8179,7 @@ class ListContainerInstancesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListContainerInstances", {})
     .n("ECSClient", "ListContainerInstancesCommand")
-    .sc(ListContainerInstances)
+    .sc(ListContainerInstances$)
     .build() {
 }
 
@@ -8540,7 +8191,7 @@ class ListServiceDeploymentsCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListServiceDeployments", {})
     .n("ECSClient", "ListServiceDeploymentsCommand")
-    .sc(ListServiceDeployments)
+    .sc(ListServiceDeployments$)
     .build() {
 }
 
@@ -8552,7 +8203,7 @@ class ListServicesByNamespaceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListServicesByNamespace", {})
     .n("ECSClient", "ListServicesByNamespaceCommand")
-    .sc(ListServicesByNamespace)
+    .sc(ListServicesByNamespace$)
     .build() {
 }
 
@@ -8564,7 +8215,7 @@ class ListServicesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListServices", {})
     .n("ECSClient", "ListServicesCommand")
-    .sc(ListServices)
+    .sc(ListServices$)
     .build() {
 }
 
@@ -8576,7 +8227,7 @@ class ListTagsForResourceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListTagsForResource", {})
     .n("ECSClient", "ListTagsForResourceCommand")
-    .sc(ListTagsForResource)
+    .sc(ListTagsForResource$)
     .build() {
 }
 
@@ -8588,7 +8239,7 @@ class ListTaskDefinitionFamiliesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListTaskDefinitionFamilies", {})
     .n("ECSClient", "ListTaskDefinitionFamiliesCommand")
-    .sc(ListTaskDefinitionFamilies)
+    .sc(ListTaskDefinitionFamilies$)
     .build() {
 }
 
@@ -8600,7 +8251,7 @@ class ListTaskDefinitionsCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListTaskDefinitions", {})
     .n("ECSClient", "ListTaskDefinitionsCommand")
-    .sc(ListTaskDefinitions)
+    .sc(ListTaskDefinitions$)
     .build() {
 }
 
@@ -8612,7 +8263,7 @@ class ListTasksCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "ListTasks", {})
     .n("ECSClient", "ListTasksCommand")
-    .sc(ListTasks)
+    .sc(ListTasks$)
     .build() {
 }
 
@@ -8624,7 +8275,7 @@ class PutAccountSettingCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "PutAccountSetting", {})
     .n("ECSClient", "PutAccountSettingCommand")
-    .sc(PutAccountSetting)
+    .sc(PutAccountSetting$)
     .build() {
 }
 
@@ -8636,7 +8287,7 @@ class PutAccountSettingDefaultCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "PutAccountSettingDefault", {})
     .n("ECSClient", "PutAccountSettingDefaultCommand")
-    .sc(PutAccountSettingDefault)
+    .sc(PutAccountSettingDefault$)
     .build() {
 }
 
@@ -8648,7 +8299,7 @@ class PutAttributesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "PutAttributes", {})
     .n("ECSClient", "PutAttributesCommand")
-    .sc(PutAttributes)
+    .sc(PutAttributes$)
     .build() {
 }
 
@@ -8660,7 +8311,7 @@ class PutClusterCapacityProvidersCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "PutClusterCapacityProviders", {})
     .n("ECSClient", "PutClusterCapacityProvidersCommand")
-    .sc(PutClusterCapacityProviders)
+    .sc(PutClusterCapacityProviders$)
     .build() {
 }
 
@@ -8672,7 +8323,7 @@ class RegisterContainerInstanceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "RegisterContainerInstance", {})
     .n("ECSClient", "RegisterContainerInstanceCommand")
-    .sc(RegisterContainerInstance)
+    .sc(RegisterContainerInstance$)
     .build() {
 }
 
@@ -8684,7 +8335,7 @@ class RegisterTaskDefinitionCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "RegisterTaskDefinition", {})
     .n("ECSClient", "RegisterTaskDefinitionCommand")
-    .sc(RegisterTaskDefinition)
+    .sc(RegisterTaskDefinition$)
     .build() {
 }
 
@@ -8696,7 +8347,7 @@ class RunTaskCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "RunTask", {})
     .n("ECSClient", "RunTaskCommand")
-    .sc(RunTask)
+    .sc(RunTask$)
     .build() {
 }
 
@@ -8708,7 +8359,7 @@ class StartTaskCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "StartTask", {})
     .n("ECSClient", "StartTaskCommand")
-    .sc(StartTask)
+    .sc(StartTask$)
     .build() {
 }
 
@@ -8720,7 +8371,7 @@ class StopServiceDeploymentCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "StopServiceDeployment", {})
     .n("ECSClient", "StopServiceDeploymentCommand")
-    .sc(StopServiceDeployment)
+    .sc(StopServiceDeployment$)
     .build() {
 }
 
@@ -8732,7 +8383,7 @@ class StopTaskCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "StopTask", {})
     .n("ECSClient", "StopTaskCommand")
-    .sc(StopTask)
+    .sc(StopTask$)
     .build() {
 }
 
@@ -8744,7 +8395,7 @@ class SubmitAttachmentStateChangesCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "SubmitAttachmentStateChanges", {})
     .n("ECSClient", "SubmitAttachmentStateChangesCommand")
-    .sc(SubmitAttachmentStateChanges)
+    .sc(SubmitAttachmentStateChanges$)
     .build() {
 }
 
@@ -8756,7 +8407,7 @@ class SubmitContainerStateChangeCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "SubmitContainerStateChange", {})
     .n("ECSClient", "SubmitContainerStateChangeCommand")
-    .sc(SubmitContainerStateChange)
+    .sc(SubmitContainerStateChange$)
     .build() {
 }
 
@@ -8768,7 +8419,7 @@ class SubmitTaskStateChangeCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "SubmitTaskStateChange", {})
     .n("ECSClient", "SubmitTaskStateChangeCommand")
-    .sc(SubmitTaskStateChange)
+    .sc(SubmitTaskStateChange$)
     .build() {
 }
 
@@ -8780,7 +8431,7 @@ class TagResourceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "TagResource", {})
     .n("ECSClient", "TagResourceCommand")
-    .sc(TagResource)
+    .sc(TagResource$)
     .build() {
 }
 
@@ -8792,7 +8443,7 @@ class UntagResourceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UntagResource", {})
     .n("ECSClient", "UntagResourceCommand")
-    .sc(UntagResource)
+    .sc(UntagResource$)
     .build() {
 }
 
@@ -8804,7 +8455,7 @@ class UpdateCapacityProviderCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateCapacityProvider", {})
     .n("ECSClient", "UpdateCapacityProviderCommand")
-    .sc(UpdateCapacityProvider)
+    .sc(UpdateCapacityProvider$)
     .build() {
 }
 
@@ -8816,7 +8467,7 @@ class UpdateClusterCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateCluster", {})
     .n("ECSClient", "UpdateClusterCommand")
-    .sc(UpdateCluster)
+    .sc(UpdateCluster$)
     .build() {
 }
 
@@ -8828,7 +8479,7 @@ class UpdateClusterSettingsCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateClusterSettings", {})
     .n("ECSClient", "UpdateClusterSettingsCommand")
-    .sc(UpdateClusterSettings)
+    .sc(UpdateClusterSettings$)
     .build() {
 }
 
@@ -8840,7 +8491,7 @@ class UpdateContainerAgentCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateContainerAgent", {})
     .n("ECSClient", "UpdateContainerAgentCommand")
-    .sc(UpdateContainerAgent)
+    .sc(UpdateContainerAgent$)
     .build() {
 }
 
@@ -8852,7 +8503,7 @@ class UpdateContainerInstancesStateCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateContainerInstancesState", {})
     .n("ECSClient", "UpdateContainerInstancesStateCommand")
-    .sc(UpdateContainerInstancesState)
+    .sc(UpdateContainerInstancesState$)
     .build() {
 }
 
@@ -8864,7 +8515,7 @@ class UpdateExpressGatewayServiceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateExpressGatewayService", {})
     .n("ECSClient", "UpdateExpressGatewayServiceCommand")
-    .sc(UpdateExpressGatewayService)
+    .sc(UpdateExpressGatewayService$)
     .build() {
 }
 
@@ -8876,7 +8527,7 @@ class UpdateServiceCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateService", {})
     .n("ECSClient", "UpdateServiceCommand")
-    .sc(UpdateService)
+    .sc(UpdateService$)
     .build() {
 }
 
@@ -8888,7 +8539,7 @@ class UpdateServicePrimaryTaskSetCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateServicePrimaryTaskSet", {})
     .n("ECSClient", "UpdateServicePrimaryTaskSetCommand")
-    .sc(UpdateServicePrimaryTaskSet)
+    .sc(UpdateServicePrimaryTaskSet$)
     .build() {
 }
 
@@ -8900,7 +8551,7 @@ class UpdateTaskProtectionCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateTaskProtection", {})
     .n("ECSClient", "UpdateTaskProtectionCommand")
-    .sc(UpdateTaskProtection)
+    .sc(UpdateTaskProtection$)
     .build() {
 }
 
@@ -8912,7 +8563,7 @@ class UpdateTaskSetCommand extends smithyClient.Command
 })
     .s("AmazonEC2ContainerServiceV20141113", "UpdateTaskSet", {})
     .n("ECSClient", "UpdateTaskSetCommand")
-    .sc(UpdateTaskSet)
+    .sc(UpdateTaskSet$)
     .build() {
 }
 
@@ -9723,191 +9374,575 @@ Object.defineProperty(exports, "__Client", ({
     enumerable: true,
     get: function () { return smithyClient.Client; }
 }));
+exports.AcceleratorCountRequest$ = AcceleratorCountRequest$;
 exports.AcceleratorManufacturer = AcceleratorManufacturer;
 exports.AcceleratorName = AcceleratorName;
+exports.AcceleratorTotalMemoryMiBRequest$ = AcceleratorTotalMemoryMiBRequest$;
 exports.AcceleratorType = AcceleratorType;
-exports.AccessDeniedException = AccessDeniedException$1;
+exports.AccessDeniedException = AccessDeniedException;
+exports.AccessDeniedException$ = AccessDeniedException$;
 exports.AccessType = AccessType;
+exports.AdvancedConfiguration$ = AdvancedConfiguration$;
 exports.AgentUpdateStatus = AgentUpdateStatus;
 exports.ApplicationProtocol = ApplicationProtocol;
 exports.AssignPublicIp = AssignPublicIp;
-exports.AttributeLimitExceededException = AttributeLimitExceededException$1;
+exports.Attachment$ = Attachment$;
+exports.AttachmentStateChange$ = AttachmentStateChange$;
+exports.Attribute$ = Attribute$;
+exports.AttributeLimitExceededException = AttributeLimitExceededException;
+exports.AttributeLimitExceededException$ = AttributeLimitExceededException$;
+exports.AutoScalingGroupProvider$ = AutoScalingGroupProvider$;
+exports.AutoScalingGroupProviderUpdate$ = AutoScalingGroupProviderUpdate$;
 exports.AvailabilityZoneRebalancing = AvailabilityZoneRebalancing;
+exports.AwsVpcConfiguration$ = AwsVpcConfiguration$;
 exports.BareMetal = BareMetal;
-exports.BlockedException = BlockedException$1;
+exports.BaselineEbsBandwidthMbpsRequest$ = BaselineEbsBandwidthMbpsRequest$;
+exports.BlockedException = BlockedException;
+exports.BlockedException$ = BlockedException$;
 exports.BurstablePerformance = BurstablePerformance;
 exports.CPUArchitecture = CPUArchitecture;
+exports.CanaryConfiguration$ = CanaryConfiguration$;
+exports.CapacityProvider$ = CapacityProvider$;
 exports.CapacityProviderField = CapacityProviderField;
 exports.CapacityProviderStatus = CapacityProviderStatus;
+exports.CapacityProviderStrategyItem$ = CapacityProviderStrategyItem$;
 exports.CapacityProviderType = CapacityProviderType;
 exports.CapacityProviderUpdateStatus = CapacityProviderUpdateStatus;
-exports.ClientException = ClientException$1;
-exports.ClusterContainsCapacityProviderException = ClusterContainsCapacityProviderException$1;
-exports.ClusterContainsContainerInstancesException = ClusterContainsContainerInstancesException$1;
-exports.ClusterContainsServicesException = ClusterContainsServicesException$1;
-exports.ClusterContainsTasksException = ClusterContainsTasksException$1;
+exports.ClientException = ClientException;
+exports.ClientException$ = ClientException$;
+exports.Cluster$ = Cluster$;
+exports.ClusterConfiguration$ = ClusterConfiguration$;
+exports.ClusterContainsCapacityProviderException = ClusterContainsCapacityProviderException;
+exports.ClusterContainsCapacityProviderException$ = ClusterContainsCapacityProviderException$;
+exports.ClusterContainsContainerInstancesException = ClusterContainsContainerInstancesException;
+exports.ClusterContainsContainerInstancesException$ = ClusterContainsContainerInstancesException$;
+exports.ClusterContainsServicesException = ClusterContainsServicesException;
+exports.ClusterContainsServicesException$ = ClusterContainsServicesException$;
+exports.ClusterContainsTasksException = ClusterContainsTasksException;
+exports.ClusterContainsTasksException$ = ClusterContainsTasksException$;
 exports.ClusterField = ClusterField;
-exports.ClusterNotFoundException = ClusterNotFoundException$1;
+exports.ClusterNotFoundException = ClusterNotFoundException;
+exports.ClusterNotFoundException$ = ClusterNotFoundException$;
+exports.ClusterServiceConnectDefaults$ = ClusterServiceConnectDefaults$;
+exports.ClusterServiceConnectDefaultsRequest$ = ClusterServiceConnectDefaultsRequest$;
+exports.ClusterSetting$ = ClusterSetting$;
 exports.ClusterSettingName = ClusterSettingName;
 exports.Compatibility = Compatibility;
-exports.ConflictException = ConflictException$1;
+exports.ConflictException = ConflictException;
+exports.ConflictException$ = ConflictException$;
 exports.Connectivity = Connectivity;
+exports.Container$ = Container$;
 exports.ContainerCondition = ContainerCondition;
+exports.ContainerDefinition$ = ContainerDefinition$;
+exports.ContainerDependency$ = ContainerDependency$;
+exports.ContainerImage$ = ContainerImage$;
+exports.ContainerInstance$ = ContainerInstance$;
 exports.ContainerInstanceField = ContainerInstanceField;
+exports.ContainerInstanceHealthStatus$ = ContainerInstanceHealthStatus$;
 exports.ContainerInstanceStatus = ContainerInstanceStatus;
+exports.ContainerOverride$ = ContainerOverride$;
+exports.ContainerRestartPolicy$ = ContainerRestartPolicy$;
+exports.ContainerStateChange$ = ContainerStateChange$;
 exports.CpuManufacturer = CpuManufacturer;
+exports.CreateCapacityProvider$ = CreateCapacityProvider$;
 exports.CreateCapacityProviderCommand = CreateCapacityProviderCommand;
+exports.CreateCapacityProviderRequest$ = CreateCapacityProviderRequest$;
+exports.CreateCapacityProviderResponse$ = CreateCapacityProviderResponse$;
+exports.CreateCluster$ = CreateCluster$;
 exports.CreateClusterCommand = CreateClusterCommand;
+exports.CreateClusterRequest$ = CreateClusterRequest$;
+exports.CreateClusterResponse$ = CreateClusterResponse$;
+exports.CreateExpressGatewayService$ = CreateExpressGatewayService$;
 exports.CreateExpressGatewayServiceCommand = CreateExpressGatewayServiceCommand;
+exports.CreateExpressGatewayServiceRequest$ = CreateExpressGatewayServiceRequest$;
+exports.CreateExpressGatewayServiceResponse$ = CreateExpressGatewayServiceResponse$;
+exports.CreateManagedInstancesProviderConfiguration$ = CreateManagedInstancesProviderConfiguration$;
+exports.CreateService$ = CreateService$;
 exports.CreateServiceCommand = CreateServiceCommand;
+exports.CreateServiceRequest$ = CreateServiceRequest$;
+exports.CreateServiceResponse$ = CreateServiceResponse$;
+exports.CreateTaskSet$ = CreateTaskSet$;
 exports.CreateTaskSetCommand = CreateTaskSetCommand;
+exports.CreateTaskSetRequest$ = CreateTaskSetRequest$;
+exports.CreateTaskSetResponse$ = CreateTaskSetResponse$;
+exports.CreatedAt$ = CreatedAt$;
+exports.DeleteAccountSetting$ = DeleteAccountSetting$;
 exports.DeleteAccountSettingCommand = DeleteAccountSettingCommand;
+exports.DeleteAccountSettingRequest$ = DeleteAccountSettingRequest$;
+exports.DeleteAccountSettingResponse$ = DeleteAccountSettingResponse$;
+exports.DeleteAttributes$ = DeleteAttributes$;
 exports.DeleteAttributesCommand = DeleteAttributesCommand;
+exports.DeleteAttributesRequest$ = DeleteAttributesRequest$;
+exports.DeleteAttributesResponse$ = DeleteAttributesResponse$;
+exports.DeleteCapacityProvider$ = DeleteCapacityProvider$;
 exports.DeleteCapacityProviderCommand = DeleteCapacityProviderCommand;
+exports.DeleteCapacityProviderRequest$ = DeleteCapacityProviderRequest$;
+exports.DeleteCapacityProviderResponse$ = DeleteCapacityProviderResponse$;
+exports.DeleteCluster$ = DeleteCluster$;
 exports.DeleteClusterCommand = DeleteClusterCommand;
+exports.DeleteClusterRequest$ = DeleteClusterRequest$;
+exports.DeleteClusterResponse$ = DeleteClusterResponse$;
+exports.DeleteExpressGatewayService$ = DeleteExpressGatewayService$;
 exports.DeleteExpressGatewayServiceCommand = DeleteExpressGatewayServiceCommand;
+exports.DeleteExpressGatewayServiceRequest$ = DeleteExpressGatewayServiceRequest$;
+exports.DeleteExpressGatewayServiceResponse$ = DeleteExpressGatewayServiceResponse$;
+exports.DeleteService$ = DeleteService$;
 exports.DeleteServiceCommand = DeleteServiceCommand;
+exports.DeleteServiceRequest$ = DeleteServiceRequest$;
+exports.DeleteServiceResponse$ = DeleteServiceResponse$;
+exports.DeleteTaskDefinitions$ = DeleteTaskDefinitions$;
 exports.DeleteTaskDefinitionsCommand = DeleteTaskDefinitionsCommand;
+exports.DeleteTaskDefinitionsRequest$ = DeleteTaskDefinitionsRequest$;
+exports.DeleteTaskDefinitionsResponse$ = DeleteTaskDefinitionsResponse$;
+exports.DeleteTaskSet$ = DeleteTaskSet$;
 exports.DeleteTaskSetCommand = DeleteTaskSetCommand;
+exports.DeleteTaskSetRequest$ = DeleteTaskSetRequest$;
+exports.DeleteTaskSetResponse$ = DeleteTaskSetResponse$;
+exports.Deployment$ = Deployment$;
+exports.DeploymentAlarms$ = DeploymentAlarms$;
+exports.DeploymentCircuitBreaker$ = DeploymentCircuitBreaker$;
+exports.DeploymentConfiguration$ = DeploymentConfiguration$;
+exports.DeploymentController$ = DeploymentController$;
 exports.DeploymentControllerType = DeploymentControllerType;
+exports.DeploymentEphemeralStorage$ = DeploymentEphemeralStorage$;
+exports.DeploymentLifecycleHook$ = DeploymentLifecycleHook$;
 exports.DeploymentLifecycleHookStage = DeploymentLifecycleHookStage;
 exports.DeploymentRolloutState = DeploymentRolloutState;
 exports.DeploymentStrategy = DeploymentStrategy;
+exports.DeregisterContainerInstance$ = DeregisterContainerInstance$;
 exports.DeregisterContainerInstanceCommand = DeregisterContainerInstanceCommand;
+exports.DeregisterContainerInstanceRequest$ = DeregisterContainerInstanceRequest$;
+exports.DeregisterContainerInstanceResponse$ = DeregisterContainerInstanceResponse$;
+exports.DeregisterTaskDefinition$ = DeregisterTaskDefinition$;
 exports.DeregisterTaskDefinitionCommand = DeregisterTaskDefinitionCommand;
+exports.DeregisterTaskDefinitionRequest$ = DeregisterTaskDefinitionRequest$;
+exports.DeregisterTaskDefinitionResponse$ = DeregisterTaskDefinitionResponse$;
+exports.DescribeCapacityProviders$ = DescribeCapacityProviders$;
 exports.DescribeCapacityProvidersCommand = DescribeCapacityProvidersCommand;
+exports.DescribeCapacityProvidersRequest$ = DescribeCapacityProvidersRequest$;
+exports.DescribeCapacityProvidersResponse$ = DescribeCapacityProvidersResponse$;
+exports.DescribeClusters$ = DescribeClusters$;
 exports.DescribeClustersCommand = DescribeClustersCommand;
+exports.DescribeClustersRequest$ = DescribeClustersRequest$;
+exports.DescribeClustersResponse$ = DescribeClustersResponse$;
+exports.DescribeContainerInstances$ = DescribeContainerInstances$;
 exports.DescribeContainerInstancesCommand = DescribeContainerInstancesCommand;
+exports.DescribeContainerInstancesRequest$ = DescribeContainerInstancesRequest$;
+exports.DescribeContainerInstancesResponse$ = DescribeContainerInstancesResponse$;
+exports.DescribeExpressGatewayService$ = DescribeExpressGatewayService$;
 exports.DescribeExpressGatewayServiceCommand = DescribeExpressGatewayServiceCommand;
+exports.DescribeExpressGatewayServiceRequest$ = DescribeExpressGatewayServiceRequest$;
+exports.DescribeExpressGatewayServiceResponse$ = DescribeExpressGatewayServiceResponse$;
+exports.DescribeServiceDeployments$ = DescribeServiceDeployments$;
 exports.DescribeServiceDeploymentsCommand = DescribeServiceDeploymentsCommand;
+exports.DescribeServiceDeploymentsRequest$ = DescribeServiceDeploymentsRequest$;
+exports.DescribeServiceDeploymentsResponse$ = DescribeServiceDeploymentsResponse$;
+exports.DescribeServiceRevisions$ = DescribeServiceRevisions$;
 exports.DescribeServiceRevisionsCommand = DescribeServiceRevisionsCommand;
+exports.DescribeServiceRevisionsRequest$ = DescribeServiceRevisionsRequest$;
+exports.DescribeServiceRevisionsResponse$ = DescribeServiceRevisionsResponse$;
+exports.DescribeServices$ = DescribeServices$;
 exports.DescribeServicesCommand = DescribeServicesCommand;
+exports.DescribeServicesRequest$ = DescribeServicesRequest$;
+exports.DescribeServicesResponse$ = DescribeServicesResponse$;
+exports.DescribeTaskDefinition$ = DescribeTaskDefinition$;
 exports.DescribeTaskDefinitionCommand = DescribeTaskDefinitionCommand;
+exports.DescribeTaskDefinitionRequest$ = DescribeTaskDefinitionRequest$;
+exports.DescribeTaskDefinitionResponse$ = DescribeTaskDefinitionResponse$;
+exports.DescribeTaskSets$ = DescribeTaskSets$;
 exports.DescribeTaskSetsCommand = DescribeTaskSetsCommand;
+exports.DescribeTaskSetsRequest$ = DescribeTaskSetsRequest$;
+exports.DescribeTaskSetsResponse$ = DescribeTaskSetsResponse$;
+exports.DescribeTasks$ = DescribeTasks$;
 exports.DescribeTasksCommand = DescribeTasksCommand;
+exports.DescribeTasksRequest$ = DescribeTasksRequest$;
+exports.DescribeTasksResponse$ = DescribeTasksResponse$;
 exports.DesiredStatus = DesiredStatus;
+exports.Device$ = Device$;
 exports.DeviceCgroupPermission = DeviceCgroupPermission;
+exports.DiscoverPollEndpoint$ = DiscoverPollEndpoint$;
 exports.DiscoverPollEndpointCommand = DiscoverPollEndpointCommand;
+exports.DiscoverPollEndpointRequest$ = DiscoverPollEndpointRequest$;
+exports.DiscoverPollEndpointResponse$ = DiscoverPollEndpointResponse$;
+exports.DockerVolumeConfiguration$ = DockerVolumeConfiguration$;
 exports.EBSResourceType = EBSResourceType;
+exports.EBSTagSpecification$ = EBSTagSpecification$;
 exports.ECS = ECS;
 exports.ECSClient = ECSClient;
-exports.ECSServiceException = ECSServiceException$1;
+exports.ECSExpressGatewayService$ = ECSExpressGatewayService$;
+exports.ECSManagedResources$ = ECSManagedResources$;
+exports.ECSServiceException = ECSServiceException;
+exports.ECSServiceException$ = ECSServiceException$;
+exports.EFSAuthorizationConfig$ = EFSAuthorizationConfig$;
 exports.EFSAuthorizationConfigIAM = EFSAuthorizationConfigIAM;
 exports.EFSTransitEncryption = EFSTransitEncryption;
+exports.EFSVolumeConfiguration$ = EFSVolumeConfiguration$;
+exports.EnvironmentFile$ = EnvironmentFile$;
 exports.EnvironmentFileType = EnvironmentFileType;
+exports.EphemeralStorage$ = EphemeralStorage$;
+exports.ExecuteCommand$ = ExecuteCommand$;
 exports.ExecuteCommandCommand = ExecuteCommandCommand;
+exports.ExecuteCommandConfiguration$ = ExecuteCommandConfiguration$;
+exports.ExecuteCommandLogConfiguration$ = ExecuteCommandLogConfiguration$;
 exports.ExecuteCommandLogging = ExecuteCommandLogging;
+exports.ExecuteCommandRequest$ = ExecuteCommandRequest$;
+exports.ExecuteCommandResponse$ = ExecuteCommandResponse$;
+exports.ExpressGatewayContainer$ = ExpressGatewayContainer$;
+exports.ExpressGatewayRepositoryCredentials$ = ExpressGatewayRepositoryCredentials$;
+exports.ExpressGatewayScalingTarget$ = ExpressGatewayScalingTarget$;
+exports.ExpressGatewayServiceAwsLogsConfiguration$ = ExpressGatewayServiceAwsLogsConfiguration$;
+exports.ExpressGatewayServiceConfiguration$ = ExpressGatewayServiceConfiguration$;
 exports.ExpressGatewayServiceInclude = ExpressGatewayServiceInclude;
+exports.ExpressGatewayServiceNetworkConfiguration$ = ExpressGatewayServiceNetworkConfiguration$;
 exports.ExpressGatewayServiceScalingMetric = ExpressGatewayServiceScalingMetric;
+exports.ExpressGatewayServiceStatus$ = ExpressGatewayServiceStatus$;
 exports.ExpressGatewayServiceStatusCode = ExpressGatewayServiceStatusCode;
+exports.FSxWindowsFileServerAuthorizationConfig$ = FSxWindowsFileServerAuthorizationConfig$;
+exports.FSxWindowsFileServerVolumeConfiguration$ = FSxWindowsFileServerVolumeConfiguration$;
+exports.Failure$ = Failure$;
+exports.FirelensConfiguration$ = FirelensConfiguration$;
 exports.FirelensConfigurationType = FirelensConfigurationType;
+exports.GetTaskProtection$ = GetTaskProtection$;
 exports.GetTaskProtectionCommand = GetTaskProtectionCommand;
+exports.GetTaskProtectionRequest$ = GetTaskProtectionRequest$;
+exports.GetTaskProtectionResponse$ = GetTaskProtectionResponse$;
+exports.HealthCheck$ = HealthCheck$;
 exports.HealthStatus = HealthStatus;
+exports.HostEntry$ = HostEntry$;
+exports.HostVolumeProperties$ = HostVolumeProperties$;
+exports.InferenceAccelerator$ = InferenceAccelerator$;
+exports.InferenceAcceleratorOverride$ = InferenceAcceleratorOverride$;
+exports.InfrastructureOptimization$ = InfrastructureOptimization$;
+exports.IngressPathSummary$ = IngressPathSummary$;
 exports.InstanceGeneration = InstanceGeneration;
+exports.InstanceHealthCheckResult$ = InstanceHealthCheckResult$;
 exports.InstanceHealthCheckState = InstanceHealthCheckState;
 exports.InstanceHealthCheckType = InstanceHealthCheckType;
-exports.InvalidParameterException = InvalidParameterException$1;
+exports.InstanceLaunchTemplate$ = InstanceLaunchTemplate$;
+exports.InstanceLaunchTemplateUpdate$ = InstanceLaunchTemplateUpdate$;
+exports.InstanceRequirementsRequest$ = InstanceRequirementsRequest$;
+exports.InvalidParameterException = InvalidParameterException;
+exports.InvalidParameterException$ = InvalidParameterException$;
 exports.IpcMode = IpcMode;
+exports.KernelCapabilities$ = KernelCapabilities$;
+exports.KeyValuePair$ = KeyValuePair$;
 exports.LaunchType = LaunchType;
-exports.LimitExceededException = LimitExceededException$1;
+exports.LimitExceededException = LimitExceededException;
+exports.LimitExceededException$ = LimitExceededException$;
+exports.LinearConfiguration$ = LinearConfiguration$;
+exports.LinuxParameters$ = LinuxParameters$;
+exports.ListAccountSettings$ = ListAccountSettings$;
 exports.ListAccountSettingsCommand = ListAccountSettingsCommand;
+exports.ListAccountSettingsRequest$ = ListAccountSettingsRequest$;
+exports.ListAccountSettingsResponse$ = ListAccountSettingsResponse$;
+exports.ListAttributes$ = ListAttributes$;
 exports.ListAttributesCommand = ListAttributesCommand;
+exports.ListAttributesRequest$ = ListAttributesRequest$;
+exports.ListAttributesResponse$ = ListAttributesResponse$;
+exports.ListClusters$ = ListClusters$;
 exports.ListClustersCommand = ListClustersCommand;
+exports.ListClustersRequest$ = ListClustersRequest$;
+exports.ListClustersResponse$ = ListClustersResponse$;
+exports.ListContainerInstances$ = ListContainerInstances$;
 exports.ListContainerInstancesCommand = ListContainerInstancesCommand;
+exports.ListContainerInstancesRequest$ = ListContainerInstancesRequest$;
+exports.ListContainerInstancesResponse$ = ListContainerInstancesResponse$;
+exports.ListServiceDeployments$ = ListServiceDeployments$;
 exports.ListServiceDeploymentsCommand = ListServiceDeploymentsCommand;
+exports.ListServiceDeploymentsRequest$ = ListServiceDeploymentsRequest$;
+exports.ListServiceDeploymentsResponse$ = ListServiceDeploymentsResponse$;
+exports.ListServices$ = ListServices$;
+exports.ListServicesByNamespace$ = ListServicesByNamespace$;
 exports.ListServicesByNamespaceCommand = ListServicesByNamespaceCommand;
+exports.ListServicesByNamespaceRequest$ = ListServicesByNamespaceRequest$;
+exports.ListServicesByNamespaceResponse$ = ListServicesByNamespaceResponse$;
 exports.ListServicesCommand = ListServicesCommand;
+exports.ListServicesRequest$ = ListServicesRequest$;
+exports.ListServicesResponse$ = ListServicesResponse$;
+exports.ListTagsForResource$ = ListTagsForResource$;
 exports.ListTagsForResourceCommand = ListTagsForResourceCommand;
+exports.ListTagsForResourceRequest$ = ListTagsForResourceRequest$;
+exports.ListTagsForResourceResponse$ = ListTagsForResourceResponse$;
+exports.ListTaskDefinitionFamilies$ = ListTaskDefinitionFamilies$;
 exports.ListTaskDefinitionFamiliesCommand = ListTaskDefinitionFamiliesCommand;
+exports.ListTaskDefinitionFamiliesRequest$ = ListTaskDefinitionFamiliesRequest$;
+exports.ListTaskDefinitionFamiliesResponse$ = ListTaskDefinitionFamiliesResponse$;
+exports.ListTaskDefinitions$ = ListTaskDefinitions$;
 exports.ListTaskDefinitionsCommand = ListTaskDefinitionsCommand;
+exports.ListTaskDefinitionsRequest$ = ListTaskDefinitionsRequest$;
+exports.ListTaskDefinitionsResponse$ = ListTaskDefinitionsResponse$;
+exports.ListTasks$ = ListTasks$;
 exports.ListTasksCommand = ListTasksCommand;
+exports.ListTasksRequest$ = ListTasksRequest$;
+exports.ListTasksResponse$ = ListTasksResponse$;
+exports.LoadBalancer$ = LoadBalancer$;
 exports.LocalStorage = LocalStorage;
 exports.LocalStorageType = LocalStorageType;
+exports.LogConfiguration$ = LogConfiguration$;
 exports.LogDriver = LogDriver;
+exports.ManagedAgent$ = ManagedAgent$;
 exports.ManagedAgentName = ManagedAgentName;
+exports.ManagedAgentStateChange$ = ManagedAgentStateChange$;
+exports.ManagedApplicationAutoScalingPolicy$ = ManagedApplicationAutoScalingPolicy$;
+exports.ManagedAutoScaling$ = ManagedAutoScaling$;
+exports.ManagedCertificate$ = ManagedCertificate$;
 exports.ManagedDraining = ManagedDraining;
+exports.ManagedIngressPath$ = ManagedIngressPath$;
 exports.ManagedInstancesMonitoringOptions = ManagedInstancesMonitoringOptions;
+exports.ManagedInstancesNetworkConfiguration$ = ManagedInstancesNetworkConfiguration$;
+exports.ManagedInstancesProvider$ = ManagedInstancesProvider$;
+exports.ManagedInstancesStorageConfiguration$ = ManagedInstancesStorageConfiguration$;
+exports.ManagedListener$ = ManagedListener$;
+exports.ManagedListenerRule$ = ManagedListenerRule$;
+exports.ManagedLoadBalancer$ = ManagedLoadBalancer$;
+exports.ManagedLogGroup$ = ManagedLogGroup$;
+exports.ManagedMetricAlarm$ = ManagedMetricAlarm$;
 exports.ManagedResourceStatus = ManagedResourceStatus;
+exports.ManagedScalableTarget$ = ManagedScalableTarget$;
+exports.ManagedScaling$ = ManagedScaling$;
 exports.ManagedScalingStatus = ManagedScalingStatus;
+exports.ManagedSecurityGroup$ = ManagedSecurityGroup$;
+exports.ManagedStorageConfiguration$ = ManagedStorageConfiguration$;
+exports.ManagedTargetGroup$ = ManagedTargetGroup$;
 exports.ManagedTerminationProtection = ManagedTerminationProtection;
-exports.MissingVersionException = MissingVersionException$1;
-exports.NamespaceNotFoundException = NamespaceNotFoundException$1;
+exports.MemoryGiBPerVCpuRequest$ = MemoryGiBPerVCpuRequest$;
+exports.MemoryMiBRequest$ = MemoryMiBRequest$;
+exports.MissingVersionException = MissingVersionException;
+exports.MissingVersionException$ = MissingVersionException$;
+exports.MountPoint$ = MountPoint$;
+exports.NamespaceNotFoundException = NamespaceNotFoundException;
+exports.NamespaceNotFoundException$ = NamespaceNotFoundException$;
+exports.NetworkBandwidthGbpsRequest$ = NetworkBandwidthGbpsRequest$;
+exports.NetworkBinding$ = NetworkBinding$;
+exports.NetworkConfiguration$ = NetworkConfiguration$;
+exports.NetworkInterface$ = NetworkInterface$;
+exports.NetworkInterfaceCountRequest$ = NetworkInterfaceCountRequest$;
 exports.NetworkMode = NetworkMode;
-exports.NoUpdateAvailableException = NoUpdateAvailableException$1;
+exports.NoUpdateAvailableException = NoUpdateAvailableException;
+exports.NoUpdateAvailableException$ = NoUpdateAvailableException$;
 exports.OSFamily = OSFamily;
 exports.PidMode = PidMode;
+exports.PlacementConstraint$ = PlacementConstraint$;
 exports.PlacementConstraintType = PlacementConstraintType;
+exports.PlacementStrategy$ = PlacementStrategy$;
 exports.PlacementStrategyType = PlacementStrategyType;
+exports.PlatformDevice$ = PlatformDevice$;
 exports.PlatformDeviceType = PlatformDeviceType;
-exports.PlatformTaskDefinitionIncompatibilityException = PlatformTaskDefinitionIncompatibilityException$1;
-exports.PlatformUnknownException = PlatformUnknownException$1;
+exports.PlatformTaskDefinitionIncompatibilityException = PlatformTaskDefinitionIncompatibilityException;
+exports.PlatformTaskDefinitionIncompatibilityException$ = PlatformTaskDefinitionIncompatibilityException$;
+exports.PlatformUnknownException = PlatformUnknownException;
+exports.PlatformUnknownException$ = PlatformUnknownException$;
+exports.PortMapping$ = PortMapping$;
 exports.PropagateMITags = PropagateMITags;
 exports.PropagateTags = PropagateTags;
+exports.ProtectedTask$ = ProtectedTask$;
+exports.ProxyConfiguration$ = ProxyConfiguration$;
 exports.ProxyConfigurationType = ProxyConfigurationType;
+exports.PutAccountSetting$ = PutAccountSetting$;
 exports.PutAccountSettingCommand = PutAccountSettingCommand;
+exports.PutAccountSettingDefault$ = PutAccountSettingDefault$;
 exports.PutAccountSettingDefaultCommand = PutAccountSettingDefaultCommand;
+exports.PutAccountSettingDefaultRequest$ = PutAccountSettingDefaultRequest$;
+exports.PutAccountSettingDefaultResponse$ = PutAccountSettingDefaultResponse$;
+exports.PutAccountSettingRequest$ = PutAccountSettingRequest$;
+exports.PutAccountSettingResponse$ = PutAccountSettingResponse$;
+exports.PutAttributes$ = PutAttributes$;
 exports.PutAttributesCommand = PutAttributesCommand;
+exports.PutAttributesRequest$ = PutAttributesRequest$;
+exports.PutAttributesResponse$ = PutAttributesResponse$;
+exports.PutClusterCapacityProviders$ = PutClusterCapacityProviders$;
 exports.PutClusterCapacityProvidersCommand = PutClusterCapacityProvidersCommand;
+exports.PutClusterCapacityProvidersRequest$ = PutClusterCapacityProvidersRequest$;
+exports.PutClusterCapacityProvidersResponse$ = PutClusterCapacityProvidersResponse$;
+exports.RegisterContainerInstance$ = RegisterContainerInstance$;
 exports.RegisterContainerInstanceCommand = RegisterContainerInstanceCommand;
+exports.RegisterContainerInstanceRequest$ = RegisterContainerInstanceRequest$;
+exports.RegisterContainerInstanceResponse$ = RegisterContainerInstanceResponse$;
+exports.RegisterTaskDefinition$ = RegisterTaskDefinition$;
 exports.RegisterTaskDefinitionCommand = RegisterTaskDefinitionCommand;
-exports.ResourceInUseException = ResourceInUseException$1;
+exports.RegisterTaskDefinitionRequest$ = RegisterTaskDefinitionRequest$;
+exports.RegisterTaskDefinitionResponse$ = RegisterTaskDefinitionResponse$;
+exports.RepositoryCredentials$ = RepositoryCredentials$;
+exports.ResolvedConfiguration$ = ResolvedConfiguration$;
+exports.Resource$ = Resource$;
+exports.ResourceInUseException = ResourceInUseException;
+exports.ResourceInUseException$ = ResourceInUseException$;
 exports.ResourceManagementType = ResourceManagementType;
-exports.ResourceNotFoundException = ResourceNotFoundException$1;
+exports.ResourceNotFoundException = ResourceNotFoundException;
+exports.ResourceNotFoundException$ = ResourceNotFoundException$;
+exports.ResourceRequirement$ = ResourceRequirement$;
 exports.ResourceType = ResourceType;
+exports.Rollback$ = Rollback$;
+exports.RunTask$ = RunTask$;
 exports.RunTaskCommand = RunTaskCommand;
+exports.RunTaskRequest$ = RunTaskRequest$;
+exports.RunTaskResponse$ = RunTaskResponse$;
+exports.RuntimePlatform$ = RuntimePlatform$;
+exports.Scale$ = Scale$;
 exports.ScaleUnit = ScaleUnit;
 exports.SchedulingStrategy = SchedulingStrategy;
 exports.Scope = Scope;
-exports.ServerException = ServerException$1;
+exports.Secret$ = Secret$;
+exports.ServerException = ServerException;
+exports.ServerException$ = ServerException$;
+exports.Service$ = Service$;
+exports.ServiceConnectAccessLogConfiguration$ = ServiceConnectAccessLogConfiguration$;
 exports.ServiceConnectAccessLoggingFormat = ServiceConnectAccessLoggingFormat;
+exports.ServiceConnectClientAlias$ = ServiceConnectClientAlias$;
+exports.ServiceConnectConfiguration$ = ServiceConnectConfiguration$;
 exports.ServiceConnectIncludeQueryParameters = ServiceConnectIncludeQueryParameters;
+exports.ServiceConnectService$ = ServiceConnectService$;
+exports.ServiceConnectServiceResource$ = ServiceConnectServiceResource$;
+exports.ServiceConnectTestTrafficHeaderMatchRules$ = ServiceConnectTestTrafficHeaderMatchRules$;
+exports.ServiceConnectTestTrafficHeaderRules$ = ServiceConnectTestTrafficHeaderRules$;
+exports.ServiceConnectTestTrafficRules$ = ServiceConnectTestTrafficRules$;
+exports.ServiceConnectTlsCertificateAuthority$ = ServiceConnectTlsCertificateAuthority$;
+exports.ServiceConnectTlsConfiguration$ = ServiceConnectTlsConfiguration$;
+exports.ServiceCurrentRevisionSummary$ = ServiceCurrentRevisionSummary$;
+exports.ServiceDeployment$ = ServiceDeployment$;
+exports.ServiceDeploymentAlarms$ = ServiceDeploymentAlarms$;
+exports.ServiceDeploymentBrief$ = ServiceDeploymentBrief$;
+exports.ServiceDeploymentCircuitBreaker$ = ServiceDeploymentCircuitBreaker$;
 exports.ServiceDeploymentLifecycleStage = ServiceDeploymentLifecycleStage;
-exports.ServiceDeploymentNotFoundException = ServiceDeploymentNotFoundException$1;
+exports.ServiceDeploymentNotFoundException = ServiceDeploymentNotFoundException;
+exports.ServiceDeploymentNotFoundException$ = ServiceDeploymentNotFoundException$;
 exports.ServiceDeploymentRollbackMonitorsStatus = ServiceDeploymentRollbackMonitorsStatus;
 exports.ServiceDeploymentStatus = ServiceDeploymentStatus;
+exports.ServiceEvent$ = ServiceEvent$;
 exports.ServiceField = ServiceField;
-exports.ServiceNotActiveException = ServiceNotActiveException$1;
-exports.ServiceNotFoundException = ServiceNotFoundException$1;
+exports.ServiceManagedEBSVolumeConfiguration$ = ServiceManagedEBSVolumeConfiguration$;
+exports.ServiceNotActiveException = ServiceNotActiveException;
+exports.ServiceNotActiveException$ = ServiceNotActiveException$;
+exports.ServiceNotFoundException = ServiceNotFoundException;
+exports.ServiceNotFoundException$ = ServiceNotFoundException$;
+exports.ServiceRegistry$ = ServiceRegistry$;
+exports.ServiceRevision$ = ServiceRevision$;
+exports.ServiceRevisionLoadBalancer$ = ServiceRevisionLoadBalancer$;
+exports.ServiceRevisionSummary$ = ServiceRevisionSummary$;
+exports.ServiceVolumeConfiguration$ = ServiceVolumeConfiguration$;
+exports.Session$ = Session$;
+exports.Setting$ = Setting$;
 exports.SettingName = SettingName;
 exports.SettingType = SettingType;
 exports.SortOrder = SortOrder;
 exports.StabilityStatus = StabilityStatus;
+exports.StartTask$ = StartTask$;
 exports.StartTaskCommand = StartTaskCommand;
+exports.StartTaskRequest$ = StartTaskRequest$;
+exports.StartTaskResponse$ = StartTaskResponse$;
+exports.StopServiceDeployment$ = StopServiceDeployment$;
 exports.StopServiceDeploymentCommand = StopServiceDeploymentCommand;
+exports.StopServiceDeploymentRequest$ = StopServiceDeploymentRequest$;
+exports.StopServiceDeploymentResponse$ = StopServiceDeploymentResponse$;
 exports.StopServiceDeploymentStopType = StopServiceDeploymentStopType;
+exports.StopTask$ = StopTask$;
 exports.StopTaskCommand = StopTaskCommand;
+exports.StopTaskRequest$ = StopTaskRequest$;
+exports.StopTaskResponse$ = StopTaskResponse$;
+exports.SubmitAttachmentStateChanges$ = SubmitAttachmentStateChanges$;
 exports.SubmitAttachmentStateChangesCommand = SubmitAttachmentStateChangesCommand;
+exports.SubmitAttachmentStateChangesRequest$ = SubmitAttachmentStateChangesRequest$;
+exports.SubmitAttachmentStateChangesResponse$ = SubmitAttachmentStateChangesResponse$;
+exports.SubmitContainerStateChange$ = SubmitContainerStateChange$;
 exports.SubmitContainerStateChangeCommand = SubmitContainerStateChangeCommand;
+exports.SubmitContainerStateChangeRequest$ = SubmitContainerStateChangeRequest$;
+exports.SubmitContainerStateChangeResponse$ = SubmitContainerStateChangeResponse$;
+exports.SubmitTaskStateChange$ = SubmitTaskStateChange$;
 exports.SubmitTaskStateChangeCommand = SubmitTaskStateChangeCommand;
+exports.SubmitTaskStateChangeRequest$ = SubmitTaskStateChangeRequest$;
+exports.SubmitTaskStateChangeResponse$ = SubmitTaskStateChangeResponse$;
+exports.SystemControl$ = SystemControl$;
+exports.Tag$ = Tag$;
+exports.TagResource$ = TagResource$;
 exports.TagResourceCommand = TagResourceCommand;
-exports.TargetNotConnectedException = TargetNotConnectedException$1;
-exports.TargetNotFoundException = TargetNotFoundException$1;
+exports.TagResourceRequest$ = TagResourceRequest$;
+exports.TagResourceResponse$ = TagResourceResponse$;
+exports.TargetNotConnectedException = TargetNotConnectedException;
+exports.TargetNotConnectedException$ = TargetNotConnectedException$;
+exports.TargetNotFoundException = TargetNotFoundException;
+exports.TargetNotFoundException$ = TargetNotFoundException$;
 exports.TargetType = TargetType;
+exports.Task$ = Task$;
+exports.TaskDefinition$ = TaskDefinition$;
 exports.TaskDefinitionFamilyStatus = TaskDefinitionFamilyStatus;
 exports.TaskDefinitionField = TaskDefinitionField;
+exports.TaskDefinitionPlacementConstraint$ = TaskDefinitionPlacementConstraint$;
 exports.TaskDefinitionPlacementConstraintType = TaskDefinitionPlacementConstraintType;
 exports.TaskDefinitionStatus = TaskDefinitionStatus;
+exports.TaskEphemeralStorage$ = TaskEphemeralStorage$;
 exports.TaskField = TaskField;
 exports.TaskFilesystemType = TaskFilesystemType;
+exports.TaskManagedEBSVolumeConfiguration$ = TaskManagedEBSVolumeConfiguration$;
+exports.TaskManagedEBSVolumeTerminationPolicy$ = TaskManagedEBSVolumeTerminationPolicy$;
+exports.TaskOverride$ = TaskOverride$;
+exports.TaskSet$ = TaskSet$;
 exports.TaskSetField = TaskSetField;
-exports.TaskSetNotFoundException = TaskSetNotFoundException$1;
+exports.TaskSetNotFoundException = TaskSetNotFoundException;
+exports.TaskSetNotFoundException$ = TaskSetNotFoundException$;
 exports.TaskStopCode = TaskStopCode;
+exports.TaskVolumeConfiguration$ = TaskVolumeConfiguration$;
+exports.TimeoutConfiguration$ = TimeoutConfiguration$;
+exports.Tmpfs$ = Tmpfs$;
+exports.TotalLocalStorageGBRequest$ = TotalLocalStorageGBRequest$;
 exports.TransportProtocol = TransportProtocol;
+exports.Ulimit$ = Ulimit$;
 exports.UlimitName = UlimitName;
-exports.UnsupportedFeatureException = UnsupportedFeatureException$1;
+exports.UnsupportedFeatureException = UnsupportedFeatureException;
+exports.UnsupportedFeatureException$ = UnsupportedFeatureException$;
+exports.UntagResource$ = UntagResource$;
 exports.UntagResourceCommand = UntagResourceCommand;
+exports.UntagResourceRequest$ = UntagResourceRequest$;
+exports.UntagResourceResponse$ = UntagResourceResponse$;
+exports.UpdateCapacityProvider$ = UpdateCapacityProvider$;
 exports.UpdateCapacityProviderCommand = UpdateCapacityProviderCommand;
+exports.UpdateCapacityProviderRequest$ = UpdateCapacityProviderRequest$;
+exports.UpdateCapacityProviderResponse$ = UpdateCapacityProviderResponse$;
+exports.UpdateCluster$ = UpdateCluster$;
 exports.UpdateClusterCommand = UpdateClusterCommand;
+exports.UpdateClusterRequest$ = UpdateClusterRequest$;
+exports.UpdateClusterResponse$ = UpdateClusterResponse$;
+exports.UpdateClusterSettings$ = UpdateClusterSettings$;
 exports.UpdateClusterSettingsCommand = UpdateClusterSettingsCommand;
+exports.UpdateClusterSettingsRequest$ = UpdateClusterSettingsRequest$;
+exports.UpdateClusterSettingsResponse$ = UpdateClusterSettingsResponse$;
+exports.UpdateContainerAgent$ = UpdateContainerAgent$;
 exports.UpdateContainerAgentCommand = UpdateContainerAgentCommand;
+exports.UpdateContainerAgentRequest$ = UpdateContainerAgentRequest$;
+exports.UpdateContainerAgentResponse$ = UpdateContainerAgentResponse$;
+exports.UpdateContainerInstancesState$ = UpdateContainerInstancesState$;
 exports.UpdateContainerInstancesStateCommand = UpdateContainerInstancesStateCommand;
+exports.UpdateContainerInstancesStateRequest$ = UpdateContainerInstancesStateRequest$;
+exports.UpdateContainerInstancesStateResponse$ = UpdateContainerInstancesStateResponse$;
+exports.UpdateExpressGatewayService$ = UpdateExpressGatewayService$;
 exports.UpdateExpressGatewayServiceCommand = UpdateExpressGatewayServiceCommand;
-exports.UpdateInProgressException = UpdateInProgressException$1;
+exports.UpdateExpressGatewayServiceRequest$ = UpdateExpressGatewayServiceRequest$;
+exports.UpdateExpressGatewayServiceResponse$ = UpdateExpressGatewayServiceResponse$;
+exports.UpdateInProgressException = UpdateInProgressException;
+exports.UpdateInProgressException$ = UpdateInProgressException$;
+exports.UpdateManagedInstancesProviderConfiguration$ = UpdateManagedInstancesProviderConfiguration$;
+exports.UpdateService$ = UpdateService$;
 exports.UpdateServiceCommand = UpdateServiceCommand;
+exports.UpdateServicePrimaryTaskSet$ = UpdateServicePrimaryTaskSet$;
 exports.UpdateServicePrimaryTaskSetCommand = UpdateServicePrimaryTaskSetCommand;
+exports.UpdateServicePrimaryTaskSetRequest$ = UpdateServicePrimaryTaskSetRequest$;
+exports.UpdateServicePrimaryTaskSetResponse$ = UpdateServicePrimaryTaskSetResponse$;
+exports.UpdateServiceRequest$ = UpdateServiceRequest$;
+exports.UpdateServiceResponse$ = UpdateServiceResponse$;
+exports.UpdateTaskProtection$ = UpdateTaskProtection$;
 exports.UpdateTaskProtectionCommand = UpdateTaskProtectionCommand;
+exports.UpdateTaskProtectionRequest$ = UpdateTaskProtectionRequest$;
+exports.UpdateTaskProtectionResponse$ = UpdateTaskProtectionResponse$;
+exports.UpdateTaskSet$ = UpdateTaskSet$;
 exports.UpdateTaskSetCommand = UpdateTaskSetCommand;
+exports.UpdateTaskSetRequest$ = UpdateTaskSetRequest$;
+exports.UpdateTaskSetResponse$ = UpdateTaskSetResponse$;
+exports.UpdatedExpressGatewayService$ = UpdatedExpressGatewayService$;
+exports.VCpuCountRangeRequest$ = VCpuCountRangeRequest$;
 exports.VersionConsistency = VersionConsistency;
+exports.VersionInfo$ = VersionInfo$;
+exports.Volume$ = Volume$;
+exports.VolumeFrom$ = VolumeFrom$;
+exports.VpcLatticeConfiguration$ = VpcLatticeConfiguration$;
 exports.paginateListAccountSettings = paginateListAccountSettings;
 exports.paginateListAttributes = paginateListAttributes;
 exports.paginateListClusters = paginateListClusters;
@@ -9946,14 +9981,13 @@ const hash_node_1 = __nccwpck_require__(5092);
 const middleware_retry_1 = __nccwpck_require__(9618);
 const node_config_provider_1 = __nccwpck_require__(5704);
 const node_http_handler_1 = __nccwpck_require__(1279);
+const smithy_client_1 = __nccwpck_require__(1411);
 const util_body_length_node_1 = __nccwpck_require__(3638);
+const util_defaults_mode_node_1 = __nccwpck_require__(5435);
 const util_retry_1 = __nccwpck_require__(5518);
 const runtimeConfig_shared_1 = __nccwpck_require__(1519);
-const smithy_client_1 = __nccwpck_require__(1411);
-const util_defaults_mode_node_1 = __nccwpck_require__(5435);
-const smithy_client_2 = __nccwpck_require__(1411);
 const getRuntimeConfig = (config) => {
-    (0, smithy_client_2.emitWarningIfUnsupportedVersion)(process.version);
+    (0, smithy_client_1.emitWarningIfUnsupportedVersion)(process.version);
     const defaultsMode = (0, util_defaults_mode_node_1.resolveDefaultsModeConfig)(config);
     const defaultConfigProvider = () => defaultsMode().then(smithy_client_1.loadConfigsForDefaultMode);
     const clientSharedValues = (0, runtimeConfig_shared_1.getRuntimeConfig)(config);
@@ -10025,12 +10059,13 @@ const getRuntimeConfig = (config) => {
             },
         ],
         logger: config?.logger ?? new smithy_client_1.NoOpLogger(),
-        protocol: config?.protocol ??
-            new protocols_1.AwsJson1_1Protocol({
-                defaultNamespace: "com.amazonaws.ecs",
-                serviceTarget: "AmazonEC2ContainerServiceV20141113",
-                awsQueryCompatible: false,
-            }),
+        protocol: config?.protocol ?? protocols_1.AwsJson1_1Protocol,
+        protocolSettings: config?.protocolSettings ?? {
+            defaultNamespace: "com.amazonaws.ecs",
+            xmlNamespace: "http://ecs.amazonaws.com/doc/2014-11-13/",
+            version: "2014-11-13",
+            serviceTarget: "AmazonEC2ContainerServiceV20141113",
+        },
         serviceId: config?.serviceId ?? "ECS",
         urlParser: config?.urlParser ?? url_parser_1.parseUrl,
         utf8Decoder: config?.utf8Decoder ?? util_utf8_1.fromUtf8,
@@ -10066,15 +10101,15 @@ const state = {
     warningEmitted: false,
 };
 const emitWarningIfUnsupportedVersion = (version) => {
-    if (version && !state.warningEmitted && parseInt(version.substring(1, version.indexOf("."))) < 18) {
+    if (version && !state.warningEmitted && parseInt(version.substring(1, version.indexOf("."))) < 20) {
         state.warningEmitted = true;
         process.emitWarning(`NodeDeprecationWarning: The AWS SDK for JavaScript (v3) will
-no longer support Node.js 16.x on January 6, 2025.
+no longer support Node.js ${version} in January 2026.
 
 To continue receiving updates to AWS services, bug fixes, and security
 updates please upgrade to a supported Node.js LTS version.
 
-More information can be found at: https://a.co/74kJMmI`);
+More information can be found at: https://a.co/c895JFp`);
     }
 };
 
@@ -10454,8 +10489,17 @@ class ProtocolLib {
             const msg = exception.Message ?? additions.Message;
             const error = smithyClient.decorateServiceException(exception, additions);
             if (msg) {
-                error.Message = msg;
                 error.message = msg;
+            }
+            error.Error = {
+                ...error.Error,
+                Type: error.Error.Type,
+                Code: error.Error.Code,
+                Message: error.Error.message ?? error.Error.Message ?? msg,
+            };
+            const reqId = error.$metadata.requestId;
+            if (reqId) {
+                error.RequestId = reqId;
             }
             return error;
         }
@@ -10472,7 +10516,7 @@ class ProtocolLib {
             };
             Object.assign(output, Error);
             for (const [k, v] of entries) {
-                Error[k] = v;
+                Error[k === "message" ? "Message" : k] = v;
             }
             delete Error.__type;
             output.Error = Error;
@@ -10487,6 +10531,14 @@ class ProtocolLib {
         }
         if (queryCompatErrorData.Code) {
             errorData.Code = queryCompatErrorData.Code;
+        }
+    }
+    findQueryCompatibleError(registry, errorName) {
+        try {
+            return registry.getSchema(errorName);
+        }
+        catch (e) {
+            return registry.find((schema$1) => schema.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
         }
     }
 }
@@ -10510,15 +10562,23 @@ class AwsSmithyRpcV2CborProtocol extends cbor.SmithyRpcV2CborProtocol {
         if (this.awsQueryCompatible) {
             this.mixin.setQueryCompatError(dataObject, response);
         }
-        const errorName = cbor.loadSmithyRpcV2CborErrorCode(response, dataObject) ?? "Unknown";
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorName, this.options.defaultNamespace, response, dataObject, metadata);
+        const errorName = (() => {
+            const compatHeader = response.headers["x-amzn-query-error"];
+            if (compatHeader && this.awsQueryCompatible) {
+                return compatHeader.split(";")[0];
+            }
+            return cbor.loadSmithyRpcV2CborErrorCode(response, dataObject) ?? "Unknown";
+        })();
+        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorName, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
         const ns = schema.NormalizedSchema.of(errorSchema);
         const message = dataObject.message ?? dataObject.Message ?? "Unknown";
         const ErrorCtor = schema.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
         const exception = new ErrorCtor(message);
         const output = {};
         for (const [name, member] of ns.structIterator()) {
-            output[name] = this.deserializer.readValue(member, dataObject[name]);
+            if (dataObject[name] != null) {
+                output[name] = this.deserializer.readValue(member, dataObject[name]);
+            }
         }
         if (this.awsQueryCompatible) {
             this.mixin.queryCompatOutput(dataObject, output);
@@ -10594,7 +10654,8 @@ function* serializingStructIterator(ns, sourceObject) {
     const struct = ns.getSchema();
     for (let i = 0; i < struct[4].length; ++i) {
         const key = struct[4][i];
-        const memberNs = new schema.NormalizedSchema([struct[5][i], 0], key);
+        const memberSchema = struct[5][i];
+        const memberNs = new schema.NormalizedSchema([memberSchema, 0], key);
         if (!(key in sourceObject) && !memberNs.isIdempotencyToken()) {
             continue;
         }
@@ -10606,13 +10667,14 @@ function* deserializingStructIterator(ns, sourceObject, nameTrait) {
         return;
     }
     const struct = ns.getSchema();
-    let keysRemaining = Object.keys(sourceObject).length;
+    let keysRemaining = Object.keys(sourceObject).filter((k) => k !== "__type").length;
     for (let i = 0; i < struct[4].length; ++i) {
         if (keysRemaining === 0) {
             break;
         }
         const key = struct[4][i];
-        const memberNs = new schema.NormalizedSchema([struct[5][i], 0], key);
+        const memberSchema = struct[5][i];
+        const memberNs = new schema.NormalizedSchema([memberSchema, 0], key);
         let serializationKey = key;
         if (nameTrait) {
             serializationKey = memberNs.getMergedTraits()[nameTrait] ?? key;
@@ -10714,38 +10776,40 @@ class JsonShapeDeserializer extends SerdeContextConfig {
     _read(schema$1, value) {
         const isObject = value !== null && typeof value === "object";
         const ns = schema.NormalizedSchema.of(schema$1);
-        if (ns.isListSchema() && Array.isArray(value)) {
-            const listMember = ns.getValueSchema();
-            const out = [];
-            const sparse = !!ns.getMergedTraits().sparse;
-            for (const item of value) {
-                if (sparse || item != null) {
-                    out.push(this._read(listMember, item));
+        if (isObject) {
+            if (ns.isStructSchema()) {
+                const out = {};
+                for (const [memberName, memberSchema] of deserializingStructIterator(ns, value, this.settings.jsonName ? "jsonName" : false)) {
+                    const fromKey = this.settings.jsonName ? memberSchema.getMergedTraits().jsonName ?? memberName : memberName;
+                    const deserializedValue = this._read(memberSchema, value[fromKey]);
+                    if (deserializedValue != null) {
+                        out[memberName] = deserializedValue;
+                    }
                 }
+                return out;
             }
-            return out;
-        }
-        else if (ns.isMapSchema() && isObject) {
-            const mapMember = ns.getValueSchema();
-            const out = {};
-            const sparse = !!ns.getMergedTraits().sparse;
-            for (const [_k, _v] of Object.entries(value)) {
-                if (sparse || _v != null) {
-                    out[_k] = this._read(mapMember, _v);
+            if (Array.isArray(value) && ns.isListSchema()) {
+                const listMember = ns.getValueSchema();
+                const out = [];
+                const sparse = !!ns.getMergedTraits().sparse;
+                for (const item of value) {
+                    if (sparse || item != null) {
+                        out.push(this._read(listMember, item));
+                    }
                 }
+                return out;
             }
-            return out;
-        }
-        else if (ns.isStructSchema() && isObject) {
-            const out = {};
-            for (const [memberName, memberSchema] of deserializingStructIterator(ns, value, this.settings.jsonName ? "jsonName" : false)) {
-                const fromKey = this.settings.jsonName ? memberSchema.getMergedTraits().jsonName ?? memberName : memberName;
-                const deserializedValue = this._read(memberSchema, value[fromKey]);
-                if (deserializedValue != null) {
-                    out[memberName] = deserializedValue;
+            if (ns.isMapSchema()) {
+                const mapMember = ns.getValueSchema();
+                const out = {};
+                const sparse = !!ns.getMergedTraits().sparse;
+                for (const [_k, _v] of Object.entries(value)) {
+                    if (sparse || _v != null) {
+                        out[_k] = this._read(mapMember, _v);
+                    }
                 }
+                return out;
             }
-            return out;
         }
         if (ns.isBlobSchema() && typeof value === "string") {
             return utilBase64.fromBase64(value);
@@ -10756,6 +10820,7 @@ class JsonShapeDeserializer extends SerdeContextConfig {
             if (isJson) {
                 return serde.LazyJsonString.from(value);
             }
+            return value;
         }
         if (ns.isTimestampSchema() && value != null) {
             const format = protocols.determineTimestampFormat(ns, this.settings);
@@ -10793,6 +10858,7 @@ class JsonShapeDeserializer extends SerdeContextConfig {
                 case "NaN":
                     return NaN;
             }
+            return value;
         }
         if (ns.isDocumentSchema()) {
             if (isObject) {
@@ -10864,6 +10930,7 @@ class JsonReplacer {
 class JsonShapeSerializer extends SerdeContextConfig {
     settings;
     buffer;
+    useReplacer = false;
     rootSchema;
     constructor(settings) {
         super();
@@ -10880,9 +10947,13 @@ class JsonShapeSerializer extends SerdeContextConfig {
         }
     }
     flush() {
-        const { rootSchema } = this;
+        const { rootSchema, useReplacer } = this;
         this.rootSchema = undefined;
+        this.useReplacer = false;
         if (rootSchema?.isStructSchema() || rootSchema?.isDocumentSchema()) {
+            if (!useReplacer) {
+                return JSON.stringify(this.buffer);
+            }
             const replacer = new JsonReplacer();
             return replacer.replaceInJson(JSON.stringify(this.buffer, replacer.createReplacer(), 0));
         }
@@ -10891,67 +10962,67 @@ class JsonShapeSerializer extends SerdeContextConfig {
     _write(schema$1, value, container) {
         const isObject = value !== null && typeof value === "object";
         const ns = schema.NormalizedSchema.of(schema$1);
-        if (ns.isListSchema() && Array.isArray(value)) {
-            const listMember = ns.getValueSchema();
-            const out = [];
-            const sparse = !!ns.getMergedTraits().sparse;
-            for (const item of value) {
-                if (sparse || item != null) {
-                    out.push(this._write(listMember, item));
+        if (isObject) {
+            if (ns.isStructSchema()) {
+                const out = {};
+                for (const [memberName, memberSchema] of serializingStructIterator(ns, value)) {
+                    const serializableValue = this._write(memberSchema, value[memberName], ns);
+                    if (serializableValue !== undefined) {
+                        const jsonName = memberSchema.getMergedTraits().jsonName;
+                        const targetKey = this.settings.jsonName ? jsonName ?? memberName : memberName;
+                        out[targetKey] = serializableValue;
+                    }
+                }
+                return out;
+            }
+            if (Array.isArray(value) && ns.isListSchema()) {
+                const listMember = ns.getValueSchema();
+                const out = [];
+                const sparse = !!ns.getMergedTraits().sparse;
+                for (const item of value) {
+                    if (sparse || item != null) {
+                        out.push(this._write(listMember, item));
+                    }
+                }
+                return out;
+            }
+            if (ns.isMapSchema()) {
+                const mapMember = ns.getValueSchema();
+                const out = {};
+                const sparse = !!ns.getMergedTraits().sparse;
+                for (const [_k, _v] of Object.entries(value)) {
+                    if (sparse || _v != null) {
+                        out[_k] = this._write(mapMember, _v);
+                    }
+                }
+                return out;
+            }
+            if (value instanceof Uint8Array && (ns.isBlobSchema() || ns.isDocumentSchema())) {
+                if (ns === this.rootSchema) {
+                    return value;
+                }
+                return (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
+            }
+            if (value instanceof Date && (ns.isTimestampSchema() || ns.isDocumentSchema())) {
+                const format = protocols.determineTimestampFormat(ns, this.settings);
+                switch (format) {
+                    case 5:
+                        return value.toISOString().replace(".000Z", "Z");
+                    case 6:
+                        return serde.dateToUtcString(value);
+                    case 7:
+                        return value.getTime() / 1000;
+                    default:
+                        console.warn("Missing timestamp format, using epoch seconds", value);
+                        return value.getTime() / 1000;
                 }
             }
-            return out;
-        }
-        else if (ns.isMapSchema() && isObject) {
-            const mapMember = ns.getValueSchema();
-            const out = {};
-            const sparse = !!ns.getMergedTraits().sparse;
-            for (const [_k, _v] of Object.entries(value)) {
-                if (sparse || _v != null) {
-                    out[_k] = this._write(mapMember, _v);
-                }
+            if (value instanceof serde.NumericValue) {
+                this.useReplacer = true;
             }
-            return out;
-        }
-        else if (ns.isStructSchema() && isObject) {
-            const out = {};
-            for (const [memberName, memberSchema] of serializingStructIterator(ns, value)) {
-                const serializableValue = this._write(memberSchema, value[memberName], ns);
-                if (serializableValue !== undefined) {
-                    const targetKey = this.settings.jsonName ? memberSchema.getMergedTraits().jsonName ?? memberName : memberName;
-                    out[targetKey] = serializableValue;
-                }
-            }
-            return out;
         }
         if (value === null && container?.isStructSchema()) {
             return void 0;
-        }
-        if ((ns.isBlobSchema() && (value instanceof Uint8Array || typeof value === "string")) ||
-            (ns.isDocumentSchema() && value instanceof Uint8Array)) {
-            if (ns === this.rootSchema) {
-                return value;
-            }
-            return (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
-        }
-        if ((ns.isTimestampSchema() || ns.isDocumentSchema()) && value instanceof Date) {
-            const format = protocols.determineTimestampFormat(ns, this.settings);
-            switch (format) {
-                case 5:
-                    return value.toISOString().replace(".000Z", "Z");
-                case 6:
-                    return serde.dateToUtcString(value);
-                case 7:
-                    return value.getTime() / 1000;
-                default:
-                    console.warn("Missing timestamp format, using epoch seconds", value);
-                    return value.getTime() / 1000;
-            }
-        }
-        if (ns.isNumericSchema() && typeof value === "number") {
-            if (Math.abs(value) === Infinity || isNaN(value)) {
-                return String(value);
-            }
         }
         if (ns.isStringSchema()) {
             if (typeof value === "undefined" && ns.isIdempotencyToken()) {
@@ -10964,12 +11035,29 @@ class JsonShapeSerializer extends SerdeContextConfig {
                     return serde.LazyJsonString.from(value);
                 }
             }
+            return value;
+        }
+        if (typeof value === "number" && ns.isNumericSchema()) {
+            if (Math.abs(value) === Infinity || isNaN(value)) {
+                return String(value);
+            }
+            return value;
+        }
+        if (typeof value === "string" && ns.isBlobSchema()) {
+            if (ns === this.rootSchema) {
+                return value;
+            }
+            return (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
+        }
+        if (typeof value === "bigint") {
+            this.useReplacer = true;
         }
         if (ns.isDocumentSchema()) {
             if (isObject) {
                 const out = Array.isArray(value) ? [] : {};
                 for (const [k, v] of Object.entries(value)) {
                     if (v instanceof serde.NumericValue) {
+                        this.useReplacer = true;
                         out[k] = v;
                     }
                     else {
@@ -11011,18 +11099,20 @@ class AwsJsonRpcProtocol extends protocols.RpcProtocol {
     codec;
     mixin;
     awsQueryCompatible;
-    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, }) {
+    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, jsonCodec, }) {
         super({
             defaultNamespace,
         });
         this.serviceTarget = serviceTarget;
-        this.codec = new JsonCodec({
-            timestampFormat: {
-                useTrait: true,
-                default: 7,
-            },
-            jsonName: false,
-        });
+        this.codec =
+            jsonCodec ??
+                new JsonCodec({
+                    timestampFormat: {
+                        useTrait: true,
+                        default: 7,
+                    },
+                    jsonName: false,
+                });
         this.serializer = this.codec.createSerializer();
         this.deserializer = this.codec.createDeserializer();
         this.awsQueryCompatible = !!awsQueryCompatible;
@@ -11053,15 +11143,16 @@ class AwsJsonRpcProtocol extends protocols.RpcProtocol {
             this.mixin.setQueryCompatError(dataObject, response);
         }
         const errorIdentifier = loadRestJsonErrorCode(response, dataObject) ?? "Unknown";
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata);
+        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
         const ns = schema.NormalizedSchema.of(errorSchema);
         const message = dataObject.message ?? dataObject.Message ?? "Unknown";
         const ErrorCtor = schema.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
         const exception = new ErrorCtor(message);
         const output = {};
         for (const [name, member] of ns.structIterator()) {
-            const target = member.getMergedTraits().jsonName ?? name;
-            output[name] = this.codec.createDeserializer().readObject(member, dataObject[target]);
+            if (dataObject[name] != null) {
+                output[name] = this.codec.createDeserializer().readObject(member, dataObject[name]);
+            }
         }
         if (this.awsQueryCompatible) {
             this.mixin.queryCompatOutput(dataObject, output);
@@ -11074,11 +11165,12 @@ class AwsJsonRpcProtocol extends protocols.RpcProtocol {
 }
 
 class AwsJson1_0Protocol extends AwsJsonRpcProtocol {
-    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, }) {
+    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, jsonCodec, }) {
         super({
             defaultNamespace,
             serviceTarget,
             awsQueryCompatible,
+            jsonCodec,
         });
     }
     getShapeId() {
@@ -11093,11 +11185,12 @@ class AwsJson1_0Protocol extends AwsJsonRpcProtocol {
 }
 
 class AwsJson1_1Protocol extends AwsJsonRpcProtocol {
-    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, }) {
+    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, jsonCodec, }) {
         super({
             defaultNamespace,
             serviceTarget,
             awsQueryCompatible,
+            jsonCodec,
         });
     }
     getShapeId() {
@@ -11579,18 +11672,13 @@ class AwsQueryProtocol extends protocols.RpcProtocol {
             Code: errorData.Code,
             Message: message,
         };
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, errorData, metadata, (registry, errorName) => {
-            try {
-                return registry.getSchema(errorName);
-            }
-            catch (e) {
-                return registry.find((schema$1) => schema.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
-            }
-        });
+        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, errorData, metadata, this.mixin.findQueryCompatibleError);
         const ns = schema.NormalizedSchema.of(errorSchema);
         const ErrorCtor = schema.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
         const exception = new ErrorCtor(message);
         const output = {
+            Type: errorData.Error.Type,
+            Code: errorData.Error.Code,
             Error: errorData.Error,
         };
         for (const [name, member] of ns.structIterator()) {
@@ -12011,10 +12099,11 @@ class AwsRestXmlProtocol extends protocols.HttpBindingProtocol {
                 request.headers["content-type"] = contentType;
             }
         }
-        if (request.headers["content-type"] === this.getDefaultContentType()) {
-            if (typeof request.body === "string") {
-                request.body = '<?xml version="1.0" encoding="UTF-8"?>' + request.body;
-            }
+        if (typeof request.body === "string" &&
+            request.headers["content-type"] === this.getDefaultContentType() &&
+            !request.body.startsWith("<?xml ") &&
+            !this.hasUnstructuredPayloadBinding(inputSchema)) {
+            request.body = '<?xml version="1.0" encoding="UTF-8"?>' + request.body;
         }
         return request;
     }
@@ -12042,6 +12131,14 @@ class AwsRestXmlProtocol extends protocols.HttpBindingProtocol {
     }
     getDefaultContentType() {
         return "application/xml";
+    }
+    hasUnstructuredPayloadBinding(ns) {
+        for (const [, member] of ns.structIterator()) {
+            if (member.getMergedTraits().httpPayload) {
+                return !(member.isStructSchema() || member.isMapSchema() || member.isListSchema());
+            }
+        }
+        return false;
     }
 }
 
@@ -12098,15 +12195,15 @@ const state = {
     warningEmitted: false,
 };
 const emitWarningIfUnsupportedVersion = (version) => {
-    if (version && !state.warningEmitted && parseInt(version.substring(1, version.indexOf("."))) < 18) {
+    if (version && !state.warningEmitted && parseInt(version.substring(1, version.indexOf("."))) < 20) {
         state.warningEmitted = true;
         process.emitWarning(`NodeDeprecationWarning: The AWS SDK for JavaScript (v3) will
-no longer support Node.js 16.x on January 6, 2025.
+no longer support Node.js ${version} in January 2026.
 
 To continue receiving updates to AWS services, bug fixes, and security
 updates please upgrade to a supported Node.js LTS version.
 
-More information can be found at: https://a.co/74kJMmI`);
+More information can be found at: https://a.co/c895JFp`);
     }
 };
 
@@ -12229,8 +12326,17 @@ class ProtocolLib {
             const msg = exception.Message ?? additions.Message;
             const error = smithyClient.decorateServiceException(exception, additions);
             if (msg) {
-                error.Message = msg;
                 error.message = msg;
+            }
+            error.Error = {
+                ...error.Error,
+                Type: error.Error.Type,
+                Code: error.Error.Code,
+                Message: error.Error.message ?? error.Error.Message ?? msg,
+            };
+            const reqId = error.$metadata.requestId;
+            if (reqId) {
+                error.RequestId = reqId;
             }
             return error;
         }
@@ -12247,7 +12353,7 @@ class ProtocolLib {
             };
             Object.assign(output, Error);
             for (const [k, v] of entries) {
-                Error[k] = v;
+                Error[k === "message" ? "Message" : k] = v;
             }
             delete Error.__type;
             output.Error = Error;
@@ -12262,6 +12368,14 @@ class ProtocolLib {
         }
         if (queryCompatErrorData.Code) {
             errorData.Code = queryCompatErrorData.Code;
+        }
+    }
+    findQueryCompatibleError(registry, errorName) {
+        try {
+            return registry.getSchema(errorName);
+        }
+        catch (e) {
+            return registry.find((schema$1) => schema.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
         }
     }
 }
@@ -12285,15 +12399,23 @@ class AwsSmithyRpcV2CborProtocol extends cbor.SmithyRpcV2CborProtocol {
         if (this.awsQueryCompatible) {
             this.mixin.setQueryCompatError(dataObject, response);
         }
-        const errorName = cbor.loadSmithyRpcV2CborErrorCode(response, dataObject) ?? "Unknown";
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorName, this.options.defaultNamespace, response, dataObject, metadata);
+        const errorName = (() => {
+            const compatHeader = response.headers["x-amzn-query-error"];
+            if (compatHeader && this.awsQueryCompatible) {
+                return compatHeader.split(";")[0];
+            }
+            return cbor.loadSmithyRpcV2CborErrorCode(response, dataObject) ?? "Unknown";
+        })();
+        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorName, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
         const ns = schema.NormalizedSchema.of(errorSchema);
         const message = dataObject.message ?? dataObject.Message ?? "Unknown";
         const ErrorCtor = schema.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
         const exception = new ErrorCtor(message);
         const output = {};
         for (const [name, member] of ns.structIterator()) {
-            output[name] = this.deserializer.readValue(member, dataObject[name]);
+            if (dataObject[name] != null) {
+                output[name] = this.deserializer.readValue(member, dataObject[name]);
+            }
         }
         if (this.awsQueryCompatible) {
             this.mixin.queryCompatOutput(dataObject, output);
@@ -12369,7 +12491,8 @@ function* serializingStructIterator(ns, sourceObject) {
     const struct = ns.getSchema();
     for (let i = 0; i < struct[4].length; ++i) {
         const key = struct[4][i];
-        const memberNs = new schema.NormalizedSchema([struct[5][i], 0], key);
+        const memberSchema = struct[5][i];
+        const memberNs = new schema.NormalizedSchema([memberSchema, 0], key);
         if (!(key in sourceObject) && !memberNs.isIdempotencyToken()) {
             continue;
         }
@@ -12381,13 +12504,14 @@ function* deserializingStructIterator(ns, sourceObject, nameTrait) {
         return;
     }
     const struct = ns.getSchema();
-    let keysRemaining = Object.keys(sourceObject).length;
+    let keysRemaining = Object.keys(sourceObject).filter((k) => k !== "__type").length;
     for (let i = 0; i < struct[4].length; ++i) {
         if (keysRemaining === 0) {
             break;
         }
         const key = struct[4][i];
-        const memberNs = new schema.NormalizedSchema([struct[5][i], 0], key);
+        const memberSchema = struct[5][i];
+        const memberNs = new schema.NormalizedSchema([memberSchema, 0], key);
         let serializationKey = key;
         if (nameTrait) {
             serializationKey = memberNs.getMergedTraits()[nameTrait] ?? key;
@@ -12489,38 +12613,40 @@ class JsonShapeDeserializer extends SerdeContextConfig {
     _read(schema$1, value) {
         const isObject = value !== null && typeof value === "object";
         const ns = schema.NormalizedSchema.of(schema$1);
-        if (ns.isListSchema() && Array.isArray(value)) {
-            const listMember = ns.getValueSchema();
-            const out = [];
-            const sparse = !!ns.getMergedTraits().sparse;
-            for (const item of value) {
-                if (sparse || item != null) {
-                    out.push(this._read(listMember, item));
+        if (isObject) {
+            if (ns.isStructSchema()) {
+                const out = {};
+                for (const [memberName, memberSchema] of deserializingStructIterator(ns, value, this.settings.jsonName ? "jsonName" : false)) {
+                    const fromKey = this.settings.jsonName ? memberSchema.getMergedTraits().jsonName ?? memberName : memberName;
+                    const deserializedValue = this._read(memberSchema, value[fromKey]);
+                    if (deserializedValue != null) {
+                        out[memberName] = deserializedValue;
+                    }
                 }
+                return out;
             }
-            return out;
-        }
-        else if (ns.isMapSchema() && isObject) {
-            const mapMember = ns.getValueSchema();
-            const out = {};
-            const sparse = !!ns.getMergedTraits().sparse;
-            for (const [_k, _v] of Object.entries(value)) {
-                if (sparse || _v != null) {
-                    out[_k] = this._read(mapMember, _v);
+            if (Array.isArray(value) && ns.isListSchema()) {
+                const listMember = ns.getValueSchema();
+                const out = [];
+                const sparse = !!ns.getMergedTraits().sparse;
+                for (const item of value) {
+                    if (sparse || item != null) {
+                        out.push(this._read(listMember, item));
+                    }
                 }
+                return out;
             }
-            return out;
-        }
-        else if (ns.isStructSchema() && isObject) {
-            const out = {};
-            for (const [memberName, memberSchema] of deserializingStructIterator(ns, value, this.settings.jsonName ? "jsonName" : false)) {
-                const fromKey = this.settings.jsonName ? memberSchema.getMergedTraits().jsonName ?? memberName : memberName;
-                const deserializedValue = this._read(memberSchema, value[fromKey]);
-                if (deserializedValue != null) {
-                    out[memberName] = deserializedValue;
+            if (ns.isMapSchema()) {
+                const mapMember = ns.getValueSchema();
+                const out = {};
+                const sparse = !!ns.getMergedTraits().sparse;
+                for (const [_k, _v] of Object.entries(value)) {
+                    if (sparse || _v != null) {
+                        out[_k] = this._read(mapMember, _v);
+                    }
                 }
+                return out;
             }
-            return out;
         }
         if (ns.isBlobSchema() && typeof value === "string") {
             return utilBase64.fromBase64(value);
@@ -12531,6 +12657,7 @@ class JsonShapeDeserializer extends SerdeContextConfig {
             if (isJson) {
                 return serde.LazyJsonString.from(value);
             }
+            return value;
         }
         if (ns.isTimestampSchema() && value != null) {
             const format = protocols.determineTimestampFormat(ns, this.settings);
@@ -12568,6 +12695,7 @@ class JsonShapeDeserializer extends SerdeContextConfig {
                 case "NaN":
                     return NaN;
             }
+            return value;
         }
         if (ns.isDocumentSchema()) {
             if (isObject) {
@@ -12639,6 +12767,7 @@ class JsonReplacer {
 class JsonShapeSerializer extends SerdeContextConfig {
     settings;
     buffer;
+    useReplacer = false;
     rootSchema;
     constructor(settings) {
         super();
@@ -12655,9 +12784,13 @@ class JsonShapeSerializer extends SerdeContextConfig {
         }
     }
     flush() {
-        const { rootSchema } = this;
+        const { rootSchema, useReplacer } = this;
         this.rootSchema = undefined;
+        this.useReplacer = false;
         if (rootSchema?.isStructSchema() || rootSchema?.isDocumentSchema()) {
+            if (!useReplacer) {
+                return JSON.stringify(this.buffer);
+            }
             const replacer = new JsonReplacer();
             return replacer.replaceInJson(JSON.stringify(this.buffer, replacer.createReplacer(), 0));
         }
@@ -12666,67 +12799,67 @@ class JsonShapeSerializer extends SerdeContextConfig {
     _write(schema$1, value, container) {
         const isObject = value !== null && typeof value === "object";
         const ns = schema.NormalizedSchema.of(schema$1);
-        if (ns.isListSchema() && Array.isArray(value)) {
-            const listMember = ns.getValueSchema();
-            const out = [];
-            const sparse = !!ns.getMergedTraits().sparse;
-            for (const item of value) {
-                if (sparse || item != null) {
-                    out.push(this._write(listMember, item));
+        if (isObject) {
+            if (ns.isStructSchema()) {
+                const out = {};
+                for (const [memberName, memberSchema] of serializingStructIterator(ns, value)) {
+                    const serializableValue = this._write(memberSchema, value[memberName], ns);
+                    if (serializableValue !== undefined) {
+                        const jsonName = memberSchema.getMergedTraits().jsonName;
+                        const targetKey = this.settings.jsonName ? jsonName ?? memberName : memberName;
+                        out[targetKey] = serializableValue;
+                    }
+                }
+                return out;
+            }
+            if (Array.isArray(value) && ns.isListSchema()) {
+                const listMember = ns.getValueSchema();
+                const out = [];
+                const sparse = !!ns.getMergedTraits().sparse;
+                for (const item of value) {
+                    if (sparse || item != null) {
+                        out.push(this._write(listMember, item));
+                    }
+                }
+                return out;
+            }
+            if (ns.isMapSchema()) {
+                const mapMember = ns.getValueSchema();
+                const out = {};
+                const sparse = !!ns.getMergedTraits().sparse;
+                for (const [_k, _v] of Object.entries(value)) {
+                    if (sparse || _v != null) {
+                        out[_k] = this._write(mapMember, _v);
+                    }
+                }
+                return out;
+            }
+            if (value instanceof Uint8Array && (ns.isBlobSchema() || ns.isDocumentSchema())) {
+                if (ns === this.rootSchema) {
+                    return value;
+                }
+                return (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
+            }
+            if (value instanceof Date && (ns.isTimestampSchema() || ns.isDocumentSchema())) {
+                const format = protocols.determineTimestampFormat(ns, this.settings);
+                switch (format) {
+                    case 5:
+                        return value.toISOString().replace(".000Z", "Z");
+                    case 6:
+                        return serde.dateToUtcString(value);
+                    case 7:
+                        return value.getTime() / 1000;
+                    default:
+                        console.warn("Missing timestamp format, using epoch seconds", value);
+                        return value.getTime() / 1000;
                 }
             }
-            return out;
-        }
-        else if (ns.isMapSchema() && isObject) {
-            const mapMember = ns.getValueSchema();
-            const out = {};
-            const sparse = !!ns.getMergedTraits().sparse;
-            for (const [_k, _v] of Object.entries(value)) {
-                if (sparse || _v != null) {
-                    out[_k] = this._write(mapMember, _v);
-                }
+            if (value instanceof serde.NumericValue) {
+                this.useReplacer = true;
             }
-            return out;
-        }
-        else if (ns.isStructSchema() && isObject) {
-            const out = {};
-            for (const [memberName, memberSchema] of serializingStructIterator(ns, value)) {
-                const serializableValue = this._write(memberSchema, value[memberName], ns);
-                if (serializableValue !== undefined) {
-                    const targetKey = this.settings.jsonName ? memberSchema.getMergedTraits().jsonName ?? memberName : memberName;
-                    out[targetKey] = serializableValue;
-                }
-            }
-            return out;
         }
         if (value === null && container?.isStructSchema()) {
             return void 0;
-        }
-        if ((ns.isBlobSchema() && (value instanceof Uint8Array || typeof value === "string")) ||
-            (ns.isDocumentSchema() && value instanceof Uint8Array)) {
-            if (ns === this.rootSchema) {
-                return value;
-            }
-            return (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
-        }
-        if ((ns.isTimestampSchema() || ns.isDocumentSchema()) && value instanceof Date) {
-            const format = protocols.determineTimestampFormat(ns, this.settings);
-            switch (format) {
-                case 5:
-                    return value.toISOString().replace(".000Z", "Z");
-                case 6:
-                    return serde.dateToUtcString(value);
-                case 7:
-                    return value.getTime() / 1000;
-                default:
-                    console.warn("Missing timestamp format, using epoch seconds", value);
-                    return value.getTime() / 1000;
-            }
-        }
-        if (ns.isNumericSchema() && typeof value === "number") {
-            if (Math.abs(value) === Infinity || isNaN(value)) {
-                return String(value);
-            }
         }
         if (ns.isStringSchema()) {
             if (typeof value === "undefined" && ns.isIdempotencyToken()) {
@@ -12739,12 +12872,29 @@ class JsonShapeSerializer extends SerdeContextConfig {
                     return serde.LazyJsonString.from(value);
                 }
             }
+            return value;
+        }
+        if (typeof value === "number" && ns.isNumericSchema()) {
+            if (Math.abs(value) === Infinity || isNaN(value)) {
+                return String(value);
+            }
+            return value;
+        }
+        if (typeof value === "string" && ns.isBlobSchema()) {
+            if (ns === this.rootSchema) {
+                return value;
+            }
+            return (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
+        }
+        if (typeof value === "bigint") {
+            this.useReplacer = true;
         }
         if (ns.isDocumentSchema()) {
             if (isObject) {
                 const out = Array.isArray(value) ? [] : {};
                 for (const [k, v] of Object.entries(value)) {
                     if (v instanceof serde.NumericValue) {
+                        this.useReplacer = true;
                         out[k] = v;
                     }
                     else {
@@ -12786,18 +12936,20 @@ class AwsJsonRpcProtocol extends protocols.RpcProtocol {
     codec;
     mixin;
     awsQueryCompatible;
-    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, }) {
+    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, jsonCodec, }) {
         super({
             defaultNamespace,
         });
         this.serviceTarget = serviceTarget;
-        this.codec = new JsonCodec({
-            timestampFormat: {
-                useTrait: true,
-                default: 7,
-            },
-            jsonName: false,
-        });
+        this.codec =
+            jsonCodec ??
+                new JsonCodec({
+                    timestampFormat: {
+                        useTrait: true,
+                        default: 7,
+                    },
+                    jsonName: false,
+                });
         this.serializer = this.codec.createSerializer();
         this.deserializer = this.codec.createDeserializer();
         this.awsQueryCompatible = !!awsQueryCompatible;
@@ -12828,15 +12980,16 @@ class AwsJsonRpcProtocol extends protocols.RpcProtocol {
             this.mixin.setQueryCompatError(dataObject, response);
         }
         const errorIdentifier = loadRestJsonErrorCode(response, dataObject) ?? "Unknown";
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata);
+        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
         const ns = schema.NormalizedSchema.of(errorSchema);
         const message = dataObject.message ?? dataObject.Message ?? "Unknown";
         const ErrorCtor = schema.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
         const exception = new ErrorCtor(message);
         const output = {};
         for (const [name, member] of ns.structIterator()) {
-            const target = member.getMergedTraits().jsonName ?? name;
-            output[name] = this.codec.createDeserializer().readObject(member, dataObject[target]);
+            if (dataObject[name] != null) {
+                output[name] = this.codec.createDeserializer().readObject(member, dataObject[name]);
+            }
         }
         if (this.awsQueryCompatible) {
             this.mixin.queryCompatOutput(dataObject, output);
@@ -12849,11 +13002,12 @@ class AwsJsonRpcProtocol extends protocols.RpcProtocol {
 }
 
 class AwsJson1_0Protocol extends AwsJsonRpcProtocol {
-    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, }) {
+    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, jsonCodec, }) {
         super({
             defaultNamespace,
             serviceTarget,
             awsQueryCompatible,
+            jsonCodec,
         });
     }
     getShapeId() {
@@ -12868,11 +13022,12 @@ class AwsJson1_0Protocol extends AwsJsonRpcProtocol {
 }
 
 class AwsJson1_1Protocol extends AwsJsonRpcProtocol {
-    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, }) {
+    constructor({ defaultNamespace, serviceTarget, awsQueryCompatible, jsonCodec, }) {
         super({
             defaultNamespace,
             serviceTarget,
             awsQueryCompatible,
+            jsonCodec,
         });
     }
     getShapeId() {
@@ -13354,18 +13509,13 @@ class AwsQueryProtocol extends protocols.RpcProtocol {
             Code: errorData.Code,
             Message: message,
         };
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, errorData, metadata, (registry, errorName) => {
-            try {
-                return registry.getSchema(errorName);
-            }
-            catch (e) {
-                return registry.find((schema$1) => schema.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
-            }
-        });
+        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, errorData, metadata, this.mixin.findQueryCompatibleError);
         const ns = schema.NormalizedSchema.of(errorSchema);
         const ErrorCtor = schema.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
         const exception = new ErrorCtor(message);
         const output = {
+            Type: errorData.Error.Type,
+            Code: errorData.Error.Code,
             Error: errorData.Error,
         };
         for (const [name, member] of ns.structIterator()) {
@@ -13786,10 +13936,11 @@ class AwsRestXmlProtocol extends protocols.HttpBindingProtocol {
                 request.headers["content-type"] = contentType;
             }
         }
-        if (request.headers["content-type"] === this.getDefaultContentType()) {
-            if (typeof request.body === "string") {
-                request.body = '<?xml version="1.0" encoding="UTF-8"?>' + request.body;
-            }
+        if (typeof request.body === "string" &&
+            request.headers["content-type"] === this.getDefaultContentType() &&
+            !request.body.startsWith("<?xml ") &&
+            !this.hasUnstructuredPayloadBinding(inputSchema)) {
+            request.body = '<?xml version="1.0" encoding="UTF-8"?>' + request.body;
         }
         return request;
     }
@@ -13817,6 +13968,14 @@ class AwsRestXmlProtocol extends protocols.HttpBindingProtocol {
     }
     getDefaultContentType() {
         return "application/xml";
+    }
+    hasUnstructuredPayloadBinding(ns) {
+        for (const [, member] of ns.structIterator()) {
+            if (member.getMergedTraits().httpPayload) {
+                return !(member.isStructSchema() || member.isMapSchema() || member.isListSchema());
+            }
+        }
+        return false;
     }
 }
 
@@ -14442,8 +14601,8 @@ exports.userAgentMiddleware = userAgentMiddleware;
 "use strict";
 
 
-var configResolver = __nccwpck_require__(9316);
 var stsRegionDefaultResolver = __nccwpck_require__(5779);
+var configResolver = __nccwpck_require__(9316);
 
 const getAwsRegionExtensionConfiguration = (runtimeConfig) => {
     return {
@@ -15218,12 +15377,7 @@ class InvokeStoreSingle extends InvokeStoreBase {
     }
     run(context, fn) {
         this.currentContext = context;
-        try {
-            return fn();
-        }
-        finally {
-            this.currentContext = undefined;
-        }
+        return fn();
     }
 }
 class InvokeStoreMulti extends InvokeStoreBase {
@@ -16731,8 +16885,15 @@ class CborShapeDeserializer extends protocols.SerdeContext {
     }
     readValue(_schema, value) {
         const ns = schema.NormalizedSchema.of(_schema);
-        if (ns.isTimestampSchema() && typeof value === "number") {
-            return serde._parseEpochTimestamp(value);
+        if (ns.isTimestampSchema()) {
+            if (typeof value === "number") {
+                return serde._parseEpochTimestamp(value);
+            }
+            if (typeof value === "object") {
+                if (value.tag === 1 && "value" in value) {
+                    return serde._parseEpochTimestamp(value.value);
+                }
+            }
         }
         if (ns.isBlobSchema()) {
             if (typeof value === "string") {
@@ -16748,7 +16909,7 @@ class CborShapeDeserializer extends protocols.SerdeContext {
             typeof value === "symbol") {
             return value;
         }
-        else if (typeof value === "function" || typeof value === "object") {
+        else if (typeof value === "object") {
             if (value === null) {
                 return null;
             }
@@ -19537,9 +19698,17 @@ const isArnBucketName = (bucketName) => {
     return isValidArn;
 };
 
-const createConfigValueProvider = (configKey, canonicalEndpointParamKey, config) => {
+const createConfigValueProvider = (configKey, canonicalEndpointParamKey, config, isClientContextParam = false) => {
     const configProvider = async () => {
-        const configValue = config[configKey] ?? config[canonicalEndpointParamKey];
+        let configValue;
+        if (isClientContextParam) {
+            const clientContextParams = config.clientContextParams;
+            const nestedValue = clientContextParams?.[configKey];
+            configValue = nestedValue ?? config[configKey] ?? config[canonicalEndpointParamKey];
+        }
+        else {
+            configValue = config[configKey] ?? config[canonicalEndpointParamKey];
+        }
         if (typeof configValue === "function") {
             return configValue();
         }
@@ -19624,7 +19793,7 @@ const resolveParams = async (commandInput, instructionsSupplier, clientConfig) =
                 break;
             case "clientContextParams":
             case "builtInParams":
-                endpointParams[name] = await createConfigValueProvider(instruction.name, name, clientConfig)();
+                endpointParams[name] = await createConfigValueProvider(instruction.name, name, clientConfig, instruction.type !== "builtInParams")();
                 break;
             case "operationContextParams":
                 endpointParams[name] = instruction.get(commandInput);
@@ -22674,6 +22843,12 @@ class Client {
     handlers;
     constructor(config) {
         this.config = config;
+        const { protocol, protocolSettings } = config;
+        if (protocolSettings) {
+            if (typeof protocol === "function") {
+                config.protocol = new protocol(protocolSettings);
+            }
+        }
     }
     send(command, optionsOrCb, cb) {
         const options = typeof optionsOrCb !== "function" ? optionsOrCb : undefined;
@@ -50455,7 +50630,7 @@ module.exports = parseParams
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/client-ecs","description":"AWS SDK for JavaScript Ecs Client for Node.js, Browser and React Native","version":"3.940.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"node ../../scripts/compilation/inline client-ecs","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo ecs"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"3.940.0","@aws-sdk/credential-provider-node":"3.940.0","@aws-sdk/middleware-host-header":"3.936.0","@aws-sdk/middleware-logger":"3.936.0","@aws-sdk/middleware-recursion-detection":"3.936.0","@aws-sdk/middleware-user-agent":"3.940.0","@aws-sdk/region-config-resolver":"3.936.0","@aws-sdk/types":"3.936.0","@aws-sdk/util-endpoints":"3.936.0","@aws-sdk/util-user-agent-browser":"3.936.0","@aws-sdk/util-user-agent-node":"3.940.0","@smithy/config-resolver":"^4.4.3","@smithy/core":"^3.18.5","@smithy/fetch-http-handler":"^5.3.6","@smithy/hash-node":"^4.2.5","@smithy/invalid-dependency":"^4.2.5","@smithy/middleware-content-length":"^4.2.5","@smithy/middleware-endpoint":"^4.3.12","@smithy/middleware-retry":"^4.4.12","@smithy/middleware-serde":"^4.2.6","@smithy/middleware-stack":"^4.2.5","@smithy/node-config-provider":"^4.3.5","@smithy/node-http-handler":"^4.4.5","@smithy/protocol-http":"^5.3.5","@smithy/smithy-client":"^4.9.8","@smithy/types":"^4.9.0","@smithy/url-parser":"^4.2.5","@smithy/util-base64":"^4.3.0","@smithy/util-body-length-browser":"^4.2.0","@smithy/util-body-length-node":"^4.2.1","@smithy/util-defaults-mode-browser":"^4.3.11","@smithy/util-defaults-mode-node":"^4.2.14","@smithy/util-endpoints":"^3.2.5","@smithy/util-middleware":"^4.2.5","@smithy/util-retry":"^4.2.5","@smithy/util-utf8":"^4.2.0","@smithy/util-waiter":"^4.2.5","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node18":"18.2.4","@types/node":"^18.19.69","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~5.8.3"},"engines":{"node":">=18.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-ecs","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-ecs"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/client-ecs","description":"AWS SDK for JavaScript Ecs Client for Node.js, Browser and React Native","version":"3.953.0","scripts":{"build":"concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline client-ecs","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo ecs","test:index":"tsc --noEmit ./test/index-types.ts && node ./test/index-objects.spec.mjs"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"3.953.0","@aws-sdk/credential-provider-node":"3.953.0","@aws-sdk/middleware-host-header":"3.953.0","@aws-sdk/middleware-logger":"3.953.0","@aws-sdk/middleware-recursion-detection":"3.953.0","@aws-sdk/middleware-user-agent":"3.953.0","@aws-sdk/region-config-resolver":"3.953.0","@aws-sdk/types":"3.953.0","@aws-sdk/util-endpoints":"3.953.0","@aws-sdk/util-user-agent-browser":"3.953.0","@aws-sdk/util-user-agent-node":"3.953.0","@smithy/config-resolver":"^4.4.4","@smithy/core":"^3.19.0","@smithy/fetch-http-handler":"^5.3.7","@smithy/hash-node":"^4.2.6","@smithy/invalid-dependency":"^4.2.6","@smithy/middleware-content-length":"^4.2.6","@smithy/middleware-endpoint":"^4.3.15","@smithy/middleware-retry":"^4.4.15","@smithy/middleware-serde":"^4.2.7","@smithy/middleware-stack":"^4.2.6","@smithy/node-config-provider":"^4.3.6","@smithy/node-http-handler":"^4.4.6","@smithy/protocol-http":"^5.3.6","@smithy/smithy-client":"^4.10.0","@smithy/types":"^4.10.0","@smithy/url-parser":"^4.2.6","@smithy/util-base64":"^4.3.0","@smithy/util-body-length-browser":"^4.2.0","@smithy/util-body-length-node":"^4.2.1","@smithy/util-defaults-mode-browser":"^4.3.14","@smithy/util-defaults-mode-node":"^4.2.17","@smithy/util-endpoints":"^3.2.6","@smithy/util-middleware":"^4.2.6","@smithy/util-retry":"^4.2.6","@smithy/util-utf8":"^4.2.0","@smithy/util-waiter":"^4.2.6","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node18":"18.2.4","@types/node":"^18.19.69","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~5.8.3"},"engines":{"node":">=18.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-ecs","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-ecs"}}');
 
 /***/ })
 
