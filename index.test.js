@@ -749,7 +749,7 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       await run();
 
-      expect(core.info).toHaveBeenCalledWith('Tags successfully included in service creation');
+      expect(core.debug).toHaveBeenCalledWith('Tags successfully included in service creation');
     });
 
     test('includes tags in service config when provided as multiline', async () => {
@@ -774,7 +774,7 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       await run();
 
-      expect(core.info).toHaveBeenCalledWith('Tags successfully included in service creation');
+      expect(core.debug).toHaveBeenCalledWith('Tags successfully included in service creation');
     });
 
     test('skips tag processing when no tags provided', async () => {
@@ -867,7 +867,7 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       await run();
 
-      expect(core.info).toHaveBeenCalledWith('Tags successfully included in service update');
+      expect(core.debug).toHaveBeenCalledWith('Tags successfully included in service update');
     });
   });
 

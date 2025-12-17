@@ -372,7 +372,7 @@ async function run() {
         
         // Log successful tag application for service updates
         if (serviceConfig.tags && serviceConfig.tags.length > 0) {
-          core.info(`Tags successfully included in service update`);
+          core.debug(`Tags successfully included in service update`);
         }
       } else {
         // Create new service
@@ -385,7 +385,7 @@ async function run() {
         
         // Log successful tag application for service creation
         if (serviceConfig.tags && serviceConfig.tags.length > 0) {
-          core.info(`Tags successfully included in service creation`);
+          core.debug(`Tags successfully included in service creation`);
         }
       }
     } catch (error) {
