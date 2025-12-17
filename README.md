@@ -323,7 +323,7 @@ https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-best
 
 The action supports two input formats for tags:
 
-**JSON Format** (recommended for complex scenarios):
+**JSON Format**:
 ```yaml
 - name: Deploy with tags (JSON format)
   uses: aws-actions/amazon-ecs-deploy-express-service@v1
@@ -341,7 +341,7 @@ The action supports two input formats for tags:
       ]
 ```
 
-**Multiline Format** (simpler for basic use cases):
+**Multiline Format**:
 ```yaml
 - name: Deploy with tags (multiline format)
   uses: aws-actions/amazon-ecs-deploy-express-service@v1
