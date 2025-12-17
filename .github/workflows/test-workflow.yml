@@ -20,7 +20,7 @@ jobs:
 
     - name: Print current build ID
       run: |
-        echo Integration test run: githubactionsamazonecsdeplo-cgLSI6gSDu11:a250300b-798c-4c97-bbb8-4b83c4869b45
+        echo Integration test run: githubactionsamazonecsdeplo-cgLSI6gSDu11:407c3524-603a-4abe-aaa7-ed490756f37a
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -30,7 +30,7 @@ jobs:
         aws-region: us-west-2
 
     - name: Deploy Amazon ECS Express Service
-      uses: aws-actions/amazon-ecs-deploy-express-service@8087361ea245f6f57c49b9495dcb70e953163f46
+      uses: aws-actions/amazon-ecs-deploy-express-service@84395c47fc7903eca7a3fafea3e7e2a68c8241c1
       with:
         service-name: github-actions-deploy-express-integ-test
         image: public.ecr.aws/nginx/nginx:latest
