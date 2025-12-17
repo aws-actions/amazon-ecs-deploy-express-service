@@ -385,6 +385,7 @@ async function run() {
         core.info('Service created successfully');
         
         // Log successful tag application for service creation
+        // Note: Tags are only applied during service creation, not during updates
         if (serviceConfig.tags && serviceConfig.tags.length > 0) {
           core.debug(`Tags successfully included in service creation`);
         }
