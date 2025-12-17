@@ -11,6 +11,7 @@ Deploys an Amazon ECS Express Mode service. ECS Express Mode is a simplified dep
 - [Outputs](#outputs)
 - [IAM Permissions](#iam-permissions)
 - [Examples](#examples)
+- [Best Practices](#best-practices)
 
 
 ## Overview
@@ -290,6 +291,8 @@ jobs:
 
 ### Deploy with Auto-Scaling
 
+Express Mode Services are setup with preset defaults 
+
 ```yaml
 - name: Deploy with auto-scaling
   uses: aws-actions/amazon-ecs-deploy-express-service@v1
@@ -305,6 +308,9 @@ jobs:
     auto-scaling-metric: AVERAGE_CPU
     auto-scaling-target-value: 70
 ```
+
+## Best Practices
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-best-practices.html
 
 ## Troubleshooting
 
