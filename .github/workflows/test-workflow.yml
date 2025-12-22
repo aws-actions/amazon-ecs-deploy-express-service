@@ -25,8 +25,8 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployExpressIntegrationTests
-        role-session-name: deploy_express_integration_tests
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
 
     - name: Deploy Amazon ECS Express Service with Tags
@@ -42,5 +42,5 @@ jobs:
           [
             {"key": "Environment", "value": "IntegTest"},
             {"key": "TestType", "value": "TaggingFeature"},
-            {"key": "BuildId", "value": "BUILD_ID"}
+            {"key": "Owner", "value": "GitHubActions"}
           ]
