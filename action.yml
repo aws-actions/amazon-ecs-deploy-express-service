@@ -49,6 +49,10 @@ inputs:
   tags:
     description: 'Resource tags to apply to the ECS Express Gateway service and associated AWS resources (ALB, target groups, auto-scaling, etc.). Provide as JSON array: [{"key":"Environment","value":"Production"}] or multiline format: Environment=Production'
     required: false
+  mutate-tags-on-update:
+    description: 'Enable tag management for service updates. When set to "true", performs complete tag state management by adding new tags and removing existing tags that are not in the provided tags input. When not set or "false", no tag operations are performed during service updates (existing tags remain unchanged). Note: Tags are always applied during service creation regardless of this setting. Requires ecs:TagResource and ecs:UntagResource permissions when enabled.'
+    required: false
+    default: 'false'
   
   # Resource configuration
   cpu:

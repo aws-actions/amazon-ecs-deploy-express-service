@@ -220,6 +220,8 @@ Use [the `aws-actions/configure-aws-credentials` action](https://github.com/aws-
         "ecs:DescribeServices",
         "ecs:ListServiceDeployments",
         "ecs:DescribeServiceDeployments",
+        "ecs:TagResource",
+        "ecs:UntagResource",
         "iam:PassRole"
       ],
       "Resource": "*"
@@ -321,7 +323,10 @@ https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-best
 
 ### Deploy with Resource Tags
 
-The action supports two input formats for tags:
+#### Basic Tag Usage
+
+- When used, tags are added onto the ECS Service and all resources created during the CreateExpressGatewayService operation.
+- Any new resources created upon `update` inherit these tags from the ECS Service.
 
 **JSON Format**:
 ```yaml
@@ -355,6 +360,47 @@ The action supports two input formats for tags:
       Team=DevOps
       CostCenter=Engineering
       Project=WebApp
+```
+
+#### Advanced Tag Management
+
+- Set via the `mutate-tags-on-update` flag, ensures that tags are updated on the underlying ECS Service even on update operations via the `ecs:TagResource`/`ecs:UntagResource` operation. This does not update tags on existing underlying resources(load balancer, certificate, etc) that have already been created.
+- Any **new** resources created as a result of the `update` inherit these tags that are applied to the ECS Service.
+- IAM Permissions: Requires additional `ecs:TagResource` and `ecs:UntagResource` permissions
+
+```yaml
+- name: Deploy with advanced tag management
+  uses: aws-actions/amazon-ecs-deploy-express-service@v1
+  with:
+    service-name: my-app
+    image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
+    execution-role-arn: arn:aws:iam::123456789012:role/ecsTaskExecutionRole
+    infrastructure-role-arn: arn:aws:iam::123456789012:role/ecsInfrastructureRole
+    mutate-tags-on-update: 'true'
+    tags: |
+      [
+        {"key": "Environment", "value": "Production"},
+        {"key": "Team", "value": "DevOps"},
+        {"key": "Version", "value": "2.1.0"}
+      ]
+```
+
+**Additional IAM Permissions for Advanced Tag Management**:
+When using `mutate-tags-on-update: 'true'`, ensure your infrastructure role includes:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecs:TagResource",
+        "ecs:UntagResource"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
 ```
 
 
