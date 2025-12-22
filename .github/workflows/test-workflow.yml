@@ -42,5 +42,5 @@ jobs:
           [
             {"key": "Environment", "value": "IntegTest"},
             {"key": "TestType", "value": "TaggingFeature"},
-            {"key": "Owner", "value": "GitHubActions"}
+            {"key": "BuildId", "value": "ds"}
           ]
