@@ -839,6 +839,270 @@ describe('Amazon ECS Deploy Express Service', () => {
       expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Tag parsing failed'));
       expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Invalid tag format'));
     });
+
+    test('calls TagResource API when updating existing service with tags and tag management enabled', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'existing-service';
+        if (name === 'tags') return '[{"key":"Environment","value":"Production"},{"key":"Team","value":"DevOps"}]';
+        if (name === 'mutate-tags-on-update') return 'true';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/existing-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
+      mockSend
+        .mockResolvedValueOnce({ // DescribeServices - service exists
+          services: [{
+            serviceArn: serviceArn,
+            status: 'ACTIVE'
+          }]
+        })
+        .mockResolvedValueOnce({}) // TagResourceCommand - successful tagging
+        .mockResolvedValueOnce({ // UpdateExpressGatewayService
+          service: { serviceArn: serviceArn }
+        })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      // Verify TagResourceCommand was called by checking the call count and success message
+      expect(mockSend).toHaveBeenCalledTimes(6); // DescribeServices + TagResource + UpdateService + 3 monitoring calls
+      
+      expect(core.info).toHaveBeenCalledWith('Successfully applied 2 tags to existing service');
+      expect(core.info).toHaveBeenCalledWith('Service updated successfully');
+    });
+
+    test('fails deployment when TagResource fails during service update', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'existing-service';
+        if (name === 'tags') return '[{"key":"Environment","value":"Production"}]';
+        if (name === 'mutate-tags-on-update') return 'true';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/existing-service';
+      
+      const tagError = new Error('Access denied for tagging');
+      tagError.name = 'AccessDeniedException';
+      
+      mockSend
+        .mockResolvedValueOnce({ // DescribeServices - service exists
+          services: [{
+            serviceArn: serviceArn,
+            status: 'ACTIVE'
+          }]
+        })
+        .mockRejectedValueOnce(tagError); // TagResourceCommand fails
+
+      await run();
+
+      // Verify that tagging failure caused deployment to fail
+      expect(core.error).toHaveBeenCalledWith('Failed to apply tags to existing service: Access denied for tagging');
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Tag application failed'));
+    });
+
+    test('removes obsolete tags when updating existing service', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'existing-service';
+        if (name === 'tags') return '[{"key":"Environment","value":"Test"},{"key":"Team","value":"Frontend"}]';
+        if (name === 'mutate-tags-on-update') return 'true';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/existing-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
+      mockSend
+        .mockResolvedValueOnce({ // DescribeServices - service exists with current tags
+          services: [{
+            serviceArn: serviceArn,
+            status: 'ACTIVE',
+            tags: [
+              { key: 'Environment', value: 'Production' },
+              { key: 'OldTag', value: 'ShouldBeRemoved' },
+              { key: 'Team', value: 'Backend' }
+            ]
+          }]
+        })
+        .mockResolvedValueOnce({}) // UntagResourceCommand succeeds
+        .mockResolvedValueOnce({}) // TagResourceCommand succeeds
+        .mockResolvedValueOnce({ // UpdateExpressGatewayService
+          service: { serviceArn: serviceArn }
+        })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.info).toHaveBeenCalledWith('Successfully removed 1 obsolete tags from service');
+      expect(core.info).toHaveBeenCalledWith('Successfully applied 2 tags to existing service');
+      expect(core.info).toHaveBeenCalledWith('Service updated successfully');
+    });
+
+    test('removes all tags when no tags provided for existing service', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'existing-service';
+        if (name === 'mutate-tags-on-update') return 'true';
+        // No tags provided
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/existing-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
+      mockSend
+        .mockResolvedValueOnce({ // DescribeServices - service exists with current tags
+          services: [{
+            serviceArn: serviceArn,
+            status: 'ACTIVE',
+            tags: [
+              { key: 'Environment', value: 'Production' },
+              { key: 'Team', value: 'Backend' }
+            ]
+          }]
+        })
+        .mockResolvedValueOnce({}) // UntagResourceCommand succeeds
+        .mockResolvedValueOnce({ // UpdateExpressGatewayService
+          service: { serviceArn: serviceArn }
+        })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.info).toHaveBeenCalledWith('Successfully removed 2 obsolete tags from service');
+      expect(core.info).toHaveBeenCalledWith('Service updated successfully');
+    });
+
+    test('fails deployment when UntagResource fails during service update', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'existing-service';
+        if (name === 'tags') return '[{"key":"Environment","value":"Test"}]';
+        if (name === 'mutate-tags-on-update') return 'true';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/existing-service';
+      
+      const untagError = new Error('Access denied for untagging');
+      untagError.name = 'AccessDeniedException';
+      
+      mockSend
+        .mockResolvedValueOnce({ // DescribeServices - service exists with current tags
+          services: [{
+            serviceArn: serviceArn,
+            status: 'ACTIVE',
+            tags: [{ key: 'OldTag', value: 'ShouldBeRemoved' }]
+          }]
+        })
+        .mockRejectedValueOnce(untagError); // UntagResourceCommand fails
+
+      await run();
+
+      // Verify that untagging failure caused deployment to fail
+      expect(core.error).toHaveBeenCalledWith('Failed to remove obsolete tags from service: Access denied for untagging');
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('Tag removal failed'));
+    });
+
+    test('skips all tag operations when mutate-tags-on-update is not set', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'existing-service';
+        if (name === 'tags') return '[{"key":"Environment","value":"Test"}]';
+        // mutate-tags-on-update not set (no tag operations)
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/existing-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
+      mockSend
+        .mockResolvedValueOnce({ // DescribeServices - service exists with current tags
+          services: [{
+            serviceArn: serviceArn,
+            status: 'ACTIVE',
+            tags: [
+              { key: 'OldTag', value: 'ShouldNotBeRemoved' }
+            ]
+          }]
+        })
+        .mockResolvedValueOnce({ // UpdateExpressGatewayService (no tag API calls)
+          service: { serviceArn: serviceArn }
+        })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      // Verify no tag operations were performed
+      expect(core.info).toHaveBeenCalledWith('Service updated successfully');
+      expect(core.info).not.toHaveBeenCalledWith(expect.stringContaining('tags'));
+      expect(core.debug).not.toHaveBeenCalledWith(expect.stringContaining('Tag management'));
+    });
+
+    test('skips tag management when tags have not changed', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'existing-service';
+        if (name === 'tags') return '[{"key":"Environment","value":"Production"}]';
+        if (name === 'mutate-tags-on-update') return 'true';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/existing-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      
+      mockSend
+        .mockResolvedValueOnce({ // DescribeServices - service exists with same tags as input
+          services: [{
+            serviceArn: serviceArn,
+            status: 'ACTIVE',
+            tags: [
+              { key: 'Environment', value: 'Production' } // Same as input
+            ]
+          }]
+        })
+        .mockResolvedValueOnce({ // UpdateExpressGatewayService (no tag API calls)
+          service: { serviceArn: serviceArn }
+        })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      // Verify that tag management detected no changes needed
+      expect(core.info).toHaveBeenCalledWith('Service updated successfully');
+      expect(core.debug).toHaveBeenCalledWith('No tag changes needed - current tags match desired tags');
+      // Should not see any actual tag operations (add/remove)
+      expect(core.info).not.toHaveBeenCalledWith(expect.stringContaining('Successfully applied'));
+      expect(core.info).not.toHaveBeenCalledWith(expect.stringContaining('Successfully removed'));
+    });
   });
 
   describe('Error handling', () => {

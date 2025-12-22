@@ -8,7 +8,9 @@ const {
   DescribeServiceDeploymentsCommand,
   ListServiceDeploymentsCommand,
   CreateExpressGatewayServiceCommand,
-  UpdateExpressGatewayServiceCommand
+  UpdateExpressGatewayServiceCommand,
+  TagResourceCommand,
+  UntagResourceCommand
 } = require('@aws-sdk/client-ecs');
 
 /**
@@ -72,6 +74,82 @@ function parseTagsFromMultiline(tagsInput) {
 }
 
 
+/**
+ * Handle complete tag state management for an existing ECS service during updates
+ * Implements set difference logic:
+ * - tagsToRemove = previousTags - desiredTags
+ * - tagsToAdd = desiredTags - previousTags
+ * @param {ECSClient} ecs - The ECS client
+ * @param {string} serviceArn - The ARN of the service to manage tags for
+ * @param {Array} previousTags - Array of current tag objects on the service
+ * @param {Array} desiredTags - Array of desired tag objects from input
+ */
+async function handleTagsOnUpdate(ecs, serviceArn, previousTags, desiredTags) {
+  // Normalize inputs
+  const currentTags = previousTags || [];
+  const newTags = desiredTags || [];
+  
+  // Create maps for efficient comparison (key -> {key, value})
+  const currentTagMap = new Map(currentTags.map(tag => [tag.key, tag]));
+  const desiredTagMap = new Map(newTags.map(tag => [tag.key, tag]));
+  
+  // Calculate set differences
+  // tagsToRemove = previousTags - desiredTags (tags that exist currently but not in desired)
+  const tagsToRemove = currentTags.filter(tag => !desiredTagMap.has(tag.key));
+  
+  // tagsToAdd = desiredTags - previousTags (tags that are desired but don't exist or have different values)
+  const tagsToAdd = newTags.filter(tag => {
+    const currentTag = currentTagMap.get(tag.key);
+    return !currentTag || currentTag.value !== tag.value;
+  });
+  
+  core.debug(`Tag management: ${tagsToRemove.length} to remove, ${tagsToAdd.length} to add`);
+  
+  // Remove obsolete tags first
+  if (tagsToRemove.length > 0) {
+    core.debug(`Removing ${tagsToRemove.length} obsolete tags from service: ${serviceArn}`);
+    
+    // UntagResource expects an array of tag keys (strings), not tag objects
+    const tagKeysToRemove = tagsToRemove.map(tag => tag.key);
+    
+    const untagResourceCommand = new UntagResourceCommand({
+      resourceArn: serviceArn,
+      tagKeys: tagKeysToRemove
+    });
+    
+    try {
+      await ecs.send(untagResourceCommand);
+      core.info(`Successfully removed ${tagsToRemove.length} obsolete tags from service`);
+    } catch (error) {
+      core.error(`Failed to remove obsolete tags from service: ${error.message}`);
+      core.debug(`UntagResource error details: ${JSON.stringify(error, null, 2)}`);
+      throw new Error(`Tag removal failed: ${error.message}`);
+    }
+  }
+  
+  // Add new/updated tags
+  if (tagsToAdd.length > 0) {
+    core.debug(`Adding ${tagsToAdd.length} tags to existing service: ${serviceArn}`);
+    
+    const tagResourceCommand = new TagResourceCommand({
+      resourceArn: serviceArn,
+      tags: tagsToAdd
+    });
+    
+    try {
+      await ecs.send(tagResourceCommand);
+      core.info(`Successfully applied ${tagsToAdd.length} tags to existing service`);
+    } catch (error) {
+      core.error(`Failed to apply tags to existing service: ${error.message}`);
+      core.debug(`TagResource error details: ${JSON.stringify(error, null, 2)}`);
+      throw new Error(`Tag application failed: ${error.message}`);
+    }
+  }
+  
+  if (tagsToRemove.length === 0 && tagsToAdd.length === 0) {
+    core.debug('No tag changes needed - current tags match desired tags');
+  }
+}
 
 /**
  * Main entry point for the GitHub Action
@@ -129,6 +207,7 @@ async function run() {
     const logStreamPrefix = core.getInput('log-stream-prefix', { required: false });
     const repositoryCredentials = core.getInput('repository-credentials', { required: false });
     const tags = core.getInput('tags', { required: false });
+    const enableTagManagement = core.getInput('mutate-tags-on-update', { required: false });
     
     // Read optional resource configuration inputs
     const cpu = core.getInput('cpu', { required: false });
@@ -165,13 +244,15 @@ async function run() {
     const serviceArn = `arn:aws:ecs:${region}:${accountId}:service/${clusterName}/${serviceName}`;
     core.info(`Constructed service ARN: ${serviceArn}`);
     
-    // Check if service exists using DescribeServices
+    // Check if service exists using DescribeServices and capture current tags
     let serviceExists = false;
+    let currentServiceTags = [];
     try {
       core.info('Checking if service exists...');
       const describeCommand = new DescribeServicesCommand({
         cluster: clusterName,
-        services: [serviceName]
+        services: [serviceName],
+        include: ['TAGS']
       });
       
       const describeResponse = await ecs.send(describeCommand);
@@ -180,7 +261,9 @@ async function run() {
         const service = describeResponse.services[0];
         if (service.status !== 'INACTIVE') {
           serviceExists = true;
+          currentServiceTags = service.tags || [];
           core.info(`Service exists with status: ${service.status}`);
+          core.debug(`Current service has ${currentServiceTags.length} tags`);
         } else {
           core.info('Service exists but is INACTIVE, will create new service');
         }
@@ -367,6 +450,13 @@ async function run() {
           serviceArn: serviceArn,
           ...serviceConfig
         });
+        // Handle tags for existing service before update
+        // Note: UpdateExpressGatewayServiceCommand doesn't support tags parameter
+        if (enableTagManagement && enableTagManagement.toLowerCase() === 'true') {
+          const desiredTags = serviceConfig.tags || [];
+          await handleTagsOnUpdate(ecs, serviceArn, currentServiceTags, desiredTags);
+        }
+        
         response = await ecs.send(updateCommand);
         core.info('Service updated successfully');
       } else {
