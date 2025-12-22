@@ -41,6 +41,5 @@ jobs:
         tags: |
           [
             {"key": "Environment", "value": "IntegTest"},
-            {"key": "TestType", "value": "TaggingFeature"},
-            {"key": "BuildId", "value": "ds"}
+            {"key": "TestType", "value": "TaggingFeature"}
           ]
