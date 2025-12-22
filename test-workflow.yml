@@ -1,0 +1,46 @@
+on:
+  push:
+    branches:
+      - feature/tagresource-api-support
+
+name: Integration Test
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Express Service
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Print current build ID
+      run: |
+        echo Integration test run: BUILD_ID
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployExpressIntegrationTests
+        role-session-name: deploy_express_integration_tests
+        aws-region: us-west-2
+
+    - name: Deploy Amazon ECS Express Service with Tags
+      uses: ./
+      with:
+        service-name: github-actions-deploy-express-integ-test
+        image: public.ecr.aws/nginx/nginx:latest
+        execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ecsTaskExecutionRole
+        infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ecsInfrastructureRole
+        cluster: github-actions-deploy-express-integ-test
+        mutate-tags-on-update: 'true'
+        tags: |
+          [
+            {"key": "Environment", "value": "IntegTest"},
+            {"key": "TestType", "value": "TaggingFeature"},
+            {"key": "BuildId", "value": "BUILD_ID"}
+          ]
