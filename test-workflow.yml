@@ -32,7 +32,7 @@ jobs:
     - name: Deploy Amazon ECS Express Service with Tags
       uses: ./
       with:
-        service-name: github-actions-deploy-express-integ-test
+        service-name: github-actions-deploy-express-integ-test-tagging
         image: public.ecr.aws/nginx/nginx:latest
         execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ecsTaskExecutionRole
         infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ecsInfrastructureRole
