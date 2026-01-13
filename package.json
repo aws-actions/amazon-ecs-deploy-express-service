@@ -22,7 +22,7 @@
   "author": "AWS",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^2.0.1",
+    "@actions/core": "^2.0.2",
     "@aws-sdk/client-ecs": "^3.940.0"
   },
   "devDependencies": {
