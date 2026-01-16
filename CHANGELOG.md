@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/aws-actions/amazon-ecs-deploy-express-service/compare/v1.1.0...v1.2.0) (2026-01-16)
+
+
+### Features
+
+* Add support for tagging via CreateExpressGatewayService ([#19](https://github.com/aws-actions/amazon-ecs-deploy-express-service/issues/19)) ([1432a6b](https://github.com/aws-actions/amazon-ecs-deploy-express-service/commit/1432a6b9a553bb19690b6f4e5d6001da17160ffc))
+* Support tag management on update ([#20](https://github.com/aws-actions/amazon-ecs-deploy-express-service/issues/20)) ([8486d9d](https://github.com/aws-actions/amazon-ecs-deploy-express-service/commit/8486d9d7f22d8732e02a196c85669c8c05d3fca9))
+
 ## 1.1.0 (2025-12-17)
 
 
