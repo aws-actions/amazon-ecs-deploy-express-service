@@ -4117,7 +4117,7 @@ function copyFile(srcFile, destFile, force) {
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.resolveHttpAuthSchemeConfig = exports.defaultECSHttpAuthSchemeProvider = exports.defaultECSHttpAuthSchemeParametersProvider = void 0;
-const core_1 = __nccwpck_require__(8704);
+const httpAuthSchemes_1 = __nccwpck_require__(7523);
 const util_middleware_1 = __nccwpck_require__(6324);
 const defaultECSHttpAuthSchemeParametersProvider = async (config, context, input) => {
     return {
@@ -4154,7 +4154,7 @@ const defaultECSHttpAuthSchemeProvider = (authParameters) => {
 };
 exports.defaultECSHttpAuthSchemeProvider = defaultECSHttpAuthSchemeProvider;
 const resolveHttpAuthSchemeConfig = (config) => {
-    const config_0 = (0, core_1.resolveAwsSdkSigV4Config)(config);
+    const config_0 = (0, httpAuthSchemes_1.resolveAwsSdkSigV4Config)(config);
     return Object.assign(config_0, {
         authSchemePreference: (0, util_middleware_1.normalizeProvider)(config.authSchemePreference ?? []),
     });
@@ -6529,7 +6529,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRuntimeConfig = void 0;
 const tslib_1 = __nccwpck_require__(1860);
 const package_json_1 = tslib_1.__importDefault(__nccwpck_require__(1194));
-const core_1 = __nccwpck_require__(8704);
+const client_1 = __nccwpck_require__(5152);
+const httpAuthSchemes_1 = __nccwpck_require__(7523);
 const credential_provider_node_1 = __nccwpck_require__(5861);
 const util_user_agent_node_1 = __nccwpck_require__(1656);
 const config_resolver_1 = __nccwpck_require__(9316);
@@ -6547,7 +6548,7 @@ const getRuntimeConfig = (config) => {
     const defaultsMode = (0, util_defaults_mode_node_1.resolveDefaultsModeConfig)(config);
     const defaultConfigProvider = () => defaultsMode().then(smithy_client_1.loadConfigsForDefaultMode);
     const clientSharedValues = (0, runtimeConfig_shared_1.getRuntimeConfig)(config);
-    (0, core_1.emitWarningIfUnsupportedVersion)(process.version);
+    (0, client_1.emitWarningIfUnsupportedVersion)(process.version);
     const loaderConfig = {
         profile: config?.profile,
         logger: clientSharedValues.logger,
@@ -6557,7 +6558,7 @@ const getRuntimeConfig = (config) => {
         ...config,
         runtime: "node",
         defaultsMode,
-        authSchemePreference: config?.authSchemePreference ?? (0, node_config_provider_1.loadConfig)(core_1.NODE_AUTH_SCHEME_PREFERENCE_OPTIONS, loaderConfig),
+        authSchemePreference: config?.authSchemePreference ?? (0, node_config_provider_1.loadConfig)(httpAuthSchemes_1.NODE_AUTH_SCHEME_PREFERENCE_OPTIONS, loaderConfig),
         bodyLengthChecker: config?.bodyLengthChecker ?? util_body_length_node_1.calculateBodyLength,
         credentialDefaultProvider: config?.credentialDefaultProvider ?? credential_provider_node_1.defaultProvider,
         defaultUserAgentProvider: config?.defaultUserAgentProvider ?? (0, util_user_agent_node_1.createDefaultUserAgentProvider)({ serviceId: clientSharedValues.serviceId, clientVersion: package_json_1.default.version }),
@@ -6588,7 +6589,7 @@ exports.getRuntimeConfig = getRuntimeConfig;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRuntimeConfig = void 0;
-const core_1 = __nccwpck_require__(8704);
+const httpAuthSchemes_1 = __nccwpck_require__(7523);
 const protocols_1 = __nccwpck_require__(7288);
 const smithy_client_1 = __nccwpck_require__(1411);
 const url_parser_1 = __nccwpck_require__(4494);
@@ -6610,7 +6611,7 @@ const getRuntimeConfig = (config) => {
             {
                 schemeId: "aws.auth#sigv4",
                 identityProvider: (ipc) => ipc.getIdentityProvider("aws.auth#sigv4"),
-                signer: new core_1.AwsSdkSigV4Signer(),
+                signer: new httpAuthSchemes_1.AwsSdkSigV4Signer(),
             },
         ],
         logger: config?.logger ?? new smithy_client_1.NoOpLogger(),
@@ -6642,11 +6643,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Container$ = exports.ClusterSetting$ = exports.ClusterServiceConnectDefaultsRequest$ = exports.ClusterServiceConnectDefaults$ = exports.ClusterConfiguration$ = exports.Cluster$ = exports.CapacityReservationRequest$ = exports.CapacityProviderStrategyItem$ = exports.CapacityProvider$ = exports.CanaryConfiguration$ = exports.BaselineEbsBandwidthMbpsRequest$ = exports.AwsVpcConfiguration$ = exports.AutoScalingGroupProviderUpdate$ = exports.AutoScalingGroupProvider$ = exports.Attribute$ = exports.AttachmentStateChange$ = exports.Attachment$ = exports.AdvancedConfiguration$ = exports.AcceleratorTotalMemoryMiBRequest$ = exports.AcceleratorCountRequest$ = exports.errorTypeRegistries = exports.UpdateInProgressException$ = exports.UnsupportedFeatureException$ = exports.TaskSetNotFoundException$ = exports.TargetNotFoundException$ = exports.TargetNotConnectedException$ = exports.ServiceNotFoundException$ = exports.ServiceNotActiveException$ = exports.ServiceDeploymentNotFoundException$ = exports.ServerException$ = exports.ResourceNotFoundException$ = exports.ResourceInUseException$ = exports.PlatformUnknownException$ = exports.PlatformTaskDefinitionIncompatibilityException$ = exports.NoUpdateAvailableException$ = exports.NamespaceNotFoundException$ = exports.MissingVersionException$ = exports.LimitExceededException$ = exports.InvalidParameterException$ = exports.ConflictException$ = exports.ClusterNotFoundException$ = exports.ClusterContainsTasksException$ = exports.ClusterContainsServicesException$ = exports.ClusterContainsContainerInstancesException$ = exports.ClusterContainsCapacityProviderException$ = exports.ClientException$ = exports.BlockedException$ = exports.AttributeLimitExceededException$ = exports.AccessDeniedException$ = exports.ECSServiceException$ = void 0;
 exports.DescribeClustersRequest$ = exports.DescribeCapacityProvidersResponse$ = exports.DescribeCapacityProvidersRequest$ = exports.DeregisterTaskDefinitionResponse$ = exports.DeregisterTaskDefinitionRequest$ = exports.DeregisterContainerInstanceResponse$ = exports.DeregisterContainerInstanceRequest$ = exports.DeploymentLifecycleHook$ = exports.DeploymentEphemeralStorage$ = exports.DeploymentController$ = exports.DeploymentConfiguration$ = exports.DeploymentCircuitBreaker$ = exports.DeploymentAlarms$ = exports.Deployment$ = exports.DeleteTaskSetResponse$ = exports.DeleteTaskSetRequest$ = exports.DeleteTaskDefinitionsResponse$ = exports.DeleteTaskDefinitionsRequest$ = exports.DeleteServiceResponse$ = exports.DeleteServiceRequest$ = exports.DeleteExpressGatewayServiceResponse$ = exports.DeleteExpressGatewayServiceRequest$ = exports.DeleteClusterResponse$ = exports.DeleteClusterRequest$ = exports.DeleteCapacityProviderResponse$ = exports.DeleteCapacityProviderRequest$ = exports.DeleteAttributesResponse$ = exports.DeleteAttributesRequest$ = exports.DeleteAccountSettingResponse$ = exports.DeleteAccountSettingRequest$ = exports.CreateTaskSetResponse$ = exports.CreateTaskSetRequest$ = exports.CreateServiceResponse$ = exports.CreateServiceRequest$ = exports.CreateManagedInstancesProviderConfiguration$ = exports.CreateExpressGatewayServiceResponse$ = exports.CreateExpressGatewayServiceRequest$ = exports.CreatedAt$ = exports.CreateClusterResponse$ = exports.CreateClusterRequest$ = exports.CreateCapacityProviderResponse$ = exports.CreateCapacityProviderRequest$ = exports.ContainerStateChange$ = exports.ContainerRestartPolicy$ = exports.ContainerOverride$ = exports.ContainerInstanceHealthStatus$ = exports.ContainerInstance$ = exports.ContainerImage$ = exports.ContainerDependency$ = exports.ContainerDefinition$ = void 0;
 exports.InferenceAcceleratorOverride$ = exports.InferenceAccelerator$ = exports.HostVolumeProperties$ = exports.HostEntry$ = exports.HealthCheck$ = exports.GetTaskProtectionResponse$ = exports.GetTaskProtectionRequest$ = exports.FSxWindowsFileServerVolumeConfiguration$ = exports.FSxWindowsFileServerAuthorizationConfig$ = exports.FirelensConfiguration$ = exports.Failure$ = exports.ExpressGatewayServiceStatus$ = exports.ExpressGatewayServiceNetworkConfiguration$ = exports.ExpressGatewayServiceConfiguration$ = exports.ExpressGatewayServiceAwsLogsConfiguration$ = exports.ExpressGatewayScalingTarget$ = exports.ExpressGatewayRepositoryCredentials$ = exports.ExpressGatewayContainer$ = exports.ExecuteCommandResponse$ = exports.ExecuteCommandRequest$ = exports.ExecuteCommandLogConfiguration$ = exports.ExecuteCommandConfiguration$ = exports.EphemeralStorage$ = exports.EnvironmentFile$ = exports.EFSVolumeConfiguration$ = exports.EFSAuthorizationConfig$ = exports.ECSManagedResources$ = exports.ECSExpressGatewayService$ = exports.EBSTagSpecification$ = exports.DockerVolumeConfiguration$ = exports.DiscoverPollEndpointResponse$ = exports.DiscoverPollEndpointRequest$ = exports.Device$ = exports.DescribeTasksResponse$ = exports.DescribeTasksRequest$ = exports.DescribeTaskSetsResponse$ = exports.DescribeTaskSetsRequest$ = exports.DescribeTaskDefinitionResponse$ = exports.DescribeTaskDefinitionRequest$ = exports.DescribeServicesResponse$ = exports.DescribeServicesRequest$ = exports.DescribeServiceRevisionsResponse$ = exports.DescribeServiceRevisionsRequest$ = exports.DescribeServiceDeploymentsResponse$ = exports.DescribeServiceDeploymentsRequest$ = exports.DescribeExpressGatewayServiceResponse$ = exports.DescribeExpressGatewayServiceRequest$ = exports.DescribeContainerInstancesResponse$ = exports.DescribeContainerInstancesRequest$ = exports.DescribeClustersResponse$ = void 0;
-exports.ManagedScaling$ = exports.ManagedScalableTarget$ = exports.ManagedMetricAlarm$ = exports.ManagedLogGroup$ = exports.ManagedLoadBalancer$ = exports.ManagedListenerRule$ = exports.ManagedListener$ = exports.ManagedInstancesStorageConfiguration$ = exports.ManagedInstancesProvider$ = exports.ManagedInstancesNetworkConfiguration$ = exports.ManagedIngressPath$ = exports.ManagedCertificate$ = exports.ManagedAutoScaling$ = exports.ManagedApplicationAutoScalingPolicy$ = exports.ManagedAgentStateChange$ = exports.ManagedAgent$ = exports.LogConfiguration$ = exports.LoadBalancer$ = exports.ListTasksResponse$ = exports.ListTasksRequest$ = exports.ListTaskDefinitionsResponse$ = exports.ListTaskDefinitionsRequest$ = exports.ListTaskDefinitionFamiliesResponse$ = exports.ListTaskDefinitionFamiliesRequest$ = exports.ListTagsForResourceResponse$ = exports.ListTagsForResourceRequest$ = exports.ListServicesResponse$ = exports.ListServicesRequest$ = exports.ListServicesByNamespaceResponse$ = exports.ListServicesByNamespaceRequest$ = exports.ListServiceDeploymentsResponse$ = exports.ListServiceDeploymentsRequest$ = exports.ListContainerInstancesResponse$ = exports.ListContainerInstancesRequest$ = exports.ListClustersResponse$ = exports.ListClustersRequest$ = exports.ListAttributesResponse$ = exports.ListAttributesRequest$ = exports.ListAccountSettingsResponse$ = exports.ListAccountSettingsRequest$ = exports.LinuxParameters$ = exports.LinearConfiguration$ = exports.KeyValuePair$ = exports.KernelCapabilities$ = exports.InstanceRequirementsRequest$ = exports.InstanceLaunchTemplateUpdate$ = exports.InstanceLaunchTemplate$ = exports.InstanceHealthCheckResult$ = exports.IngressPathSummary$ = exports.InfrastructureOptimization$ = void 0;
-exports.ServiceConnectTlsConfiguration$ = exports.ServiceConnectTlsCertificateAuthority$ = exports.ServiceConnectTestTrafficRules$ = exports.ServiceConnectTestTrafficHeaderRules$ = exports.ServiceConnectTestTrafficHeaderMatchRules$ = exports.ServiceConnectServiceResource$ = exports.ServiceConnectService$ = exports.ServiceConnectConfiguration$ = exports.ServiceConnectClientAlias$ = exports.ServiceConnectAccessLogConfiguration$ = exports.Service$ = exports.Secret$ = exports.Scale$ = exports.RuntimePlatform$ = exports.RunTaskResponse$ = exports.RunTaskRequest$ = exports.Rollback$ = exports.ResourceRequirement$ = exports.Resource$ = exports.ResolvedConfiguration$ = exports.RepositoryCredentials$ = exports.RegisterTaskDefinitionResponse$ = exports.RegisterTaskDefinitionRequest$ = exports.RegisterContainerInstanceResponse$ = exports.RegisterContainerInstanceRequest$ = exports.PutClusterCapacityProvidersResponse$ = exports.PutClusterCapacityProvidersRequest$ = exports.PutAttributesResponse$ = exports.PutAttributesRequest$ = exports.PutAccountSettingResponse$ = exports.PutAccountSettingRequest$ = exports.PutAccountSettingDefaultResponse$ = exports.PutAccountSettingDefaultRequest$ = exports.ProxyConfiguration$ = exports.ProtectedTask$ = exports.PortMapping$ = exports.PlatformDevice$ = exports.PlacementStrategy$ = exports.PlacementConstraint$ = exports.NetworkInterfaceCountRequest$ = exports.NetworkInterface$ = exports.NetworkConfiguration$ = exports.NetworkBinding$ = exports.NetworkBandwidthGbpsRequest$ = exports.MountPoint$ = exports.MemoryMiBRequest$ = exports.MemoryGiBPerVCpuRequest$ = exports.ManagedTargetGroup$ = exports.ManagedStorageConfiguration$ = exports.ManagedSecurityGroup$ = void 0;
-exports.UpdateClusterSettingsRequest$ = exports.UpdateClusterResponse$ = exports.UpdateClusterRequest$ = exports.UpdateCapacityProviderResponse$ = exports.UpdateCapacityProviderRequest$ = exports.UntagResourceResponse$ = exports.UntagResourceRequest$ = exports.Ulimit$ = exports.TotalLocalStorageGBRequest$ = exports.Tmpfs$ = exports.TimeoutConfiguration$ = exports.TaskVolumeConfiguration$ = exports.TaskSet$ = exports.TaskOverride$ = exports.TaskManagedEBSVolumeTerminationPolicy$ = exports.TaskManagedEBSVolumeConfiguration$ = exports.TaskEphemeralStorage$ = exports.TaskDefinitionPlacementConstraint$ = exports.TaskDefinition$ = exports.Task$ = exports.TagResourceResponse$ = exports.TagResourceRequest$ = exports.Tag$ = exports.SystemControl$ = exports.SubmitTaskStateChangeResponse$ = exports.SubmitTaskStateChangeRequest$ = exports.SubmitContainerStateChangeResponse$ = exports.SubmitContainerStateChangeRequest$ = exports.SubmitAttachmentStateChangesResponse$ = exports.SubmitAttachmentStateChangesRequest$ = exports.StopTaskResponse$ = exports.StopTaskRequest$ = exports.StopServiceDeploymentResponse$ = exports.StopServiceDeploymentRequest$ = exports.StartTaskResponse$ = exports.StartTaskRequest$ = exports.Setting$ = exports.Session$ = exports.ServiceVolumeConfiguration$ = exports.ServiceRevisionSummary$ = exports.ServiceRevisionLoadBalancer$ = exports.ServiceRevision$ = exports.ServiceRegistry$ = exports.ServiceManagedEBSVolumeConfiguration$ = exports.ServiceEvent$ = exports.ServiceDeploymentCircuitBreaker$ = exports.ServiceDeploymentBrief$ = exports.ServiceDeploymentAlarms$ = exports.ServiceDeployment$ = exports.ServiceCurrentRevisionSummary$ = void 0;
-exports.GetTaskProtection$ = exports.ExecuteCommand$ = exports.DiscoverPollEndpoint$ = exports.DescribeTaskSets$ = exports.DescribeTasks$ = exports.DescribeTaskDefinition$ = exports.DescribeServices$ = exports.DescribeServiceRevisions$ = exports.DescribeServiceDeployments$ = exports.DescribeExpressGatewayService$ = exports.DescribeContainerInstances$ = exports.DescribeClusters$ = exports.DescribeCapacityProviders$ = exports.DeregisterTaskDefinition$ = exports.DeregisterContainerInstance$ = exports.DeleteTaskSet$ = exports.DeleteTaskDefinitions$ = exports.DeleteService$ = exports.DeleteExpressGatewayService$ = exports.DeleteCluster$ = exports.DeleteCapacityProvider$ = exports.DeleteAttributes$ = exports.DeleteAccountSetting$ = exports.CreateTaskSet$ = exports.CreateService$ = exports.CreateExpressGatewayService$ = exports.CreateCluster$ = exports.CreateCapacityProvider$ = exports.VpcLatticeConfiguration$ = exports.VolumeFrom$ = exports.Volume$ = exports.VersionInfo$ = exports.VCpuCountRangeRequest$ = exports.UpdateTaskSetResponse$ = exports.UpdateTaskSetRequest$ = exports.UpdateTaskProtectionResponse$ = exports.UpdateTaskProtectionRequest$ = exports.UpdateServiceResponse$ = exports.UpdateServiceRequest$ = exports.UpdateServicePrimaryTaskSetResponse$ = exports.UpdateServicePrimaryTaskSetRequest$ = exports.UpdateManagedInstancesProviderConfiguration$ = exports.UpdateExpressGatewayServiceResponse$ = exports.UpdateExpressGatewayServiceRequest$ = exports.UpdatedExpressGatewayService$ = exports.UpdateContainerInstancesStateResponse$ = exports.UpdateContainerInstancesStateRequest$ = exports.UpdateContainerAgentResponse$ = exports.UpdateContainerAgentRequest$ = exports.UpdateClusterSettingsResponse$ = void 0;
-exports.UpdateTaskSet$ = exports.UpdateTaskProtection$ = exports.UpdateServicePrimaryTaskSet$ = exports.UpdateService$ = exports.UpdateExpressGatewayService$ = exports.UpdateContainerInstancesState$ = exports.UpdateContainerAgent$ = exports.UpdateClusterSettings$ = exports.UpdateCluster$ = exports.UpdateCapacityProvider$ = exports.UntagResource$ = exports.TagResource$ = exports.SubmitTaskStateChange$ = exports.SubmitContainerStateChange$ = exports.SubmitAttachmentStateChanges$ = exports.StopTask$ = exports.StopServiceDeployment$ = exports.StartTask$ = exports.RunTask$ = exports.RegisterTaskDefinition$ = exports.RegisterContainerInstance$ = exports.PutClusterCapacityProviders$ = exports.PutAttributes$ = exports.PutAccountSettingDefault$ = exports.PutAccountSetting$ = exports.ListTasks$ = exports.ListTaskDefinitions$ = exports.ListTaskDefinitionFamilies$ = exports.ListTagsForResource$ = exports.ListServicesByNamespace$ = exports.ListServices$ = exports.ListServiceDeployments$ = exports.ListContainerInstances$ = exports.ListClusters$ = exports.ListAttributes$ = exports.ListAccountSettings$ = void 0;
+exports.ManagedScalableTarget$ = exports.ManagedMetricAlarm$ = exports.ManagedLogGroup$ = exports.ManagedLoadBalancer$ = exports.ManagedListenerRule$ = exports.ManagedListener$ = exports.ManagedInstancesStorageConfiguration$ = exports.ManagedInstancesProvider$ = exports.ManagedInstancesNetworkConfiguration$ = exports.ManagedInstancesLocalStorageConfiguration$ = exports.ManagedIngressPath$ = exports.ManagedCertificate$ = exports.ManagedAutoScaling$ = exports.ManagedApplicationAutoScalingPolicy$ = exports.ManagedAgentStateChange$ = exports.ManagedAgent$ = exports.LogConfiguration$ = exports.LoadBalancer$ = exports.ListTasksResponse$ = exports.ListTasksRequest$ = exports.ListTaskDefinitionsResponse$ = exports.ListTaskDefinitionsRequest$ = exports.ListTaskDefinitionFamiliesResponse$ = exports.ListTaskDefinitionFamiliesRequest$ = exports.ListTagsForResourceResponse$ = exports.ListTagsForResourceRequest$ = exports.ListServicesResponse$ = exports.ListServicesRequest$ = exports.ListServicesByNamespaceResponse$ = exports.ListServicesByNamespaceRequest$ = exports.ListServiceDeploymentsResponse$ = exports.ListServiceDeploymentsRequest$ = exports.ListContainerInstancesResponse$ = exports.ListContainerInstancesRequest$ = exports.ListClustersResponse$ = exports.ListClustersRequest$ = exports.ListAttributesResponse$ = exports.ListAttributesRequest$ = exports.ListAccountSettingsResponse$ = exports.ListAccountSettingsRequest$ = exports.LinuxParameters$ = exports.LinearConfiguration$ = exports.KeyValuePair$ = exports.KernelCapabilities$ = exports.InstanceRequirementsRequest$ = exports.InstanceLaunchTemplateUpdate$ = exports.InstanceLaunchTemplate$ = exports.InstanceHealthCheckResult$ = exports.IngressPathSummary$ = exports.InfrastructureOptimization$ = void 0;
+exports.ServiceConnectTlsCertificateAuthority$ = exports.ServiceConnectTestTrafficRules$ = exports.ServiceConnectTestTrafficHeaderRules$ = exports.ServiceConnectTestTrafficHeaderMatchRules$ = exports.ServiceConnectServiceResource$ = exports.ServiceConnectService$ = exports.ServiceConnectConfiguration$ = exports.ServiceConnectClientAlias$ = exports.ServiceConnectAccessLogConfiguration$ = exports.Service$ = exports.Secret$ = exports.Scale$ = exports.RuntimePlatform$ = exports.RunTaskResponse$ = exports.RunTaskRequest$ = exports.Rollback$ = exports.ResourceRequirement$ = exports.Resource$ = exports.ResolvedConfiguration$ = exports.RepositoryCredentials$ = exports.RegisterTaskDefinitionResponse$ = exports.RegisterTaskDefinitionRequest$ = exports.RegisterContainerInstanceResponse$ = exports.RegisterContainerInstanceRequest$ = exports.PutClusterCapacityProvidersResponse$ = exports.PutClusterCapacityProvidersRequest$ = exports.PutAttributesResponse$ = exports.PutAttributesRequest$ = exports.PutAccountSettingResponse$ = exports.PutAccountSettingRequest$ = exports.PutAccountSettingDefaultResponse$ = exports.PutAccountSettingDefaultRequest$ = exports.ProxyConfiguration$ = exports.ProtectedTask$ = exports.PortMapping$ = exports.PlatformDevice$ = exports.PlacementStrategy$ = exports.PlacementConstraint$ = exports.NetworkInterfaceCountRequest$ = exports.NetworkInterface$ = exports.NetworkConfiguration$ = exports.NetworkBinding$ = exports.NetworkBandwidthGbpsRequest$ = exports.MountPoint$ = exports.MemoryMiBRequest$ = exports.MemoryGiBPerVCpuRequest$ = exports.ManagedTargetGroup$ = exports.ManagedStorageConfiguration$ = exports.ManagedSecurityGroup$ = exports.ManagedScaling$ = void 0;
+exports.UpdateClusterResponse$ = exports.UpdateClusterRequest$ = exports.UpdateCapacityProviderResponse$ = exports.UpdateCapacityProviderRequest$ = exports.UntagResourceResponse$ = exports.UntagResourceRequest$ = exports.Ulimit$ = exports.TotalLocalStorageGBRequest$ = exports.Tmpfs$ = exports.TimeoutConfiguration$ = exports.TaskVolumeConfiguration$ = exports.TaskSet$ = exports.TaskOverride$ = exports.TaskManagedEBSVolumeTerminationPolicy$ = exports.TaskManagedEBSVolumeConfiguration$ = exports.TaskEphemeralStorage$ = exports.TaskDefinitionPlacementConstraint$ = exports.TaskDefinition$ = exports.Task$ = exports.TagResourceResponse$ = exports.TagResourceRequest$ = exports.Tag$ = exports.SystemControl$ = exports.SubmitTaskStateChangeResponse$ = exports.SubmitTaskStateChangeRequest$ = exports.SubmitContainerStateChangeResponse$ = exports.SubmitContainerStateChangeRequest$ = exports.SubmitAttachmentStateChangesResponse$ = exports.SubmitAttachmentStateChangesRequest$ = exports.StopTaskResponse$ = exports.StopTaskRequest$ = exports.StopServiceDeploymentResponse$ = exports.StopServiceDeploymentRequest$ = exports.StartTaskResponse$ = exports.StartTaskRequest$ = exports.Setting$ = exports.Session$ = exports.ServiceVolumeConfiguration$ = exports.ServiceRevisionSummary$ = exports.ServiceRevisionLoadBalancer$ = exports.ServiceRevision$ = exports.ServiceRegistry$ = exports.ServiceManagedEBSVolumeConfiguration$ = exports.ServiceEvent$ = exports.ServiceDeploymentCircuitBreaker$ = exports.ServiceDeploymentBrief$ = exports.ServiceDeploymentAlarms$ = exports.ServiceDeployment$ = exports.ServiceCurrentRevisionSummary$ = exports.ServiceConnectTlsConfiguration$ = void 0;
+exports.ExecuteCommand$ = exports.DiscoverPollEndpoint$ = exports.DescribeTaskSets$ = exports.DescribeTasks$ = exports.DescribeTaskDefinition$ = exports.DescribeServices$ = exports.DescribeServiceRevisions$ = exports.DescribeServiceDeployments$ = exports.DescribeExpressGatewayService$ = exports.DescribeContainerInstances$ = exports.DescribeClusters$ = exports.DescribeCapacityProviders$ = exports.DeregisterTaskDefinition$ = exports.DeregisterContainerInstance$ = exports.DeleteTaskSet$ = exports.DeleteTaskDefinitions$ = exports.DeleteService$ = exports.DeleteExpressGatewayService$ = exports.DeleteCluster$ = exports.DeleteCapacityProvider$ = exports.DeleteAttributes$ = exports.DeleteAccountSetting$ = exports.CreateTaskSet$ = exports.CreateService$ = exports.CreateExpressGatewayService$ = exports.CreateCluster$ = exports.CreateCapacityProvider$ = exports.VpcLatticeConfiguration$ = exports.VolumeFrom$ = exports.Volume$ = exports.VersionInfo$ = exports.VCpuCountRangeRequest$ = exports.UpdateTaskSetResponse$ = exports.UpdateTaskSetRequest$ = exports.UpdateTaskProtectionResponse$ = exports.UpdateTaskProtectionRequest$ = exports.UpdateServiceResponse$ = exports.UpdateServiceRequest$ = exports.UpdateServicePrimaryTaskSetResponse$ = exports.UpdateServicePrimaryTaskSetRequest$ = exports.UpdateManagedInstancesProviderConfiguration$ = exports.UpdateExpressGatewayServiceResponse$ = exports.UpdateExpressGatewayServiceRequest$ = exports.UpdatedExpressGatewayService$ = exports.UpdateContainerInstancesStateResponse$ = exports.UpdateContainerInstancesStateRequest$ = exports.UpdateContainerAgentResponse$ = exports.UpdateContainerAgentRequest$ = exports.UpdateClusterSettingsResponse$ = exports.UpdateClusterSettingsRequest$ = void 0;
+exports.UpdateTaskSet$ = exports.UpdateTaskProtection$ = exports.UpdateServicePrimaryTaskSet$ = exports.UpdateService$ = exports.UpdateExpressGatewayService$ = exports.UpdateContainerInstancesState$ = exports.UpdateContainerAgent$ = exports.UpdateClusterSettings$ = exports.UpdateCluster$ = exports.UpdateCapacityProvider$ = exports.UntagResource$ = exports.TagResource$ = exports.SubmitTaskStateChange$ = exports.SubmitContainerStateChange$ = exports.SubmitAttachmentStateChanges$ = exports.StopTask$ = exports.StopServiceDeployment$ = exports.StartTask$ = exports.RunTask$ = exports.RegisterTaskDefinition$ = exports.RegisterContainerInstance$ = exports.PutClusterCapacityProviders$ = exports.PutAttributes$ = exports.PutAccountSettingDefault$ = exports.PutAccountSetting$ = exports.ListTasks$ = exports.ListTaskDefinitions$ = exports.ListTaskDefinitionFamilies$ = exports.ListTagsForResource$ = exports.ListServicesByNamespace$ = exports.ListServices$ = exports.ListServiceDeployments$ = exports.ListContainerInstances$ = exports.ListClusters$ = exports.ListAttributes$ = exports.ListAccountSettings$ = exports.GetTaskProtection$ = void 0;
 const _A = "Attachment";
 const _AC = "AdvancedConfiguration";
 const _ACR = "AcceleratorCountRequest";
@@ -6906,6 +6907,7 @@ const _MASCa = "ManagedAgentStateChanges";
 const _MAa = "ManagedAgents";
 const _MC = "ManagedCertificate";
 const _MGBPVCR = "MemoryGiBPerVCpuRequest";
+const _MILSC = "ManagedInstancesLocalStorageConfiguration";
 const _MINC = "ManagedInstancesNetworkConfiguration";
 const _MIP = "ManagedIngressPath";
 const _MIPa = "ManagedInstancesProvider";
@@ -7379,6 +7381,7 @@ const _lP = "linuxParameters";
 const _lS = "lastStatus";
 const _lSA = "lastStartedAt";
 const _lSC = "lastStatusChange";
+const _lSCo = "localStorageConfiguration";
 const _lSP = "logStreamPrefix";
 const _lST = "localStorageTypes";
 const _lSi = "lifecycleStages";
@@ -7623,6 +7626,7 @@ const _tl = "tls";
 const _tm = "tmpfs";
 const _u = "user";
 const _uA = "updatedAt";
+const _uLS = "useLocalStorage";
 const _uS = "updateStatus";
 const _uSR = "updateStatusReason";
 const _ul = "ulimits";
@@ -8440,13 +8444,13 @@ exports.InstanceHealthCheckResult$ = [3, n0, _IHCR,
 ];
 exports.InstanceLaunchTemplate$ = [3, n0, _ILT,
     0,
-    [_eIPA, _nC, _sCto, _mo, _cOT, _iMTP, _iR, _fE, _cR],
-    [0, () => exports.ManagedInstancesNetworkConfiguration$, () => exports.ManagedInstancesStorageConfiguration$, 0, 0, 2, [() => exports.InstanceRequirementsRequest$, 0], 2, () => exports.CapacityReservationRequest$], 2
+    [_eIPA, _nC, _sCto, _lSCo, _mo, _cOT, _iMTP, _iR, _fE, _cR],
+    [0, () => exports.ManagedInstancesNetworkConfiguration$, () => exports.ManagedInstancesStorageConfiguration$, () => exports.ManagedInstancesLocalStorageConfiguration$, 0, 0, 2, [() => exports.InstanceRequirementsRequest$, 0], 2, () => exports.CapacityReservationRequest$], 2
 ];
 exports.InstanceLaunchTemplateUpdate$ = [3, n0, _ILTU,
     0,
-    [_eIPA, _nC, _sCto, _iMTP, _mo, _iR, _cR],
-    [0, () => exports.ManagedInstancesNetworkConfiguration$, () => exports.ManagedInstancesStorageConfiguration$, 2, 0, [() => exports.InstanceRequirementsRequest$, 0], () => exports.CapacityReservationRequest$]
+    [_eIPA, _nC, _sCto, _iMTP, _lSCo, _mo, _iR, _cR],
+    [0, () => exports.ManagedInstancesNetworkConfiguration$, () => exports.ManagedInstancesStorageConfiguration$, 2, () => exports.ManagedInstancesLocalStorageConfiguration$, 0, [() => exports.InstanceRequirementsRequest$, 0], () => exports.CapacityReservationRequest$]
 ];
 exports.InstanceRequirementsRequest$ = [3, n0, _IRR,
     0,
@@ -8622,6 +8626,11 @@ exports.ManagedIngressPath$ = [3, n0, _MIP,
     0,
     [_aT, _end, _lBo, _lBSG, _ce, _li, _ru, _tG],
     [0, 0, () => exports.ManagedLoadBalancer$, () => ManagedSecurityGroups, () => exports.ManagedCertificate$, () => exports.ManagedListener$, () => exports.ManagedListenerRule$, () => ManagedTargetGroups], 2
+];
+exports.ManagedInstancesLocalStorageConfiguration$ = [3, n0, _MILSC,
+    0,
+    [_uLS],
+    [2]
 ];
 exports.ManagedInstancesNetworkConfiguration$ = [3, n0, _MINC,
     0,
@@ -9764,25 +9773,11 @@ exports.UpdateTaskSet$ = [9, n0, _UTS,
 
 /***/ }),
 
-/***/ 8704:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ 5152:
+/***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
-
-var protocolHttp = __nccwpck_require__(2356);
-var core = __nccwpck_require__(402);
-var propertyProvider = __nccwpck_require__(8857);
-var client = __nccwpck_require__(5152);
-var signatureV4 = __nccwpck_require__(5118);
-var cbor = __nccwpck_require__(4645);
-var schema = __nccwpck_require__(6890);
-var smithyClient = __nccwpck_require__(1411);
-var protocols = __nccwpck_require__(3422);
-var serde = __nccwpck_require__(2430);
-var utilBase64 = __nccwpck_require__(8385);
-var utilUtf8 = __nccwpck_require__(1577);
-var xmlBuilder = __nccwpck_require__(4274);
 
 const state = {
     warningEmitted: false,
@@ -9827,6 +9822,27 @@ function setTokenFeature(token, feature, value) {
     token.$source[feature] = value;
     return token;
 }
+
+exports.emitWarningIfUnsupportedVersion = emitWarningIfUnsupportedVersion;
+exports.setCredentialFeature = setCredentialFeature;
+exports.setFeature = setFeature;
+exports.setTokenFeature = setTokenFeature;
+exports.state = state;
+
+
+/***/ }),
+
+/***/ 7523:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var protocolHttp = __nccwpck_require__(2356);
+var core = __nccwpck_require__(402);
+var propertyProvider = __nccwpck_require__(8857);
+var client = __nccwpck_require__(5152);
+var signatureV4 = __nccwpck_require__(5118);
 
 const getDateHeader = (response) => protocolHttp.HttpResponse.isInstance(response) ? response.headers?.date ?? response.headers?.Date : undefined;
 
@@ -10117,1961 +10133,16 @@ function bindCallerConfig(config, credentialsProvider) {
     return fn;
 }
 
-class ProtocolLib {
-    queryCompat;
-    errorRegistry;
-    constructor(queryCompat = false) {
-        this.queryCompat = queryCompat;
-    }
-    resolveRestContentType(defaultContentType, inputSchema) {
-        const members = inputSchema.getMemberSchemas();
-        const httpPayloadMember = Object.values(members).find((m) => {
-            return !!m.getMergedTraits().httpPayload;
-        });
-        if (httpPayloadMember) {
-            const mediaType = httpPayloadMember.getMergedTraits().mediaType;
-            if (mediaType) {
-                return mediaType;
-            }
-            else if (httpPayloadMember.isStringSchema()) {
-                return "text/plain";
-            }
-            else if (httpPayloadMember.isBlobSchema()) {
-                return "application/octet-stream";
-            }
-            else {
-                return defaultContentType;
-            }
-        }
-        else if (!inputSchema.isUnitSchema()) {
-            const hasBody = Object.values(members).find((m) => {
-                const { httpQuery, httpQueryParams, httpHeader, httpLabel, httpPrefixHeaders } = m.getMergedTraits();
-                const noPrefixHeaders = httpPrefixHeaders === void 0;
-                return !httpQuery && !httpQueryParams && !httpHeader && !httpLabel && noPrefixHeaders;
-            });
-            if (hasBody) {
-                return defaultContentType;
-            }
-        }
-    }
-    async getErrorSchemaOrThrowBaseException(errorIdentifier, defaultNamespace, response, dataObject, metadata, getErrorSchema) {
-        let errorName = errorIdentifier;
-        if (errorIdentifier.includes("#")) {
-            [, errorName] = errorIdentifier.split("#");
-        }
-        const errorMetadata = {
-            $metadata: metadata,
-            $fault: response.statusCode < 500 ? "client" : "server",
-        };
-        if (!this.errorRegistry) {
-            throw new Error("@aws-sdk/core/protocols - error handler not initialized.");
-        }
-        try {
-            const errorSchema = getErrorSchema?.(this.errorRegistry, errorName) ??
-                this.errorRegistry.getSchema(errorIdentifier);
-            return { errorSchema, errorMetadata };
-        }
-        catch (e) {
-            dataObject.message = dataObject.message ?? dataObject.Message ?? "UnknownError";
-            const synthetic = this.errorRegistry;
-            const baseExceptionSchema = synthetic.getBaseException();
-            if (baseExceptionSchema) {
-                const ErrorCtor = synthetic.getErrorCtor(baseExceptionSchema) ?? Error;
-                throw this.decorateServiceException(Object.assign(new ErrorCtor({ name: errorName }), errorMetadata), dataObject);
-            }
-            const d = dataObject;
-            const message = d?.message ?? d?.Message ?? d?.Error?.Message ?? d?.Error?.message;
-            throw this.decorateServiceException(Object.assign(new Error(message), {
-                name: errorName,
-            }, errorMetadata), dataObject);
-        }
-    }
-    compose(composite, errorIdentifier, defaultNamespace) {
-        let namespace = defaultNamespace;
-        if (errorIdentifier.includes("#")) {
-            [namespace] = errorIdentifier.split("#");
-        }
-        const staticRegistry = schema.TypeRegistry.for(namespace);
-        const defaultSyntheticRegistry = schema.TypeRegistry.for("smithy.ts.sdk.synthetic." + defaultNamespace);
-        composite.copyFrom(staticRegistry);
-        composite.copyFrom(defaultSyntheticRegistry);
-        this.errorRegistry = composite;
-    }
-    decorateServiceException(exception, additions = {}) {
-        if (this.queryCompat) {
-            const msg = exception.Message ?? additions.Message;
-            const error = smithyClient.decorateServiceException(exception, additions);
-            if (msg) {
-                error.message = msg;
-            }
-            error.Error = {
-                ...error.Error,
-                Type: error.Error?.Type,
-                Code: error.Error?.Code,
-                Message: error.Error?.message ?? error.Error?.Message ?? msg,
-            };
-            const reqId = error.$metadata.requestId;
-            if (reqId) {
-                error.RequestId = reqId;
-            }
-            return error;
-        }
-        return smithyClient.decorateServiceException(exception, additions);
-    }
-    setQueryCompatError(output, response) {
-        const queryErrorHeader = response.headers?.["x-amzn-query-error"];
-        if (output !== undefined && queryErrorHeader != null) {
-            const [Code, Type] = queryErrorHeader.split(";");
-            const entries = Object.entries(output);
-            const Error = {
-                Code,
-                Type,
-            };
-            Object.assign(output, Error);
-            for (const [k, v] of entries) {
-                Error[k === "message" ? "Message" : k] = v;
-            }
-            delete Error.__type;
-            output.Error = Error;
-        }
-    }
-    queryCompatOutput(queryCompatErrorData, errorData) {
-        if (queryCompatErrorData.Error) {
-            errorData.Error = queryCompatErrorData.Error;
-        }
-        if (queryCompatErrorData.Type) {
-            errorData.Type = queryCompatErrorData.Type;
-        }
-        if (queryCompatErrorData.Code) {
-            errorData.Code = queryCompatErrorData.Code;
-        }
-    }
-    findQueryCompatibleError(registry, errorName) {
-        try {
-            return registry.getSchema(errorName);
-        }
-        catch (e) {
-            return registry.find((schema$1) => schema.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
-        }
-    }
-}
-
-class AwsSmithyRpcV2CborProtocol extends cbor.SmithyRpcV2CborProtocol {
-    awsQueryCompatible;
-    mixin;
-    constructor({ defaultNamespace, errorTypeRegistries, awsQueryCompatible, }) {
-        super({ defaultNamespace, errorTypeRegistries });
-        this.awsQueryCompatible = !!awsQueryCompatible;
-        this.mixin = new ProtocolLib(this.awsQueryCompatible);
-    }
-    async serializeRequest(operationSchema, input, context) {
-        const request = await super.serializeRequest(operationSchema, input, context);
-        if (this.awsQueryCompatible) {
-            request.headers["x-amzn-query-mode"] = "true";
-        }
-        return request;
-    }
-    async handleError(operationSchema, context, response, dataObject, metadata) {
-        if (this.awsQueryCompatible) {
-            this.mixin.setQueryCompatError(dataObject, response);
-        }
-        const errorName = (() => {
-            const compatHeader = response.headers["x-amzn-query-error"];
-            if (compatHeader && this.awsQueryCompatible) {
-                return compatHeader.split(";")[0];
-            }
-            return cbor.loadSmithyRpcV2CborErrorCode(response, dataObject) ?? "Unknown";
-        })();
-        this.mixin.compose(this.compositeErrorRegistry, errorName, this.options.defaultNamespace);
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorName, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
-        const ns = schema.NormalizedSchema.of(errorSchema);
-        const message = dataObject.message ?? dataObject.Message ?? "UnknownError";
-        const ErrorCtor = this.compositeErrorRegistry.getErrorCtor(errorSchema) ?? Error;
-        const exception = new ErrorCtor(message);
-        const output = {};
-        for (const [name, member] of ns.structIterator()) {
-            if (dataObject[name] != null) {
-                output[name] = this.deserializer.readValue(member, dataObject[name]);
-            }
-        }
-        if (this.awsQueryCompatible) {
-            this.mixin.queryCompatOutput(dataObject, output);
-        }
-        throw this.mixin.decorateServiceException(Object.assign(exception, errorMetadata, {
-            $fault: ns.getMergedTraits().error,
-            message,
-        }, output), dataObject);
-    }
-}
-
-const _toStr = (val) => {
-    if (val == null) {
-        return val;
-    }
-    if (typeof val === "number" || typeof val === "bigint") {
-        const warning = new Error(`Received number ${val} where a string was expected.`);
-        warning.name = "Warning";
-        console.warn(warning);
-        return String(val);
-    }
-    if (typeof val === "boolean") {
-        const warning = new Error(`Received boolean ${val} where a string was expected.`);
-        warning.name = "Warning";
-        console.warn(warning);
-        return String(val);
-    }
-    return val;
-};
-const _toBool = (val) => {
-    if (val == null) {
-        return val;
-    }
-    if (typeof val === "string") {
-        const lowercase = val.toLowerCase();
-        if (val !== "" && lowercase !== "false" && lowercase !== "true") {
-            const warning = new Error(`Received string "${val}" where a boolean was expected.`);
-            warning.name = "Warning";
-            console.warn(warning);
-        }
-        return val !== "" && lowercase !== "false";
-    }
-    return val;
-};
-const _toNum = (val) => {
-    if (val == null) {
-        return val;
-    }
-    if (typeof val === "string") {
-        const num = Number(val);
-        if (num.toString() !== val) {
-            const warning = new Error(`Received string "${val}" where a number was expected.`);
-            warning.name = "Warning";
-            console.warn(warning);
-            return val;
-        }
-        return num;
-    }
-    return val;
-};
-
-class SerdeContextConfig {
-    serdeContext;
-    setSerdeContext(serdeContext) {
-        this.serdeContext = serdeContext;
-    }
-}
-
-class UnionSerde {
-    from;
-    to;
-    keys;
-    constructor(from, to) {
-        this.from = from;
-        this.to = to;
-        this.keys = new Set(Object.keys(this.from).filter((k) => k !== "__type"));
-    }
-    mark(key) {
-        this.keys.delete(key);
-    }
-    hasUnknown() {
-        return this.keys.size === 1 && Object.keys(this.to).length === 0;
-    }
-    writeUnknown() {
-        if (this.hasUnknown()) {
-            const k = this.keys.values().next().value;
-            const v = this.from[k];
-            this.to.$unknown = [k, v];
-        }
-    }
-}
-
-function jsonReviver(key, value, context) {
-    if (context?.source) {
-        const numericString = context.source;
-        if (typeof value === "number") {
-            if (value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER || numericString !== String(value)) {
-                const isFractional = numericString.includes(".");
-                if (isFractional) {
-                    return new serde.NumericValue(numericString, "bigDecimal");
-                }
-                else {
-                    return BigInt(numericString);
-                }
-            }
-        }
-    }
-    return value;
-}
-
-const collectBodyString = (streamBody, context) => smithyClient.collectBody(streamBody, context).then((body) => (context?.utf8Encoder ?? utilUtf8.toUtf8)(body));
-
-const parseJsonBody = (streamBody, context) => collectBodyString(streamBody, context).then((encoded) => {
-    if (encoded.length) {
-        try {
-            return JSON.parse(encoded);
-        }
-        catch (e) {
-            if (e?.name === "SyntaxError") {
-                Object.defineProperty(e, "$responseBodyText", {
-                    value: encoded,
-                });
-            }
-            throw e;
-        }
-    }
-    return {};
-});
-const parseJsonErrorBody = async (errorBody, context) => {
-    const value = await parseJsonBody(errorBody, context);
-    value.message = value.message ?? value.Message;
-    return value;
-};
-const loadRestJsonErrorCode = (output, data) => {
-    const findKey = (object, key) => Object.keys(object).find((k) => k.toLowerCase() === key.toLowerCase());
-    const sanitizeErrorCode = (rawValue) => {
-        let cleanValue = rawValue;
-        if (typeof cleanValue === "number") {
-            cleanValue = cleanValue.toString();
-        }
-        if (cleanValue.indexOf(",") >= 0) {
-            cleanValue = cleanValue.split(",")[0];
-        }
-        if (cleanValue.indexOf(":") >= 0) {
-            cleanValue = cleanValue.split(":")[0];
-        }
-        if (cleanValue.indexOf("#") >= 0) {
-            cleanValue = cleanValue.split("#")[1];
-        }
-        return cleanValue;
-    };
-    const headerKey = findKey(output.headers, "x-amzn-errortype");
-    if (headerKey !== undefined) {
-        return sanitizeErrorCode(output.headers[headerKey]);
-    }
-    if (data && typeof data === "object") {
-        const codeKey = findKey(data, "code");
-        if (codeKey && data[codeKey] !== undefined) {
-            return sanitizeErrorCode(data[codeKey]);
-        }
-        if (data["__type"] !== undefined) {
-            return sanitizeErrorCode(data["__type"]);
-        }
-    }
-};
-
-class JsonShapeDeserializer extends SerdeContextConfig {
-    settings;
-    constructor(settings) {
-        super();
-        this.settings = settings;
-    }
-    async read(schema, data) {
-        return this._read(schema, typeof data === "string" ? JSON.parse(data, jsonReviver) : await parseJsonBody(data, this.serdeContext));
-    }
-    readObject(schema, data) {
-        return this._read(schema, data);
-    }
-    _read(schema$1, value) {
-        const isObject = value !== null && typeof value === "object";
-        const ns = schema.NormalizedSchema.of(schema$1);
-        if (isObject) {
-            if (ns.isStructSchema()) {
-                const record = value;
-                const union = ns.isUnionSchema();
-                const out = {};
-                let nameMap = void 0;
-                const { jsonName } = this.settings;
-                if (jsonName) {
-                    nameMap = {};
-                }
-                let unionSerde;
-                if (union) {
-                    unionSerde = new UnionSerde(record, out);
-                }
-                for (const [memberName, memberSchema] of ns.structIterator()) {
-                    let fromKey = memberName;
-                    if (jsonName) {
-                        fromKey = memberSchema.getMergedTraits().jsonName ?? fromKey;
-                        nameMap[fromKey] = memberName;
-                    }
-                    if (union) {
-                        unionSerde.mark(fromKey);
-                    }
-                    if (record[fromKey] != null) {
-                        out[memberName] = this._read(memberSchema, record[fromKey]);
-                    }
-                }
-                if (union) {
-                    unionSerde.writeUnknown();
-                }
-                else if (typeof record.__type === "string") {
-                    for (const [k, v] of Object.entries(record)) {
-                        const t = jsonName ? nameMap[k] ?? k : k;
-                        if (!(t in out)) {
-                            out[t] = v;
-                        }
-                    }
-                }
-                return out;
-            }
-            if (Array.isArray(value) && ns.isListSchema()) {
-                const listMember = ns.getValueSchema();
-                const out = [];
-                for (const item of value) {
-                    out.push(this._read(listMember, item));
-                }
-                return out;
-            }
-            if (ns.isMapSchema()) {
-                const mapMember = ns.getValueSchema();
-                const out = {};
-                for (const [_k, _v] of Object.entries(value)) {
-                    out[_k] = this._read(mapMember, _v);
-                }
-                return out;
-            }
-        }
-        if (ns.isBlobSchema() && typeof value === "string") {
-            return utilBase64.fromBase64(value);
-        }
-        const mediaType = ns.getMergedTraits().mediaType;
-        if (ns.isStringSchema() && typeof value === "string" && mediaType) {
-            const isJson = mediaType === "application/json" || mediaType.endsWith("+json");
-            if (isJson) {
-                return serde.LazyJsonString.from(value);
-            }
-            return value;
-        }
-        if (ns.isTimestampSchema() && value != null) {
-            const format = protocols.determineTimestampFormat(ns, this.settings);
-            switch (format) {
-                case 5:
-                    return serde.parseRfc3339DateTimeWithOffset(value);
-                case 6:
-                    return serde.parseRfc7231DateTime(value);
-                case 7:
-                    return serde.parseEpochTimestamp(value);
-                default:
-                    console.warn("Missing timestamp format, parsing value with Date constructor:", value);
-                    return new Date(value);
-            }
-        }
-        if (ns.isBigIntegerSchema() && (typeof value === "number" || typeof value === "string")) {
-            return BigInt(value);
-        }
-        if (ns.isBigDecimalSchema() && value != undefined) {
-            if (value instanceof serde.NumericValue) {
-                return value;
-            }
-            const untyped = value;
-            if (untyped.type === "bigDecimal" && "string" in untyped) {
-                return new serde.NumericValue(untyped.string, untyped.type);
-            }
-            return new serde.NumericValue(String(value), "bigDecimal");
-        }
-        if (ns.isNumericSchema() && typeof value === "string") {
-            switch (value) {
-                case "Infinity":
-                    return Infinity;
-                case "-Infinity":
-                    return -Infinity;
-                case "NaN":
-                    return NaN;
-            }
-            return value;
-        }
-        if (ns.isDocumentSchema()) {
-            if (isObject) {
-                const out = Array.isArray(value) ? [] : {};
-                for (const [k, v] of Object.entries(value)) {
-                    if (v instanceof serde.NumericValue) {
-                        out[k] = v;
-                    }
-                    else {
-                        out[k] = this._read(ns, v);
-                    }
-                }
-                return out;
-            }
-            else {
-                return structuredClone(value);
-            }
-        }
-        return value;
-    }
-}
-
-const NUMERIC_CONTROL_CHAR = String.fromCharCode(925);
-class JsonReplacer {
-    values = new Map();
-    counter = 0;
-    stage = 0;
-    createReplacer() {
-        if (this.stage === 1) {
-            throw new Error("@aws-sdk/core/protocols - JsonReplacer already created.");
-        }
-        if (this.stage === 2) {
-            throw new Error("@aws-sdk/core/protocols - JsonReplacer exhausted.");
-        }
-        this.stage = 1;
-        return (key, value) => {
-            if (value instanceof serde.NumericValue) {
-                const v = `${NUMERIC_CONTROL_CHAR + "nv" + this.counter++}_` + value.string;
-                this.values.set(`"${v}"`, value.string);
-                return v;
-            }
-            if (typeof value === "bigint") {
-                const s = value.toString();
-                const v = `${NUMERIC_CONTROL_CHAR + "b" + this.counter++}_` + s;
-                this.values.set(`"${v}"`, s);
-                return v;
-            }
-            return value;
-        };
-    }
-    replaceInJson(json) {
-        if (this.stage === 0) {
-            throw new Error("@aws-sdk/core/protocols - JsonReplacer not created yet.");
-        }
-        if (this.stage === 2) {
-            throw new Error("@aws-sdk/core/protocols - JsonReplacer exhausted.");
-        }
-        this.stage = 2;
-        if (this.counter === 0) {
-            return json;
-        }
-        for (const [key, value] of this.values) {
-            json = json.replace(key, value);
-        }
-        return json;
-    }
-}
-
-class JsonShapeSerializer extends SerdeContextConfig {
-    settings;
-    buffer;
-    useReplacer = false;
-    rootSchema;
-    constructor(settings) {
-        super();
-        this.settings = settings;
-    }
-    write(schema$1, value) {
-        this.rootSchema = schema.NormalizedSchema.of(schema$1);
-        this.buffer = this._write(this.rootSchema, value);
-    }
-    writeDiscriminatedDocument(schema$1, value) {
-        this.write(schema$1, value);
-        if (typeof this.buffer === "object") {
-            this.buffer.__type = schema.NormalizedSchema.of(schema$1).getName(true);
-        }
-    }
-    flush() {
-        const { rootSchema, useReplacer } = this;
-        this.rootSchema = undefined;
-        this.useReplacer = false;
-        if (rootSchema?.isStructSchema() || rootSchema?.isDocumentSchema()) {
-            if (!useReplacer) {
-                return JSON.stringify(this.buffer);
-            }
-            const replacer = new JsonReplacer();
-            return replacer.replaceInJson(JSON.stringify(this.buffer, replacer.createReplacer(), 0));
-        }
-        return this.buffer;
-    }
-    _write(schema$1, value, container) {
-        const isObject = value !== null && typeof value === "object";
-        const ns = schema.NormalizedSchema.of(schema$1);
-        if (isObject) {
-            if (ns.isStructSchema()) {
-                const record = value;
-                const out = {};
-                const { jsonName } = this.settings;
-                let nameMap = void 0;
-                if (jsonName) {
-                    nameMap = {};
-                }
-                for (const [memberName, memberSchema] of ns.structIterator()) {
-                    const serializableValue = this._write(memberSchema, record[memberName], ns);
-                    if (serializableValue !== undefined) {
-                        let targetKey = memberName;
-                        if (jsonName) {
-                            targetKey = memberSchema.getMergedTraits().jsonName ?? memberName;
-                            nameMap[memberName] = targetKey;
-                        }
-                        out[targetKey] = serializableValue;
-                    }
-                }
-                if (ns.isUnionSchema() && Object.keys(out).length === 0) {
-                    const { $unknown } = record;
-                    if (Array.isArray($unknown)) {
-                        const [k, v] = $unknown;
-                        out[k] = this._write(15, v);
-                    }
-                }
-                else if (typeof record.__type === "string") {
-                    for (const [k, v] of Object.entries(record)) {
-                        const targetKey = jsonName ? nameMap[k] ?? k : k;
-                        if (!(targetKey in out)) {
-                            out[targetKey] = this._write(15, v);
-                        }
-                    }
-                }
-                return out;
-            }
-            if (Array.isArray(value) && ns.isListSchema()) {
-                const listMember = ns.getValueSchema();
-                const out = [];
-                const sparse = !!ns.getMergedTraits().sparse;
-                for (const item of value) {
-                    if (sparse || item != null) {
-                        out.push(this._write(listMember, item));
-                    }
-                }
-                return out;
-            }
-            if (ns.isMapSchema()) {
-                const mapMember = ns.getValueSchema();
-                const out = {};
-                const sparse = !!ns.getMergedTraits().sparse;
-                for (const [_k, _v] of Object.entries(value)) {
-                    if (sparse || _v != null) {
-                        out[_k] = this._write(mapMember, _v);
-                    }
-                }
-                return out;
-            }
-            if (value instanceof Uint8Array && (ns.isBlobSchema() || ns.isDocumentSchema())) {
-                if (ns === this.rootSchema) {
-                    return value;
-                }
-                return (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
-            }
-            if (value instanceof Date && (ns.isTimestampSchema() || ns.isDocumentSchema())) {
-                const format = protocols.determineTimestampFormat(ns, this.settings);
-                switch (format) {
-                    case 5:
-                        return value.toISOString().replace(".000Z", "Z");
-                    case 6:
-                        return serde.dateToUtcString(value);
-                    case 7:
-                        return value.getTime() / 1000;
-                    default:
-                        console.warn("Missing timestamp format, using epoch seconds", value);
-                        return value.getTime() / 1000;
-                }
-            }
-            if (value instanceof serde.NumericValue) {
-                this.useReplacer = true;
-            }
-        }
-        if (value === null && container?.isStructSchema()) {
-            return void 0;
-        }
-        if (ns.isStringSchema()) {
-            if (typeof value === "undefined" && ns.isIdempotencyToken()) {
-                return serde.generateIdempotencyToken();
-            }
-            const mediaType = ns.getMergedTraits().mediaType;
-            if (value != null && mediaType) {
-                const isJson = mediaType === "application/json" || mediaType.endsWith("+json");
-                if (isJson) {
-                    return serde.LazyJsonString.from(value);
-                }
-            }
-            return value;
-        }
-        if (typeof value === "number" && ns.isNumericSchema()) {
-            if (Math.abs(value) === Infinity || isNaN(value)) {
-                return String(value);
-            }
-            return value;
-        }
-        if (typeof value === "string" && ns.isBlobSchema()) {
-            if (ns === this.rootSchema) {
-                return value;
-            }
-            return (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
-        }
-        if (typeof value === "bigint") {
-            this.useReplacer = true;
-        }
-        if (ns.isDocumentSchema()) {
-            if (isObject) {
-                const out = Array.isArray(value) ? [] : {};
-                for (const [k, v] of Object.entries(value)) {
-                    if (v instanceof serde.NumericValue) {
-                        this.useReplacer = true;
-                        out[k] = v;
-                    }
-                    else {
-                        out[k] = this._write(ns, v);
-                    }
-                }
-                return out;
-            }
-            else {
-                return structuredClone(value);
-            }
-        }
-        return value;
-    }
-}
-
-class JsonCodec extends SerdeContextConfig {
-    settings;
-    constructor(settings) {
-        super();
-        this.settings = settings;
-    }
-    createSerializer() {
-        const serializer = new JsonShapeSerializer(this.settings);
-        serializer.setSerdeContext(this.serdeContext);
-        return serializer;
-    }
-    createDeserializer() {
-        const deserializer = new JsonShapeDeserializer(this.settings);
-        deserializer.setSerdeContext(this.serdeContext);
-        return deserializer;
-    }
-}
-
-class AwsJsonRpcProtocol extends protocols.RpcProtocol {
-    serializer;
-    deserializer;
-    serviceTarget;
-    codec;
-    mixin;
-    awsQueryCompatible;
-    constructor({ defaultNamespace, errorTypeRegistries, serviceTarget, awsQueryCompatible, jsonCodec, }) {
-        super({
-            defaultNamespace,
-            errorTypeRegistries,
-        });
-        this.serviceTarget = serviceTarget;
-        this.codec =
-            jsonCodec ??
-                new JsonCodec({
-                    timestampFormat: {
-                        useTrait: true,
-                        default: 7,
-                    },
-                    jsonName: false,
-                });
-        this.serializer = this.codec.createSerializer();
-        this.deserializer = this.codec.createDeserializer();
-        this.awsQueryCompatible = !!awsQueryCompatible;
-        this.mixin = new ProtocolLib(this.awsQueryCompatible);
-    }
-    async serializeRequest(operationSchema, input, context) {
-        const request = await super.serializeRequest(operationSchema, input, context);
-        if (!request.path.endsWith("/")) {
-            request.path += "/";
-        }
-        Object.assign(request.headers, {
-            "content-type": `application/x-amz-json-${this.getJsonRpcVersion()}`,
-            "x-amz-target": `${this.serviceTarget}.${operationSchema.name}`,
-        });
-        if (this.awsQueryCompatible) {
-            request.headers["x-amzn-query-mode"] = "true";
-        }
-        if (schema.deref(operationSchema.input) === "unit" || !request.body) {
-            request.body = "{}";
-        }
-        return request;
-    }
-    getPayloadCodec() {
-        return this.codec;
-    }
-    async handleError(operationSchema, context, response, dataObject, metadata) {
-        if (this.awsQueryCompatible) {
-            this.mixin.setQueryCompatError(dataObject, response);
-        }
-        const errorIdentifier = loadRestJsonErrorCode(response, dataObject) ?? "Unknown";
-        this.mixin.compose(this.compositeErrorRegistry, errorIdentifier, this.options.defaultNamespace);
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
-        const ns = schema.NormalizedSchema.of(errorSchema);
-        const message = dataObject.message ?? dataObject.Message ?? "UnknownError";
-        const ErrorCtor = this.compositeErrorRegistry.getErrorCtor(errorSchema) ?? Error;
-        const exception = new ErrorCtor(message);
-        const output = {};
-        for (const [name, member] of ns.structIterator()) {
-            if (dataObject[name] != null) {
-                output[name] = this.codec.createDeserializer().readObject(member, dataObject[name]);
-            }
-        }
-        if (this.awsQueryCompatible) {
-            this.mixin.queryCompatOutput(dataObject, output);
-        }
-        throw this.mixin.decorateServiceException(Object.assign(exception, errorMetadata, {
-            $fault: ns.getMergedTraits().error,
-            message,
-        }, output), dataObject);
-    }
-}
-
-class AwsJson1_0Protocol extends AwsJsonRpcProtocol {
-    constructor({ defaultNamespace, errorTypeRegistries, serviceTarget, awsQueryCompatible, jsonCodec, }) {
-        super({
-            defaultNamespace,
-            errorTypeRegistries,
-            serviceTarget,
-            awsQueryCompatible,
-            jsonCodec,
-        });
-    }
-    getShapeId() {
-        return "aws.protocols#awsJson1_0";
-    }
-    getJsonRpcVersion() {
-        return "1.0";
-    }
-    getDefaultContentType() {
-        return "application/x-amz-json-1.0";
-    }
-}
-
-class AwsJson1_1Protocol extends AwsJsonRpcProtocol {
-    constructor({ defaultNamespace, errorTypeRegistries, serviceTarget, awsQueryCompatible, jsonCodec, }) {
-        super({
-            defaultNamespace,
-            errorTypeRegistries,
-            serviceTarget,
-            awsQueryCompatible,
-            jsonCodec,
-        });
-    }
-    getShapeId() {
-        return "aws.protocols#awsJson1_1";
-    }
-    getJsonRpcVersion() {
-        return "1.1";
-    }
-    getDefaultContentType() {
-        return "application/x-amz-json-1.1";
-    }
-}
-
-class AwsRestJsonProtocol extends protocols.HttpBindingProtocol {
-    serializer;
-    deserializer;
-    codec;
-    mixin = new ProtocolLib();
-    constructor({ defaultNamespace, errorTypeRegistries, }) {
-        super({
-            defaultNamespace,
-            errorTypeRegistries,
-        });
-        const settings = {
-            timestampFormat: {
-                useTrait: true,
-                default: 7,
-            },
-            httpBindings: true,
-            jsonName: true,
-        };
-        this.codec = new JsonCodec(settings);
-        this.serializer = new protocols.HttpInterceptingShapeSerializer(this.codec.createSerializer(), settings);
-        this.deserializer = new protocols.HttpInterceptingShapeDeserializer(this.codec.createDeserializer(), settings);
-    }
-    getShapeId() {
-        return "aws.protocols#restJson1";
-    }
-    getPayloadCodec() {
-        return this.codec;
-    }
-    setSerdeContext(serdeContext) {
-        this.codec.setSerdeContext(serdeContext);
-        super.setSerdeContext(serdeContext);
-    }
-    async serializeRequest(operationSchema, input, context) {
-        const request = await super.serializeRequest(operationSchema, input, context);
-        const inputSchema = schema.NormalizedSchema.of(operationSchema.input);
-        if (!request.headers["content-type"]) {
-            const contentType = this.mixin.resolveRestContentType(this.getDefaultContentType(), inputSchema);
-            if (contentType) {
-                request.headers["content-type"] = contentType;
-            }
-        }
-        if (request.body == null && request.headers["content-type"] === this.getDefaultContentType()) {
-            request.body = "{}";
-        }
-        return request;
-    }
-    async deserializeResponse(operationSchema, context, response) {
-        const output = await super.deserializeResponse(operationSchema, context, response);
-        const outputSchema = schema.NormalizedSchema.of(operationSchema.output);
-        for (const [name, member] of outputSchema.structIterator()) {
-            if (member.getMemberTraits().httpPayload && !(name in output)) {
-                output[name] = null;
-            }
-        }
-        return output;
-    }
-    async handleError(operationSchema, context, response, dataObject, metadata) {
-        const errorIdentifier = loadRestJsonErrorCode(response, dataObject) ?? "Unknown";
-        this.mixin.compose(this.compositeErrorRegistry, errorIdentifier, this.options.defaultNamespace);
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata);
-        const ns = schema.NormalizedSchema.of(errorSchema);
-        const message = dataObject.message ?? dataObject.Message ?? "UnknownError";
-        const ErrorCtor = this.compositeErrorRegistry.getErrorCtor(errorSchema) ?? Error;
-        const exception = new ErrorCtor(message);
-        await this.deserializeHttpMessage(errorSchema, context, response, dataObject);
-        const output = {};
-        for (const [name, member] of ns.structIterator()) {
-            const target = member.getMergedTraits().jsonName ?? name;
-            output[name] = this.codec.createDeserializer().readObject(member, dataObject[target]);
-        }
-        throw this.mixin.decorateServiceException(Object.assign(exception, errorMetadata, {
-            $fault: ns.getMergedTraits().error,
-            message,
-        }, output), dataObject);
-    }
-    getDefaultContentType() {
-        return "application/json";
-    }
-}
-
-const awsExpectUnion = (value) => {
-    if (value == null) {
-        return undefined;
-    }
-    if (typeof value === "object" && "__type" in value) {
-        delete value.__type;
-    }
-    return smithyClient.expectUnion(value);
-};
-
-class XmlShapeDeserializer extends SerdeContextConfig {
-    settings;
-    stringDeserializer;
-    constructor(settings) {
-        super();
-        this.settings = settings;
-        this.stringDeserializer = new protocols.FromStringShapeDeserializer(settings);
-    }
-    setSerdeContext(serdeContext) {
-        this.serdeContext = serdeContext;
-        this.stringDeserializer.setSerdeContext(serdeContext);
-    }
-    read(schema$1, bytes, key) {
-        const ns = schema.NormalizedSchema.of(schema$1);
-        const memberSchemas = ns.getMemberSchemas();
-        const isEventPayload = ns.isStructSchema() &&
-            ns.isMemberSchema() &&
-            !!Object.values(memberSchemas).find((memberNs) => {
-                return !!memberNs.getMemberTraits().eventPayload;
-            });
-        if (isEventPayload) {
-            const output = {};
-            const memberName = Object.keys(memberSchemas)[0];
-            const eventMemberSchema = memberSchemas[memberName];
-            if (eventMemberSchema.isBlobSchema()) {
-                output[memberName] = bytes;
-            }
-            else {
-                output[memberName] = this.read(memberSchemas[memberName], bytes);
-            }
-            return output;
-        }
-        const xmlString = (this.serdeContext?.utf8Encoder ?? utilUtf8.toUtf8)(bytes);
-        const parsedObject = this.parseXml(xmlString);
-        return this.readSchema(schema$1, key ? parsedObject[key] : parsedObject);
-    }
-    readSchema(_schema, value) {
-        const ns = schema.NormalizedSchema.of(_schema);
-        if (ns.isUnitSchema()) {
-            return;
-        }
-        const traits = ns.getMergedTraits();
-        if (ns.isListSchema() && !Array.isArray(value)) {
-            return this.readSchema(ns, [value]);
-        }
-        if (value == null) {
-            return value;
-        }
-        if (typeof value === "object") {
-            const flat = !!traits.xmlFlattened;
-            if (ns.isListSchema()) {
-                const listValue = ns.getValueSchema();
-                const buffer = [];
-                const sourceKey = listValue.getMergedTraits().xmlName ?? "member";
-                const source = flat ? value : (value[0] ?? value)[sourceKey];
-                if (source == null) {
-                    return buffer;
-                }
-                const sourceArray = Array.isArray(source) ? source : [source];
-                for (const v of sourceArray) {
-                    buffer.push(this.readSchema(listValue, v));
-                }
-                return buffer;
-            }
-            const buffer = {};
-            if (ns.isMapSchema()) {
-                const keyNs = ns.getKeySchema();
-                const memberNs = ns.getValueSchema();
-                let entries;
-                if (flat) {
-                    entries = Array.isArray(value) ? value : [value];
-                }
-                else {
-                    entries = Array.isArray(value.entry) ? value.entry : [value.entry];
-                }
-                const keyProperty = keyNs.getMergedTraits().xmlName ?? "key";
-                const valueProperty = memberNs.getMergedTraits().xmlName ?? "value";
-                for (const entry of entries) {
-                    const key = entry[keyProperty];
-                    const value = entry[valueProperty];
-                    buffer[key] = this.readSchema(memberNs, value);
-                }
-                return buffer;
-            }
-            if (ns.isStructSchema()) {
-                const union = ns.isUnionSchema();
-                let unionSerde;
-                if (union) {
-                    unionSerde = new UnionSerde(value, buffer);
-                }
-                for (const [memberName, memberSchema] of ns.structIterator()) {
-                    const memberTraits = memberSchema.getMergedTraits();
-                    const xmlObjectKey = !memberTraits.httpPayload
-                        ? memberSchema.getMemberTraits().xmlName ?? memberName
-                        : memberTraits.xmlName ?? memberSchema.getName();
-                    if (union) {
-                        unionSerde.mark(xmlObjectKey);
-                    }
-                    if (value[xmlObjectKey] != null) {
-                        buffer[memberName] = this.readSchema(memberSchema, value[xmlObjectKey]);
-                    }
-                }
-                if (union) {
-                    unionSerde.writeUnknown();
-                }
-                return buffer;
-            }
-            if (ns.isDocumentSchema()) {
-                return value;
-            }
-            throw new Error(`@aws-sdk/core/protocols - xml deserializer unhandled schema type for ${ns.getName(true)}`);
-        }
-        if (ns.isListSchema()) {
-            return [];
-        }
-        if (ns.isMapSchema() || ns.isStructSchema()) {
-            return {};
-        }
-        return this.stringDeserializer.read(ns, value);
-    }
-    parseXml(xml) {
-        if (xml.length) {
-            let parsedObj;
-            try {
-                parsedObj = xmlBuilder.parseXML(xml);
-            }
-            catch (e) {
-                if (e && typeof e === "object") {
-                    Object.defineProperty(e, "$responseBodyText", {
-                        value: xml,
-                    });
-                }
-                throw e;
-            }
-            const textNodeName = "#text";
-            const key = Object.keys(parsedObj)[0];
-            const parsedObjToReturn = parsedObj[key];
-            if (parsedObjToReturn[textNodeName]) {
-                parsedObjToReturn[key] = parsedObjToReturn[textNodeName];
-                delete parsedObjToReturn[textNodeName];
-            }
-            return smithyClient.getValueFromTextNode(parsedObjToReturn);
-        }
-        return {};
-    }
-}
-
-class QueryShapeSerializer extends SerdeContextConfig {
-    settings;
-    buffer;
-    constructor(settings) {
-        super();
-        this.settings = settings;
-    }
-    write(schema$1, value, prefix = "") {
-        if (this.buffer === undefined) {
-            this.buffer = "";
-        }
-        const ns = schema.NormalizedSchema.of(schema$1);
-        if (prefix && !prefix.endsWith(".")) {
-            prefix += ".";
-        }
-        if (ns.isBlobSchema()) {
-            if (typeof value === "string" || value instanceof Uint8Array) {
-                this.writeKey(prefix);
-                this.writeValue((this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value));
-            }
-        }
-        else if (ns.isBooleanSchema() || ns.isNumericSchema() || ns.isStringSchema()) {
-            if (value != null) {
-                this.writeKey(prefix);
-                this.writeValue(String(value));
-            }
-            else if (ns.isIdempotencyToken()) {
-                this.writeKey(prefix);
-                this.writeValue(serde.generateIdempotencyToken());
-            }
-        }
-        else if (ns.isBigIntegerSchema()) {
-            if (value != null) {
-                this.writeKey(prefix);
-                this.writeValue(String(value));
-            }
-        }
-        else if (ns.isBigDecimalSchema()) {
-            if (value != null) {
-                this.writeKey(prefix);
-                this.writeValue(value instanceof serde.NumericValue ? value.string : String(value));
-            }
-        }
-        else if (ns.isTimestampSchema()) {
-            if (value instanceof Date) {
-                this.writeKey(prefix);
-                const format = protocols.determineTimestampFormat(ns, this.settings);
-                switch (format) {
-                    case 5:
-                        this.writeValue(value.toISOString().replace(".000Z", "Z"));
-                        break;
-                    case 6:
-                        this.writeValue(smithyClient.dateToUtcString(value));
-                        break;
-                    case 7:
-                        this.writeValue(String(value.getTime() / 1000));
-                        break;
-                }
-            }
-        }
-        else if (ns.isDocumentSchema()) {
-            if (Array.isArray(value)) {
-                this.write(64 | 15, value, prefix);
-            }
-            else if (value instanceof Date) {
-                this.write(4, value, prefix);
-            }
-            else if (value instanceof Uint8Array) {
-                this.write(21, value, prefix);
-            }
-            else if (value && typeof value === "object") {
-                this.write(128 | 15, value, prefix);
-            }
-            else {
-                this.writeKey(prefix);
-                this.writeValue(String(value));
-            }
-        }
-        else if (ns.isListSchema()) {
-            if (Array.isArray(value)) {
-                if (value.length === 0) {
-                    if (this.settings.serializeEmptyLists) {
-                        this.writeKey(prefix);
-                        this.writeValue("");
-                    }
-                }
-                else {
-                    const member = ns.getValueSchema();
-                    const flat = this.settings.flattenLists || ns.getMergedTraits().xmlFlattened;
-                    let i = 1;
-                    for (const item of value) {
-                        if (item == null) {
-                            continue;
-                        }
-                        const traits = member.getMergedTraits();
-                        const suffix = this.getKey("member", traits.xmlName, traits.ec2QueryName);
-                        const key = flat ? `${prefix}${i}` : `${prefix}${suffix}.${i}`;
-                        this.write(member, item, key);
-                        ++i;
-                    }
-                }
-            }
-        }
-        else if (ns.isMapSchema()) {
-            if (value && typeof value === "object") {
-                const keySchema = ns.getKeySchema();
-                const memberSchema = ns.getValueSchema();
-                const flat = ns.getMergedTraits().xmlFlattened;
-                let i = 1;
-                for (const [k, v] of Object.entries(value)) {
-                    if (v == null) {
-                        continue;
-                    }
-                    const keyTraits = keySchema.getMergedTraits();
-                    const keySuffix = this.getKey("key", keyTraits.xmlName, keyTraits.ec2QueryName);
-                    const key = flat ? `${prefix}${i}.${keySuffix}` : `${prefix}entry.${i}.${keySuffix}`;
-                    const valTraits = memberSchema.getMergedTraits();
-                    const valueSuffix = this.getKey("value", valTraits.xmlName, valTraits.ec2QueryName);
-                    const valueKey = flat ? `${prefix}${i}.${valueSuffix}` : `${prefix}entry.${i}.${valueSuffix}`;
-                    this.write(keySchema, k, key);
-                    this.write(memberSchema, v, valueKey);
-                    ++i;
-                }
-            }
-        }
-        else if (ns.isStructSchema()) {
-            if (value && typeof value === "object") {
-                let didWriteMember = false;
-                for (const [memberName, member] of ns.structIterator()) {
-                    if (value[memberName] == null && !member.isIdempotencyToken()) {
-                        continue;
-                    }
-                    const traits = member.getMergedTraits();
-                    const suffix = this.getKey(memberName, traits.xmlName, traits.ec2QueryName, "struct");
-                    const key = `${prefix}${suffix}`;
-                    this.write(member, value[memberName], key);
-                    didWriteMember = true;
-                }
-                if (!didWriteMember && ns.isUnionSchema()) {
-                    const { $unknown } = value;
-                    if (Array.isArray($unknown)) {
-                        const [k, v] = $unknown;
-                        const key = `${prefix}${k}`;
-                        this.write(15, v, key);
-                    }
-                }
-            }
-        }
-        else if (ns.isUnitSchema()) ;
-        else {
-            throw new Error(`@aws-sdk/core/protocols - QuerySerializer unrecognized schema type ${ns.getName(true)}`);
-        }
-    }
-    flush() {
-        if (this.buffer === undefined) {
-            throw new Error("@aws-sdk/core/protocols - QuerySerializer cannot flush with nothing written to buffer.");
-        }
-        const str = this.buffer;
-        delete this.buffer;
-        return str;
-    }
-    getKey(memberName, xmlName, ec2QueryName, keySource) {
-        const { ec2, capitalizeKeys } = this.settings;
-        if (ec2 && ec2QueryName) {
-            return ec2QueryName;
-        }
-        const key = xmlName ?? memberName;
-        if (capitalizeKeys && keySource === "struct") {
-            return key[0].toUpperCase() + key.slice(1);
-        }
-        return key;
-    }
-    writeKey(key) {
-        if (key.endsWith(".")) {
-            key = key.slice(0, key.length - 1);
-        }
-        this.buffer += `&${protocols.extendedEncodeURIComponent(key)}=`;
-    }
-    writeValue(value) {
-        this.buffer += protocols.extendedEncodeURIComponent(value);
-    }
-}
-
-class AwsQueryProtocol extends protocols.RpcProtocol {
-    options;
-    serializer;
-    deserializer;
-    mixin = new ProtocolLib();
-    constructor(options) {
-        super({
-            defaultNamespace: options.defaultNamespace,
-            errorTypeRegistries: options.errorTypeRegistries,
-        });
-        this.options = options;
-        const settings = {
-            timestampFormat: {
-                useTrait: true,
-                default: 5,
-            },
-            httpBindings: false,
-            xmlNamespace: options.xmlNamespace,
-            serviceNamespace: options.defaultNamespace,
-            serializeEmptyLists: true,
-        };
-        this.serializer = new QueryShapeSerializer(settings);
-        this.deserializer = new XmlShapeDeserializer(settings);
-    }
-    getShapeId() {
-        return "aws.protocols#awsQuery";
-    }
-    setSerdeContext(serdeContext) {
-        this.serializer.setSerdeContext(serdeContext);
-        this.deserializer.setSerdeContext(serdeContext);
-    }
-    getPayloadCodec() {
-        throw new Error("AWSQuery protocol has no payload codec.");
-    }
-    async serializeRequest(operationSchema, input, context) {
-        const request = await super.serializeRequest(operationSchema, input, context);
-        if (!request.path.endsWith("/")) {
-            request.path += "/";
-        }
-        Object.assign(request.headers, {
-            "content-type": `application/x-www-form-urlencoded`,
-        });
-        if (schema.deref(operationSchema.input) === "unit" || !request.body) {
-            request.body = "";
-        }
-        const action = operationSchema.name.split("#")[1] ?? operationSchema.name;
-        request.body = `Action=${action}&Version=${this.options.version}` + request.body;
-        if (request.body.endsWith("&")) {
-            request.body = request.body.slice(-1);
-        }
-        return request;
-    }
-    async deserializeResponse(operationSchema, context, response) {
-        const deserializer = this.deserializer;
-        const ns = schema.NormalizedSchema.of(operationSchema.output);
-        const dataObject = {};
-        if (response.statusCode >= 300) {
-            const bytes = await protocols.collectBody(response.body, context);
-            if (bytes.byteLength > 0) {
-                Object.assign(dataObject, await deserializer.read(15, bytes));
-            }
-            await this.handleError(operationSchema, context, response, dataObject, this.deserializeMetadata(response));
-        }
-        for (const header in response.headers) {
-            const value = response.headers[header];
-            delete response.headers[header];
-            response.headers[header.toLowerCase()] = value;
-        }
-        const shortName = operationSchema.name.split("#")[1] ?? operationSchema.name;
-        const awsQueryResultKey = ns.isStructSchema() && this.useNestedResult() ? shortName + "Result" : undefined;
-        const bytes = await protocols.collectBody(response.body, context);
-        if (bytes.byteLength > 0) {
-            Object.assign(dataObject, await deserializer.read(ns, bytes, awsQueryResultKey));
-        }
-        const output = {
-            $metadata: this.deserializeMetadata(response),
-            ...dataObject,
-        };
-        return output;
-    }
-    useNestedResult() {
-        return true;
-    }
-    async handleError(operationSchema, context, response, dataObject, metadata) {
-        const errorIdentifier = this.loadQueryErrorCode(response, dataObject) ?? "Unknown";
-        this.mixin.compose(this.compositeErrorRegistry, errorIdentifier, this.options.defaultNamespace);
-        const errorData = this.loadQueryError(dataObject) ?? {};
-        const message = this.loadQueryErrorMessage(dataObject);
-        errorData.message = message;
-        errorData.Error = {
-            Type: errorData.Type,
-            Code: errorData.Code,
-            Message: message,
-        };
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, errorData, metadata, this.mixin.findQueryCompatibleError);
-        const ns = schema.NormalizedSchema.of(errorSchema);
-        const ErrorCtor = this.compositeErrorRegistry.getErrorCtor(errorSchema) ?? Error;
-        const exception = new ErrorCtor(message);
-        const output = {
-            Type: errorData.Error.Type,
-            Code: errorData.Error.Code,
-            Error: errorData.Error,
-        };
-        for (const [name, member] of ns.structIterator()) {
-            const target = member.getMergedTraits().xmlName ?? name;
-            const value = errorData[target] ?? dataObject[target];
-            output[name] = this.deserializer.readSchema(member, value);
-        }
-        throw this.mixin.decorateServiceException(Object.assign(exception, errorMetadata, {
-            $fault: ns.getMergedTraits().error,
-            message,
-        }, output), dataObject);
-    }
-    loadQueryErrorCode(output, data) {
-        const code = (data.Errors?.[0]?.Error ?? data.Errors?.Error ?? data.Error)?.Code;
-        if (code !== undefined) {
-            return code;
-        }
-        if (output.statusCode == 404) {
-            return "NotFound";
-        }
-    }
-    loadQueryError(data) {
-        return data.Errors?.[0]?.Error ?? data.Errors?.Error ?? data.Error;
-    }
-    loadQueryErrorMessage(data) {
-        const errorData = this.loadQueryError(data);
-        return errorData?.message ?? errorData?.Message ?? data.message ?? data.Message ?? "Unknown";
-    }
-    getDefaultContentType() {
-        return "application/x-www-form-urlencoded";
-    }
-}
-
-class AwsEc2QueryProtocol extends AwsQueryProtocol {
-    options;
-    constructor(options) {
-        super(options);
-        this.options = options;
-        const ec2Settings = {
-            capitalizeKeys: true,
-            flattenLists: true,
-            serializeEmptyLists: false,
-            ec2: true,
-        };
-        Object.assign(this.serializer.settings, ec2Settings);
-    }
-    getShapeId() {
-        return "aws.protocols#ec2Query";
-    }
-    useNestedResult() {
-        return false;
-    }
-}
-
-const parseXmlBody = (streamBody, context) => collectBodyString(streamBody, context).then((encoded) => {
-    if (encoded.length) {
-        let parsedObj;
-        try {
-            parsedObj = xmlBuilder.parseXML(encoded);
-        }
-        catch (e) {
-            if (e && typeof e === "object") {
-                Object.defineProperty(e, "$responseBodyText", {
-                    value: encoded,
-                });
-            }
-            throw e;
-        }
-        const textNodeName = "#text";
-        const key = Object.keys(parsedObj)[0];
-        const parsedObjToReturn = parsedObj[key];
-        if (parsedObjToReturn[textNodeName]) {
-            parsedObjToReturn[key] = parsedObjToReturn[textNodeName];
-            delete parsedObjToReturn[textNodeName];
-        }
-        return smithyClient.getValueFromTextNode(parsedObjToReturn);
-    }
-    return {};
-});
-const parseXmlErrorBody = async (errorBody, context) => {
-    const value = await parseXmlBody(errorBody, context);
-    if (value.Error) {
-        value.Error.message = value.Error.message ?? value.Error.Message;
-    }
-    return value;
-};
-const loadRestXmlErrorCode = (output, data) => {
-    if (data?.Error?.Code !== undefined) {
-        return data.Error.Code;
-    }
-    if (data?.Code !== undefined) {
-        return data.Code;
-    }
-    if (output.statusCode == 404) {
-        return "NotFound";
-    }
-};
-
-class XmlShapeSerializer extends SerdeContextConfig {
-    settings;
-    stringBuffer;
-    byteBuffer;
-    buffer;
-    constructor(settings) {
-        super();
-        this.settings = settings;
-    }
-    write(schema$1, value) {
-        const ns = schema.NormalizedSchema.of(schema$1);
-        if (ns.isStringSchema() && typeof value === "string") {
-            this.stringBuffer = value;
-        }
-        else if (ns.isBlobSchema()) {
-            this.byteBuffer =
-                "byteLength" in value
-                    ? value
-                    : (this.serdeContext?.base64Decoder ?? utilBase64.fromBase64)(value);
-        }
-        else {
-            this.buffer = this.writeStruct(ns, value, undefined);
-            const traits = ns.getMergedTraits();
-            if (traits.httpPayload && !traits.xmlName) {
-                this.buffer.withName(ns.getName());
-            }
-        }
-    }
-    flush() {
-        if (this.byteBuffer !== undefined) {
-            const bytes = this.byteBuffer;
-            delete this.byteBuffer;
-            return bytes;
-        }
-        if (this.stringBuffer !== undefined) {
-            const str = this.stringBuffer;
-            delete this.stringBuffer;
-            return str;
-        }
-        const buffer = this.buffer;
-        if (this.settings.xmlNamespace) {
-            if (!buffer?.attributes?.["xmlns"]) {
-                buffer.addAttribute("xmlns", this.settings.xmlNamespace);
-            }
-        }
-        delete this.buffer;
-        return buffer.toString();
-    }
-    writeStruct(ns, value, parentXmlns) {
-        const traits = ns.getMergedTraits();
-        const name = ns.isMemberSchema() && !traits.httpPayload
-            ? ns.getMemberTraits().xmlName ?? ns.getMemberName()
-            : traits.xmlName ?? ns.getName();
-        if (!name || !ns.isStructSchema()) {
-            throw new Error(`@aws-sdk/core/protocols - xml serializer, cannot write struct with empty name or non-struct, schema=${ns.getName(true)}.`);
-        }
-        const structXmlNode = xmlBuilder.XmlNode.of(name);
-        const [xmlnsAttr, xmlns] = this.getXmlnsAttribute(ns, parentXmlns);
-        for (const [memberName, memberSchema] of ns.structIterator()) {
-            const val = value[memberName];
-            if (val != null || memberSchema.isIdempotencyToken()) {
-                if (memberSchema.getMergedTraits().xmlAttribute) {
-                    structXmlNode.addAttribute(memberSchema.getMergedTraits().xmlName ?? memberName, this.writeSimple(memberSchema, val));
-                    continue;
-                }
-                if (memberSchema.isListSchema()) {
-                    this.writeList(memberSchema, val, structXmlNode, xmlns);
-                }
-                else if (memberSchema.isMapSchema()) {
-                    this.writeMap(memberSchema, val, structXmlNode, xmlns);
-                }
-                else if (memberSchema.isStructSchema()) {
-                    structXmlNode.addChildNode(this.writeStruct(memberSchema, val, xmlns));
-                }
-                else {
-                    const memberNode = xmlBuilder.XmlNode.of(memberSchema.getMergedTraits().xmlName ?? memberSchema.getMemberName());
-                    this.writeSimpleInto(memberSchema, val, memberNode, xmlns);
-                    structXmlNode.addChildNode(memberNode);
-                }
-            }
-        }
-        const { $unknown } = value;
-        if ($unknown && ns.isUnionSchema() && Array.isArray($unknown) && Object.keys(value).length === 1) {
-            const [k, v] = $unknown;
-            const node = xmlBuilder.XmlNode.of(k);
-            if (typeof v !== "string") {
-                if (value instanceof xmlBuilder.XmlNode || value instanceof xmlBuilder.XmlText) {
-                    structXmlNode.addChildNode(value);
-                }
-                else {
-                    throw new Error(`@aws-sdk - $unknown union member in XML requires ` +
-                        `value of type string, @aws-sdk/xml-builder::XmlNode or XmlText.`);
-                }
-            }
-            this.writeSimpleInto(0, v, node, xmlns);
-            structXmlNode.addChildNode(node);
-        }
-        if (xmlns) {
-            structXmlNode.addAttribute(xmlnsAttr, xmlns);
-        }
-        return structXmlNode;
-    }
-    writeList(listMember, array, container, parentXmlns) {
-        if (!listMember.isMemberSchema()) {
-            throw new Error(`@aws-sdk/core/protocols - xml serializer, cannot write non-member list: ${listMember.getName(true)}`);
-        }
-        const listTraits = listMember.getMergedTraits();
-        const listValueSchema = listMember.getValueSchema();
-        const listValueTraits = listValueSchema.getMergedTraits();
-        const sparse = !!listValueTraits.sparse;
-        const flat = !!listTraits.xmlFlattened;
-        const [xmlnsAttr, xmlns] = this.getXmlnsAttribute(listMember, parentXmlns);
-        const writeItem = (container, value) => {
-            if (listValueSchema.isListSchema()) {
-                this.writeList(listValueSchema, Array.isArray(value) ? value : [value], container, xmlns);
-            }
-            else if (listValueSchema.isMapSchema()) {
-                this.writeMap(listValueSchema, value, container, xmlns);
-            }
-            else if (listValueSchema.isStructSchema()) {
-                const struct = this.writeStruct(listValueSchema, value, xmlns);
-                container.addChildNode(struct.withName(flat ? listTraits.xmlName ?? listMember.getMemberName() : listValueTraits.xmlName ?? "member"));
-            }
-            else {
-                const listItemNode = xmlBuilder.XmlNode.of(flat ? listTraits.xmlName ?? listMember.getMemberName() : listValueTraits.xmlName ?? "member");
-                this.writeSimpleInto(listValueSchema, value, listItemNode, xmlns);
-                container.addChildNode(listItemNode);
-            }
-        };
-        if (flat) {
-            for (const value of array) {
-                if (sparse || value != null) {
-                    writeItem(container, value);
-                }
-            }
-        }
-        else {
-            const listNode = xmlBuilder.XmlNode.of(listTraits.xmlName ?? listMember.getMemberName());
-            if (xmlns) {
-                listNode.addAttribute(xmlnsAttr, xmlns);
-            }
-            for (const value of array) {
-                if (sparse || value != null) {
-                    writeItem(listNode, value);
-                }
-            }
-            container.addChildNode(listNode);
-        }
-    }
-    writeMap(mapMember, map, container, parentXmlns, containerIsMap = false) {
-        if (!mapMember.isMemberSchema()) {
-            throw new Error(`@aws-sdk/core/protocols - xml serializer, cannot write non-member map: ${mapMember.getName(true)}`);
-        }
-        const mapTraits = mapMember.getMergedTraits();
-        const mapKeySchema = mapMember.getKeySchema();
-        const mapKeyTraits = mapKeySchema.getMergedTraits();
-        const keyTag = mapKeyTraits.xmlName ?? "key";
-        const mapValueSchema = mapMember.getValueSchema();
-        const mapValueTraits = mapValueSchema.getMergedTraits();
-        const valueTag = mapValueTraits.xmlName ?? "value";
-        const sparse = !!mapValueTraits.sparse;
-        const flat = !!mapTraits.xmlFlattened;
-        const [xmlnsAttr, xmlns] = this.getXmlnsAttribute(mapMember, parentXmlns);
-        const addKeyValue = (entry, key, val) => {
-            const keyNode = xmlBuilder.XmlNode.of(keyTag, key);
-            const [keyXmlnsAttr, keyXmlns] = this.getXmlnsAttribute(mapKeySchema, xmlns);
-            if (keyXmlns) {
-                keyNode.addAttribute(keyXmlnsAttr, keyXmlns);
-            }
-            entry.addChildNode(keyNode);
-            let valueNode = xmlBuilder.XmlNode.of(valueTag);
-            if (mapValueSchema.isListSchema()) {
-                this.writeList(mapValueSchema, val, valueNode, xmlns);
-            }
-            else if (mapValueSchema.isMapSchema()) {
-                this.writeMap(mapValueSchema, val, valueNode, xmlns, true);
-            }
-            else if (mapValueSchema.isStructSchema()) {
-                valueNode = this.writeStruct(mapValueSchema, val, xmlns);
-            }
-            else {
-                this.writeSimpleInto(mapValueSchema, val, valueNode, xmlns);
-            }
-            entry.addChildNode(valueNode);
-        };
-        if (flat) {
-            for (const [key, val] of Object.entries(map)) {
-                if (sparse || val != null) {
-                    const entry = xmlBuilder.XmlNode.of(mapTraits.xmlName ?? mapMember.getMemberName());
-                    addKeyValue(entry, key, val);
-                    container.addChildNode(entry);
-                }
-            }
-        }
-        else {
-            let mapNode;
-            if (!containerIsMap) {
-                mapNode = xmlBuilder.XmlNode.of(mapTraits.xmlName ?? mapMember.getMemberName());
-                if (xmlns) {
-                    mapNode.addAttribute(xmlnsAttr, xmlns);
-                }
-                container.addChildNode(mapNode);
-            }
-            for (const [key, val] of Object.entries(map)) {
-                if (sparse || val != null) {
-                    const entry = xmlBuilder.XmlNode.of("entry");
-                    addKeyValue(entry, key, val);
-                    (containerIsMap ? container : mapNode).addChildNode(entry);
-                }
-            }
-        }
-    }
-    writeSimple(_schema, value) {
-        if (null === value) {
-            throw new Error("@aws-sdk/core/protocols - (XML serializer) cannot write null value.");
-        }
-        const ns = schema.NormalizedSchema.of(_schema);
-        let nodeContents = null;
-        if (value && typeof value === "object") {
-            if (ns.isBlobSchema()) {
-                nodeContents = (this.serdeContext?.base64Encoder ?? utilBase64.toBase64)(value);
-            }
-            else if (ns.isTimestampSchema() && value instanceof Date) {
-                const format = protocols.determineTimestampFormat(ns, this.settings);
-                switch (format) {
-                    case 5:
-                        nodeContents = value.toISOString().replace(".000Z", "Z");
-                        break;
-                    case 6:
-                        nodeContents = smithyClient.dateToUtcString(value);
-                        break;
-                    case 7:
-                        nodeContents = String(value.getTime() / 1000);
-                        break;
-                    default:
-                        console.warn("Missing timestamp format, using http date", value);
-                        nodeContents = smithyClient.dateToUtcString(value);
-                        break;
-                }
-            }
-            else if (ns.isBigDecimalSchema() && value) {
-                if (value instanceof serde.NumericValue) {
-                    return value.string;
-                }
-                return String(value);
-            }
-            else if (ns.isMapSchema() || ns.isListSchema()) {
-                throw new Error("@aws-sdk/core/protocols - xml serializer, cannot call _write() on List/Map schema, call writeList or writeMap() instead.");
-            }
-            else {
-                throw new Error(`@aws-sdk/core/protocols - xml serializer, unhandled schema type for object value and schema: ${ns.getName(true)}`);
-            }
-        }
-        if (ns.isBooleanSchema() || ns.isNumericSchema() || ns.isBigIntegerSchema() || ns.isBigDecimalSchema()) {
-            nodeContents = String(value);
-        }
-        if (ns.isStringSchema()) {
-            if (value === undefined && ns.isIdempotencyToken()) {
-                nodeContents = serde.generateIdempotencyToken();
-            }
-            else {
-                nodeContents = String(value);
-            }
-        }
-        if (nodeContents === null) {
-            throw new Error(`Unhandled schema-value pair ${ns.getName(true)}=${value}`);
-        }
-        return nodeContents;
-    }
-    writeSimpleInto(_schema, value, into, parentXmlns) {
-        const nodeContents = this.writeSimple(_schema, value);
-        const ns = schema.NormalizedSchema.of(_schema);
-        const content = new xmlBuilder.XmlText(nodeContents);
-        const [xmlnsAttr, xmlns] = this.getXmlnsAttribute(ns, parentXmlns);
-        if (xmlns) {
-            into.addAttribute(xmlnsAttr, xmlns);
-        }
-        into.addChildNode(content);
-    }
-    getXmlnsAttribute(ns, parentXmlns) {
-        const traits = ns.getMergedTraits();
-        const [prefix, xmlns] = traits.xmlNamespace ?? [];
-        if (xmlns && xmlns !== parentXmlns) {
-            return [prefix ? `xmlns:${prefix}` : "xmlns", xmlns];
-        }
-        return [void 0, void 0];
-    }
-}
-
-class XmlCodec extends SerdeContextConfig {
-    settings;
-    constructor(settings) {
-        super();
-        this.settings = settings;
-    }
-    createSerializer() {
-        const serializer = new XmlShapeSerializer(this.settings);
-        serializer.setSerdeContext(this.serdeContext);
-        return serializer;
-    }
-    createDeserializer() {
-        const deserializer = new XmlShapeDeserializer(this.settings);
-        deserializer.setSerdeContext(this.serdeContext);
-        return deserializer;
-    }
-}
-
-class AwsRestXmlProtocol extends protocols.HttpBindingProtocol {
-    codec;
-    serializer;
-    deserializer;
-    mixin = new ProtocolLib();
-    constructor(options) {
-        super(options);
-        const settings = {
-            timestampFormat: {
-                useTrait: true,
-                default: 5,
-            },
-            httpBindings: true,
-            xmlNamespace: options.xmlNamespace,
-            serviceNamespace: options.defaultNamespace,
-        };
-        this.codec = new XmlCodec(settings);
-        this.serializer = new protocols.HttpInterceptingShapeSerializer(this.codec.createSerializer(), settings);
-        this.deserializer = new protocols.HttpInterceptingShapeDeserializer(this.codec.createDeserializer(), settings);
-        this.compositeErrorRegistry;
-    }
-    getPayloadCodec() {
-        return this.codec;
-    }
-    getShapeId() {
-        return "aws.protocols#restXml";
-    }
-    async serializeRequest(operationSchema, input, context) {
-        const request = await super.serializeRequest(operationSchema, input, context);
-        const inputSchema = schema.NormalizedSchema.of(operationSchema.input);
-        if (!request.headers["content-type"]) {
-            const contentType = this.mixin.resolveRestContentType(this.getDefaultContentType(), inputSchema);
-            if (contentType) {
-                request.headers["content-type"] = contentType;
-            }
-        }
-        if (typeof request.body === "string" &&
-            request.headers["content-type"] === this.getDefaultContentType() &&
-            !request.body.startsWith("<?xml ") &&
-            !this.hasUnstructuredPayloadBinding(inputSchema)) {
-            request.body = '<?xml version="1.0" encoding="UTF-8"?>' + request.body;
-        }
-        return request;
-    }
-    async deserializeResponse(operationSchema, context, response) {
-        return super.deserializeResponse(operationSchema, context, response);
-    }
-    async handleError(operationSchema, context, response, dataObject, metadata) {
-        const errorIdentifier = loadRestXmlErrorCode(response, dataObject) ?? "Unknown";
-        this.mixin.compose(this.compositeErrorRegistry, errorIdentifier, this.options.defaultNamespace);
-        if (dataObject.Error && typeof dataObject.Error === "object") {
-            for (const key of Object.keys(dataObject.Error)) {
-                dataObject[key] = dataObject.Error[key];
-                if (key.toLowerCase() === "message") {
-                    dataObject.message = dataObject.Error[key];
-                }
-            }
-        }
-        if (dataObject.RequestId && !metadata.requestId) {
-            metadata.requestId = dataObject.RequestId;
-        }
-        const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata);
-        const ns = schema.NormalizedSchema.of(errorSchema);
-        const message = dataObject.Error?.message ??
-            dataObject.Error?.Message ??
-            dataObject.message ??
-            dataObject.Message ??
-            "UnknownError";
-        const ErrorCtor = this.compositeErrorRegistry.getErrorCtor(errorSchema) ?? Error;
-        const exception = new ErrorCtor(message);
-        await this.deserializeHttpMessage(errorSchema, context, response, dataObject);
-        const output = {};
-        for (const [name, member] of ns.structIterator()) {
-            const target = member.getMergedTraits().xmlName ?? name;
-            const value = dataObject.Error?.[target] ?? dataObject[target];
-            output[name] = this.codec.createDeserializer().readSchema(member, value);
-        }
-        throw this.mixin.decorateServiceException(Object.assign(exception, errorMetadata, {
-            $fault: ns.getMergedTraits().error,
-            message,
-        }, output), dataObject);
-    }
-    getDefaultContentType() {
-        return "application/xml";
-    }
-    hasUnstructuredPayloadBinding(ns) {
-        for (const [, member] of ns.structIterator()) {
-            if (member.getMergedTraits().httpPayload) {
-                return !(member.isStructSchema() || member.isMapSchema() || member.isListSchema());
-            }
-        }
-        return false;
-    }
-}
-
 exports.AWSSDKSigV4Signer = AWSSDKSigV4Signer;
-exports.AwsEc2QueryProtocol = AwsEc2QueryProtocol;
-exports.AwsJson1_0Protocol = AwsJson1_0Protocol;
-exports.AwsJson1_1Protocol = AwsJson1_1Protocol;
-exports.AwsJsonRpcProtocol = AwsJsonRpcProtocol;
-exports.AwsQueryProtocol = AwsQueryProtocol;
-exports.AwsRestJsonProtocol = AwsRestJsonProtocol;
-exports.AwsRestXmlProtocol = AwsRestXmlProtocol;
 exports.AwsSdkSigV4ASigner = AwsSdkSigV4ASigner;
 exports.AwsSdkSigV4Signer = AwsSdkSigV4Signer;
-exports.AwsSmithyRpcV2CborProtocol = AwsSmithyRpcV2CborProtocol;
-exports.JsonCodec = JsonCodec;
-exports.JsonShapeDeserializer = JsonShapeDeserializer;
-exports.JsonShapeSerializer = JsonShapeSerializer;
 exports.NODE_AUTH_SCHEME_PREFERENCE_OPTIONS = NODE_AUTH_SCHEME_PREFERENCE_OPTIONS;
 exports.NODE_SIGV4A_CONFIG_OPTIONS = NODE_SIGV4A_CONFIG_OPTIONS;
-exports.QueryShapeSerializer = QueryShapeSerializer;
-exports.XmlCodec = XmlCodec;
-exports.XmlShapeDeserializer = XmlShapeDeserializer;
-exports.XmlShapeSerializer = XmlShapeSerializer;
-exports._toBool = _toBool;
-exports._toNum = _toNum;
-exports._toStr = _toStr;
-exports.awsExpectUnion = awsExpectUnion;
-exports.emitWarningIfUnsupportedVersion = emitWarningIfUnsupportedVersion;
 exports.getBearerTokenEnvKey = getBearerTokenEnvKey;
-exports.loadRestJsonErrorCode = loadRestJsonErrorCode;
-exports.loadRestXmlErrorCode = loadRestXmlErrorCode;
-exports.parseJsonBody = parseJsonBody;
-exports.parseJsonErrorBody = parseJsonErrorBody;
-exports.parseXmlBody = parseXmlBody;
-exports.parseXmlErrorBody = parseXmlErrorBody;
 exports.resolveAWSSDKSigV4Config = resolveAWSSDKSigV4Config;
 exports.resolveAwsSdkSigV4AConfig = resolveAwsSdkSigV4AConfig;
 exports.resolveAwsSdkSigV4Config = resolveAwsSdkSigV4Config;
-exports.setCredentialFeature = setCredentialFeature;
-exports.setFeature = setFeature;
-exports.setTokenFeature = setTokenFeature;
-exports.state = state;
 exports.validateSigningProperties = validateSigningProperties;
-
-
-/***/ }),
-
-/***/ 5152:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-
-const state = {
-    warningEmitted: false,
-};
-const emitWarningIfUnsupportedVersion = (version) => {
-    if (version && !state.warningEmitted && parseInt(version.substring(1, version.indexOf("."))) < 20) {
-        state.warningEmitted = true;
-        process.emitWarning(`NodeDeprecationWarning: The AWS SDK for JavaScript (v3) will
-no longer support Node.js ${version} in January 2026.
-
-To continue receiving updates to AWS services, bug fixes, and security
-updates please upgrade to a supported Node.js LTS version.
-
-More information can be found at: https://a.co/c895JFp`);
-    }
-};
-
-function setCredentialFeature(credentials, feature, value) {
-    if (!credentials.$source) {
-        credentials.$source = {};
-    }
-    credentials.$source[feature] = value;
-    return credentials;
-}
-
-function setFeature(context, feature, value) {
-    if (!context.__aws_sdk_context) {
-        context.__aws_sdk_context = {
-            features: {},
-        };
-    }
-    else if (!context.__aws_sdk_context.features) {
-        context.__aws_sdk_context.features = {};
-    }
-    context.__aws_sdk_context.features[feature] = value;
-}
-
-function setTokenFeature(token, feature, value) {
-    if (!token.$source) {
-        token.$source = {};
-    }
-    token.$source[feature] = value;
-    return token;
-}
-
-exports.emitWarningIfUnsupportedVersion = emitWarningIfUnsupportedVersion;
-exports.setCredentialFeature = setCredentialFeature;
-exports.setFeature = setFeature;
-exports.setTokenFeature = setTokenFeature;
-exports.state = state;
 
 
 /***/ }),
@@ -14381,7 +12452,7 @@ exports.recursionDetectionMiddleware = recursionDetectionMiddleware;
 var core = __nccwpck_require__(402);
 var utilEndpoints = __nccwpck_require__(3068);
 var protocolHttp = __nccwpck_require__(2356);
-var core$1 = __nccwpck_require__(8704);
+var client = __nccwpck_require__(5152);
 var utilRetry = __nccwpck_require__(5518);
 
 const DEFAULT_UA_APP_ID = undefined;
@@ -14416,17 +12487,17 @@ const ACCOUNT_ID_ENDPOINT_REGEX = /\d{12}\.ddb/;
 async function checkFeatures(context, config, args) {
     const request = args.request;
     if (request?.headers?.["smithy-protocol"] === "rpc-v2-cbor") {
-        core$1.setFeature(context, "PROTOCOL_RPC_V2_CBOR", "M");
+        client.setFeature(context, "PROTOCOL_RPC_V2_CBOR", "M");
     }
     if (typeof config.retryStrategy === "function") {
         const retryStrategy = await config.retryStrategy();
         if (typeof retryStrategy.mode === "string") {
             switch (retryStrategy.mode) {
                 case utilRetry.RETRY_MODES.ADAPTIVE:
-                    core$1.setFeature(context, "RETRY_MODE_ADAPTIVE", "F");
+                    client.setFeature(context, "RETRY_MODE_ADAPTIVE", "F");
                     break;
                 case utilRetry.RETRY_MODES.STANDARD:
-                    core$1.setFeature(context, "RETRY_MODE_STANDARD", "E");
+                    client.setFeature(context, "RETRY_MODE_STANDARD", "E");
                     break;
             }
         }
@@ -14434,17 +12505,17 @@ async function checkFeatures(context, config, args) {
     if (typeof config.accountIdEndpointMode === "function") {
         const endpointV2 = context.endpointV2;
         if (String(endpointV2?.url?.hostname).match(ACCOUNT_ID_ENDPOINT_REGEX)) {
-            core$1.setFeature(context, "ACCOUNT_ID_ENDPOINT", "O");
+            client.setFeature(context, "ACCOUNT_ID_ENDPOINT", "O");
         }
         switch (await config.accountIdEndpointMode?.()) {
             case "disabled":
-                core$1.setFeature(context, "ACCOUNT_ID_MODE_DISABLED", "Q");
+                client.setFeature(context, "ACCOUNT_ID_MODE_DISABLED", "Q");
                 break;
             case "preferred":
-                core$1.setFeature(context, "ACCOUNT_ID_MODE_PREFERRED", "P");
+                client.setFeature(context, "ACCOUNT_ID_MODE_PREFERRED", "P");
                 break;
             case "required":
-                core$1.setFeature(context, "ACCOUNT_ID_MODE_REQUIRED", "R");
+                client.setFeature(context, "ACCOUNT_ID_MODE_REQUIRED", "R");
                 break;
         }
     }
@@ -14452,10 +12523,10 @@ async function checkFeatures(context, config, args) {
     if (identity?.$source) {
         const credentials = identity;
         if (credentials.accountId) {
-            core$1.setFeature(context, "RESOLVED_ACCOUNT_ID", "T");
+            client.setFeature(context, "RESOLVED_ACCOUNT_ID", "T");
         }
         for (const [key, value] of Object.entries(credentials.$source ?? {})) {
-            core$1.setFeature(context, key, value);
+            client.setFeature(context, key, value);
         }
     }
 }
@@ -17417,9 +15488,7 @@ class HttpProtocol extends SerdeContext {
 
 class HttpBindingProtocol extends HttpProtocol {
     async serializeRequest(operationSchema, _input, context) {
-        const input = {
-            ...(_input ?? {}),
-        };
+        const input = _input && typeof _input === "object" ? _input : {};
         const serializer = this.serializer;
         const query = {};
         const headers = {};
@@ -17487,7 +15556,6 @@ class HttpBindingProtocol extends HttpProtocol {
                     serializer.write(memberNs, inputMemberValue);
                     payload = serializer.flush();
                 }
-                delete input[memberName];
             }
             else if (memberTraits.httpLabel) {
                 serializer.write(memberNs, inputMemberValue);
@@ -17498,12 +15566,10 @@ class HttpBindingProtocol extends HttpProtocol {
                 else if (request.path.includes(`{${memberName}}`)) {
                     request.path = request.path.replace(`{${memberName}}`, extendedEncodeURIComponent(replacement));
                 }
-                delete input[memberName];
             }
             else if (memberTraits.httpHeader) {
                 serializer.write(memberNs, inputMemberValue);
                 headers[memberTraits.httpHeader.toLowerCase()] = String(serializer.flush());
-                delete input[memberName];
             }
             else if (typeof memberTraits.httpPrefixHeaders === "string") {
                 for (const [key, val] of Object.entries(inputMemberValue)) {
@@ -17511,11 +15577,9 @@ class HttpBindingProtocol extends HttpProtocol {
                     serializer.write([memberNs.getValueSchema(), { httpHeader: amalgam }], val);
                     headers[amalgam.toLowerCase()] = serializer.flush();
                 }
-                delete input[memberName];
             }
             else if (memberTraits.httpQuery || memberTraits.httpQueryParams) {
                 this.serializeQuery(memberNs, inputMemberValue, query);
-                delete input[memberName];
             }
             else {
                 hasNonHttpBindingMember = true;
@@ -17703,7 +15767,7 @@ class HttpBindingProtocol extends HttpProtocol {
 }
 
 class RpcProtocol extends HttpProtocol {
-    async serializeRequest(operationSchema, input, context) {
+    async serializeRequest(operationSchema, _input, context) {
         const serializer = this.serializer;
         const query = {};
         const headers = {};
@@ -17711,6 +15775,7 @@ class RpcProtocol extends HttpProtocol {
         const ns = schema.NormalizedSchema.of(operationSchema?.input);
         const schema$1 = ns.getSchema();
         let payload;
+        const input = _input && typeof _input === "object" ? _input : {};
         const request = new protocolHttp.HttpRequest({
             protocol: "",
             hostname: "",
@@ -17725,29 +15790,26 @@ class RpcProtocol extends HttpProtocol {
             this.updateServiceEndpoint(request, endpoint);
             this.setHostPrefix(request, operationSchema, input);
         }
-        const _input = {
-            ...input,
-        };
         if (input) {
             const eventStreamMember = ns.getEventStreamMember();
             if (eventStreamMember) {
-                if (_input[eventStreamMember]) {
+                if (input[eventStreamMember]) {
                     const initialRequest = {};
                     for (const [memberName, memberSchema] of ns.structIterator()) {
-                        if (memberName !== eventStreamMember && _input[memberName]) {
-                            serializer.write(memberSchema, _input[memberName]);
+                        if (memberName !== eventStreamMember && input[memberName]) {
+                            serializer.write(memberSchema, input[memberName]);
                             initialRequest[memberName] = serializer.flush();
                         }
                     }
                     payload = await this.serializeEventStream({
-                        eventStream: _input[eventStreamMember],
+                        eventStream: input[eventStreamMember],
                         requestSchema: ns,
                         initialRequest,
                     });
                 }
             }
             else {
-                serializer.write(schema$1, _input);
+                serializer.write(schema$1, input);
                 payload = serializer.flush();
             }
         }
@@ -54906,7 +52968,7 @@ module.exports = require("util");
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/client-ecs","description":"AWS SDK for JavaScript Ecs Client for Node.js, Browser and React Native","version":"3.1016.0","scripts":{"build":"concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline client-ecs","build:es":"tsc -p tsconfig.es.json","build:include:deps":"yarn g:turbo run build -F=\\"$npm_package_name\\"","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"premove dist-cjs dist-es dist-types tsconfig.cjs.tsbuildinfo tsconfig.es.tsbuildinfo tsconfig.types.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo ecs","test:e2e":"yarn g:vitest run -c vitest.config.e2e.mts --mode development","test:e2e:watch":"yarn g:vitest watch -c vitest.config.e2e.mts","test:index":"tsc --noEmit ./test/index-types.ts && node ./test/index-objects.spec.mjs"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"^3.973.24","@aws-sdk/credential-provider-node":"^3.972.25","@aws-sdk/middleware-host-header":"^3.972.8","@aws-sdk/middleware-logger":"^3.972.8","@aws-sdk/middleware-recursion-detection":"^3.972.8","@aws-sdk/middleware-user-agent":"^3.972.25","@aws-sdk/region-config-resolver":"^3.972.9","@aws-sdk/types":"^3.973.6","@aws-sdk/util-endpoints":"^3.996.5","@aws-sdk/util-user-agent-browser":"^3.972.8","@aws-sdk/util-user-agent-node":"^3.973.11","@smithy/config-resolver":"^4.4.13","@smithy/core":"^3.23.12","@smithy/fetch-http-handler":"^5.3.15","@smithy/hash-node":"^4.2.12","@smithy/invalid-dependency":"^4.2.12","@smithy/middleware-content-length":"^4.2.12","@smithy/middleware-endpoint":"^4.4.27","@smithy/middleware-retry":"^4.4.44","@smithy/middleware-serde":"^4.2.15","@smithy/middleware-stack":"^4.2.12","@smithy/node-config-provider":"^4.3.12","@smithy/node-http-handler":"^4.5.0","@smithy/protocol-http":"^5.3.12","@smithy/smithy-client":"^4.12.7","@smithy/types":"^4.13.1","@smithy/url-parser":"^4.2.12","@smithy/util-base64":"^4.3.2","@smithy/util-body-length-browser":"^4.2.2","@smithy/util-body-length-node":"^4.2.3","@smithy/util-defaults-mode-browser":"^4.3.43","@smithy/util-defaults-mode-node":"^4.2.47","@smithy/util-endpoints":"^3.3.3","@smithy/util-middleware":"^4.2.12","@smithy/util-retry":"^4.2.12","@smithy/util-utf8":"^4.2.2","@smithy/util-waiter":"^4.2.13","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node20":"20.1.8","@types/node":"^20.14.8","concurrently":"7.0.0","downlevel-dts":"0.10.1","premove":"4.0.0","typescript":"~5.8.3"},"engines":{"node":">=20.0.0"},"typesVersions":{"<4.5":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-ecs","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-ecs"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/client-ecs","description":"AWS SDK for JavaScript Ecs Client for Node.js, Browser and React Native","version":"3.1020.0","scripts":{"build":"concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline client-ecs","build:es":"tsc -p tsconfig.es.json","build:include:deps":"yarn g:turbo run build -F=\\"$npm_package_name\\"","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"premove dist-cjs dist-es dist-types tsconfig.cjs.tsbuildinfo tsconfig.es.tsbuildinfo tsconfig.types.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo ecs","test:e2e":"yarn g:vitest run -c vitest.config.e2e.mts --mode development","test:e2e:watch":"yarn g:vitest watch -c vitest.config.e2e.mts","test:index":"tsc --noEmit ./test/index-types.ts && node ./test/index-objects.spec.mjs"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"^3.973.26","@aws-sdk/credential-provider-node":"^3.972.28","@aws-sdk/middleware-host-header":"^3.972.8","@aws-sdk/middleware-logger":"^3.972.8","@aws-sdk/middleware-recursion-detection":"^3.972.9","@aws-sdk/middleware-user-agent":"^3.972.27","@aws-sdk/region-config-resolver":"^3.972.10","@aws-sdk/types":"^3.973.6","@aws-sdk/util-endpoints":"^3.996.5","@aws-sdk/util-user-agent-browser":"^3.972.8","@aws-sdk/util-user-agent-node":"^3.973.13","@smithy/config-resolver":"^4.4.13","@smithy/core":"^3.23.13","@smithy/fetch-http-handler":"^5.3.15","@smithy/hash-node":"^4.2.12","@smithy/invalid-dependency":"^4.2.12","@smithy/middleware-content-length":"^4.2.12","@smithy/middleware-endpoint":"^4.4.28","@smithy/middleware-retry":"^4.4.45","@smithy/middleware-serde":"^4.2.16","@smithy/middleware-stack":"^4.2.12","@smithy/node-config-provider":"^4.3.12","@smithy/node-http-handler":"^4.5.1","@smithy/protocol-http":"^5.3.12","@smithy/smithy-client":"^4.12.8","@smithy/types":"^4.13.1","@smithy/url-parser":"^4.2.12","@smithy/util-base64":"^4.3.2","@smithy/util-body-length-browser":"^4.2.2","@smithy/util-body-length-node":"^4.2.3","@smithy/util-defaults-mode-browser":"^4.3.44","@smithy/util-defaults-mode-node":"^4.2.48","@smithy/util-endpoints":"^3.3.3","@smithy/util-middleware":"^4.2.12","@smithy/util-retry":"^4.2.12","@smithy/util-utf8":"^4.2.2","@smithy/util-waiter":"^4.2.14","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node20":"20.1.8","@types/node":"^20.14.8","concurrently":"7.0.0","downlevel-dts":"0.10.1","premove":"4.0.0","typescript":"~5.8.3"},"engines":{"node":">=20.0.0"},"typesVersions":{"<4.5":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-ecs","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-ecs"}}');
 
 /***/ })
 
