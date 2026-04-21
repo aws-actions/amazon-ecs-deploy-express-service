@@ -4164,6 +4164,63 @@ exports.resolveHttpAuthSchemeConfig = resolveHttpAuthSchemeConfig;
 
 /***/ }),
 
+/***/ 1198:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.bdd = void 0;
+const util_endpoints_1 = __nccwpck_require__(9674);
+const k = "ref";
+const a = -1, b = true, c = "isSet", d = "PartitionResult", e = "booleanEquals", f = "getAttr", g = { [k]: "Endpoint" }, h = { [k]: d }, i = {}, j = [{ [k]: "Region" }];
+const _data = {
+    conditions: [
+        [c, [g]],
+        [c, j],
+        ["aws.partition", j, d],
+        [e, [{ [k]: "UseFIPS" }, b]],
+        [e, [{ [k]: "UseDualStack" }, b]],
+        [e, [{ fn: f, argv: [h, "supportsDualStack"] }, b]],
+        [e, [{ fn: f, argv: [h, "supportsFIPS"] }, b]]
+    ],
+    results: [
+        [a],
+        [a, "Invalid Configuration: FIPS and custom endpoint are not supported"],
+        [a, "Invalid Configuration: Dualstack and custom endpoint are not supported"],
+        [g, i],
+        ["https://ecs-fips.{Region}.{PartitionResult#dualStackDnsSuffix}", i],
+        [a, "FIPS and DualStack are enabled, but this partition does not support one or both"],
+        ["https://ecs-fips.{Region}.{PartitionResult#dnsSuffix}", i],
+        [a, "FIPS is enabled but this partition does not support FIPS"],
+        ["https://ecs.{Region}.{PartitionResult#dualStackDnsSuffix}", i],
+        [a, "DualStack is enabled but this partition does not support DualStack"],
+        ["https://ecs.{Region}.{PartitionResult#dnsSuffix}", i],
+        [a, "Invalid Configuration: Missing Region"]
+    ]
+};
+const root = 2;
+const r = 100_000_000;
+const nodes = new Int32Array([
+    -1, 1, -1,
+    0, 12, 3,
+    1, 4, r + 11,
+    2, 5, r + 11,
+    3, 8, 6,
+    4, 7, r + 10,
+    5, r + 8, r + 9,
+    4, 10, 9,
+    6, r + 6, r + 7,
+    5, 11, r + 5,
+    6, r + 4, r + 5,
+    3, r + 1, 13,
+    4, r + 2, r + 3,
+]);
+exports.bdd = util_endpoints_1.BinaryDecisionDiagram.from(nodes, root, _data.conditions, _data.results);
+
+
+/***/ }),
+
 /***/ 6161:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -4173,34 +4230,19 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.defaultEndpointResolver = void 0;
 const util_endpoints_1 = __nccwpck_require__(3068);
 const util_endpoints_2 = __nccwpck_require__(9674);
-const ruleset_1 = __nccwpck_require__(4282);
+const bdd_1 = __nccwpck_require__(1198);
 const cache = new util_endpoints_2.EndpointCache({
     size: 50,
     params: ["Endpoint", "Region", "UseDualStack", "UseFIPS"],
 });
 const defaultEndpointResolver = (endpointParams, context = {}) => {
-    return cache.get(endpointParams, () => (0, util_endpoints_2.resolveEndpoint)(ruleset_1.ruleSet, {
+    return cache.get(endpointParams, () => (0, util_endpoints_2.decideEndpoint)(bdd_1.bdd, {
         endpointParams: endpointParams,
         logger: context.logger,
     }));
 };
 exports.defaultEndpointResolver = defaultEndpointResolver;
 util_endpoints_2.customEndpointFunctions.aws = util_endpoints_1.awsEndpointFunctions;
-
-
-/***/ }),
-
-/***/ 4282:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ruleSet = void 0;
-const s = "required", t = "fn", u = "argv", v = "ref";
-const a = true, b = "isSet", c = "booleanEquals", d = "error", e = "endpoint", f = "tree", g = "PartitionResult", h = { [s]: false, "type": "string" }, i = { [s]: true, "default": false, "type": "boolean" }, j = { [v]: "Endpoint" }, k = { [t]: c, [u]: [{ [v]: "UseFIPS" }, true] }, l = { [t]: c, [u]: [{ [v]: "UseDualStack" }, true] }, m = {}, n = { [t]: "getAttr", [u]: [{ [v]: g }, "supportsFIPS"] }, o = { [t]: c, [u]: [true, { [t]: "getAttr", [u]: [{ [v]: g }, "supportsDualStack"] }] }, p = [k], q = [l], r = [{ [v]: "Region" }];
-const _data = { version: "1.0", parameters: { Region: h, UseDualStack: i, UseFIPS: i, Endpoint: h }, rules: [{ conditions: [{ [t]: b, [u]: [j] }], rules: [{ conditions: p, error: "Invalid Configuration: FIPS and custom endpoint are not supported", type: d }, { conditions: q, error: "Invalid Configuration: Dualstack and custom endpoint are not supported", type: d }, { endpoint: { url: j, properties: m, headers: m }, type: e }], type: f }, { conditions: [{ [t]: b, [u]: r }], rules: [{ conditions: [{ [t]: "aws.partition", [u]: r, assign: g }], rules: [{ conditions: [k, l], rules: [{ conditions: [{ [t]: c, [u]: [a, n] }, o], rules: [{ endpoint: { url: "https://ecs-fips.{Region}.{PartitionResult#dualStackDnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "FIPS and DualStack are enabled, but this partition does not support one or both", type: d }], type: f }, { conditions: p, rules: [{ conditions: [{ [t]: c, [u]: [n, a] }], rules: [{ endpoint: { url: "https://ecs-fips.{Region}.{PartitionResult#dnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "FIPS is enabled but this partition does not support FIPS", type: d }], type: f }, { conditions: q, rules: [{ conditions: [o], rules: [{ endpoint: { url: "https://ecs.{Region}.{PartitionResult#dualStackDnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "DualStack is enabled but this partition does not support DualStack", type: d }], type: f }, { endpoint: { url: "https://ecs.{Region}.{PartitionResult#dnsSuffix}", properties: m, headers: m }, type: e }], type: f }], type: f }, { error: "Invalid Configuration: Missing Region", type: d }] };
-exports.ruleSet = _data;
 
 
 /***/ }),
@@ -4349,6 +4391,18 @@ class CreateClusterCommand extends smithyClient.Command
     .build() {
 }
 
+class CreateDaemonCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "CreateDaemon", {})
+    .n("ECSClient", "CreateDaemonCommand")
+    .sc(schemas_0.CreateDaemon$)
+    .build() {
+}
+
 class CreateExpressGatewayServiceCommand extends smithyClient.Command
     .classBuilder()
     .ep(commonParams)
@@ -4430,6 +4484,30 @@ class DeleteClusterCommand extends smithyClient.Command
     .s("AmazonEC2ContainerServiceV20141113", "DeleteCluster", {})
     .n("ECSClient", "DeleteClusterCommand")
     .sc(schemas_0.DeleteCluster$)
+    .build() {
+}
+
+class DeleteDaemonCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "DeleteDaemon", {})
+    .n("ECSClient", "DeleteDaemonCommand")
+    .sc(schemas_0.DeleteDaemon$)
+    .build() {
+}
+
+class DeleteDaemonTaskDefinitionCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "DeleteDaemonTaskDefinition", {})
+    .n("ECSClient", "DeleteDaemonTaskDefinitionCommand")
+    .sc(schemas_0.DeleteDaemonTaskDefinition$)
     .build() {
 }
 
@@ -4538,6 +4616,54 @@ class DescribeContainerInstancesCommand extends smithyClient.Command
     .s("AmazonEC2ContainerServiceV20141113", "DescribeContainerInstances", {})
     .n("ECSClient", "DescribeContainerInstancesCommand")
     .sc(schemas_0.DescribeContainerInstances$)
+    .build() {
+}
+
+class DescribeDaemonCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "DescribeDaemon", {})
+    .n("ECSClient", "DescribeDaemonCommand")
+    .sc(schemas_0.DescribeDaemon$)
+    .build() {
+}
+
+class DescribeDaemonDeploymentsCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "DescribeDaemonDeployments", {})
+    .n("ECSClient", "DescribeDaemonDeploymentsCommand")
+    .sc(schemas_0.DescribeDaemonDeployments$)
+    .build() {
+}
+
+class DescribeDaemonRevisionsCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "DescribeDaemonRevisions", {})
+    .n("ECSClient", "DescribeDaemonRevisionsCommand")
+    .sc(schemas_0.DescribeDaemonRevisions$)
+    .build() {
+}
+
+class DescribeDaemonTaskDefinitionCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "DescribeDaemonTaskDefinition", {})
+    .n("ECSClient", "DescribeDaemonTaskDefinitionCommand")
+    .sc(schemas_0.DescribeDaemonTaskDefinition$)
     .build() {
 }
 
@@ -4709,6 +4835,42 @@ class ListContainerInstancesCommand extends smithyClient.Command
     .build() {
 }
 
+class ListDaemonDeploymentsCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "ListDaemonDeployments", {})
+    .n("ECSClient", "ListDaemonDeploymentsCommand")
+    .sc(schemas_0.ListDaemonDeployments$)
+    .build() {
+}
+
+class ListDaemonsCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "ListDaemons", {})
+    .n("ECSClient", "ListDaemonsCommand")
+    .sc(schemas_0.ListDaemons$)
+    .build() {
+}
+
+class ListDaemonTaskDefinitionsCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "ListDaemonTaskDefinitions", {})
+    .n("ECSClient", "ListDaemonTaskDefinitionsCommand")
+    .sc(schemas_0.ListDaemonTaskDefinitions$)
+    .build() {
+}
+
 class ListServiceDeploymentsCommand extends smithyClient.Command
     .classBuilder()
     .ep(commonParams)
@@ -4850,6 +5012,18 @@ class RegisterContainerInstanceCommand extends smithyClient.Command
     .s("AmazonEC2ContainerServiceV20141113", "RegisterContainerInstance", {})
     .n("ECSClient", "RegisterContainerInstanceCommand")
     .sc(schemas_0.RegisterContainerInstance$)
+    .build() {
+}
+
+class RegisterDaemonTaskDefinitionCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "RegisterDaemonTaskDefinition", {})
+    .n("ECSClient", "RegisterDaemonTaskDefinitionCommand")
+    .sc(schemas_0.RegisterDaemonTaskDefinition$)
     .build() {
 }
 
@@ -5033,6 +5207,18 @@ class UpdateContainerInstancesStateCommand extends smithyClient.Command
     .build() {
 }
 
+class UpdateDaemonCommand extends smithyClient.Command
+    .classBuilder()
+    .ep(commonParams)
+    .m(function (Command, cs, config, o) {
+    return [middlewareEndpoint.getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
+})
+    .s("AmazonEC2ContainerServiceV20141113", "UpdateDaemon", {})
+    .n("ECSClient", "UpdateDaemonCommand")
+    .sc(schemas_0.UpdateDaemon$)
+    .build() {
+}
+
 class UpdateExpressGatewayServiceCommand extends smithyClient.Command
     .classBuilder()
     .ep(commonParams)
@@ -5110,6 +5296,274 @@ const paginateListTaskDefinitionFamilies = core.createPaginator(ECSClient, ListT
 const paginateListTaskDefinitions = core.createPaginator(ECSClient, ListTaskDefinitionsCommand, "nextToken", "nextToken", "maxResults");
 
 const paginateListTasks = core.createPaginator(ECSClient, ListTasksCommand, "nextToken", "nextToken", "maxResults");
+
+const checkState$8 = async (client, input) => {
+    let reason;
+    try {
+        let result = await client.send(new DescribeDaemonCommand(input));
+        reason = result;
+        try {
+            const returnComparator = () => {
+                return result.daemon.status;
+            };
+            if (returnComparator() === "ACTIVE") {
+                return { state: utilWaiter.WaiterState.SUCCESS, reason };
+            }
+        }
+        catch (e) { }
+        try {
+            const returnComparator = () => {
+                return result.daemon.status;
+            };
+            if (returnComparator() === "DELETE_IN_PROGRESS") {
+                return { state: utilWaiter.WaiterState.FAILURE, reason };
+            }
+        }
+        catch (e) { }
+    }
+    catch (exception) {
+        reason = exception;
+    }
+    return { state: utilWaiter.WaiterState.RETRY, reason };
+};
+const waitForDaemonActive = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    return utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$8);
+};
+const waitUntilDaemonActive = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    const result = await utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$8);
+    return utilWaiter.checkExceptions(result);
+};
+
+const checkState$7 = async (client, input) => {
+    let reason;
+    try {
+        let result = await client.send(new DescribeDaemonDeploymentsCommand(input));
+        reason = result;
+        try {
+            const returnComparator = () => {
+                let flat_1 = [].concat(...result.daemonDeployments);
+                let projection_3 = flat_1.map((element_2) => {
+                    return element_2.status;
+                });
+                return projection_3;
+            };
+            let allStringEq_5 = (returnComparator().length > 0);
+            for (let element_4 of returnComparator()) {
+                allStringEq_5 = allStringEq_5 && (element_4 == "STOPPED");
+            }
+            if (allStringEq_5) {
+                return { state: utilWaiter.WaiterState.SUCCESS, reason };
+            }
+        }
+        catch (e) { }
+        try {
+            const returnComparator = () => {
+                let flat_1 = [].concat(...result.failures);
+                let projection_3 = flat_1.map((element_2) => {
+                    return element_2.reason;
+                });
+                return projection_3;
+            };
+            for (let anyStringEq_4 of returnComparator()) {
+                if (anyStringEq_4 == "MISSING") {
+                    return { state: utilWaiter.WaiterState.FAILURE, reason };
+                }
+            }
+        }
+        catch (e) { }
+    }
+    catch (exception) {
+        reason = exception;
+    }
+    return { state: utilWaiter.WaiterState.RETRY, reason };
+};
+const waitForDaemonDeploymentStopped = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    return utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$7);
+};
+const waitUntilDaemonDeploymentStopped = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    const result = await utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$7);
+    return utilWaiter.checkExceptions(result);
+};
+
+const checkState$6 = async (client, input) => {
+    let reason;
+    try {
+        let result = await client.send(new DescribeDaemonDeploymentsCommand(input));
+        reason = result;
+        try {
+            const returnComparator = () => {
+                let flat_1 = [].concat(...result.daemonDeployments);
+                let projection_3 = flat_1.map((element_2) => {
+                    return element_2.status;
+                });
+                return projection_3;
+            };
+            let allStringEq_5 = (returnComparator().length > 0);
+            for (let element_4 of returnComparator()) {
+                allStringEq_5 = allStringEq_5 && (element_4 == "SUCCESSFUL");
+            }
+            if (allStringEq_5) {
+                return { state: utilWaiter.WaiterState.SUCCESS, reason };
+            }
+        }
+        catch (e) { }
+        try {
+            const returnComparator = () => {
+                let flat_1 = [].concat(...result.daemonDeployments);
+                let projection_3 = flat_1.map((element_2) => {
+                    return element_2.status;
+                });
+                return projection_3;
+            };
+            for (let anyStringEq_4 of returnComparator()) {
+                if (anyStringEq_4 == "STOPPED") {
+                    return { state: utilWaiter.WaiterState.FAILURE, reason };
+                }
+            }
+        }
+        catch (e) { }
+        try {
+            const returnComparator = () => {
+                let flat_1 = [].concat(...result.daemonDeployments);
+                let projection_3 = flat_1.map((element_2) => {
+                    return element_2.status;
+                });
+                return projection_3;
+            };
+            for (let anyStringEq_4 of returnComparator()) {
+                if (anyStringEq_4 == "ROLLBACK_FAILED") {
+                    return { state: utilWaiter.WaiterState.FAILURE, reason };
+                }
+            }
+        }
+        catch (e) { }
+        try {
+            const returnComparator = () => {
+                let flat_1 = [].concat(...result.daemonDeployments);
+                let projection_3 = flat_1.map((element_2) => {
+                    return element_2.status;
+                });
+                return projection_3;
+            };
+            for (let anyStringEq_4 of returnComparator()) {
+                if (anyStringEq_4 == "ROLLBACK_SUCCESSFUL") {
+                    return { state: utilWaiter.WaiterState.FAILURE, reason };
+                }
+            }
+        }
+        catch (e) { }
+        try {
+            const returnComparator = () => {
+                let flat_1 = [].concat(...result.failures);
+                let projection_3 = flat_1.map((element_2) => {
+                    return element_2.reason;
+                });
+                return projection_3;
+            };
+            for (let anyStringEq_4 of returnComparator()) {
+                if (anyStringEq_4 == "MISSING") {
+                    return { state: utilWaiter.WaiterState.FAILURE, reason };
+                }
+            }
+        }
+        catch (e) { }
+    }
+    catch (exception) {
+        reason = exception;
+    }
+    return { state: utilWaiter.WaiterState.RETRY, reason };
+};
+const waitForDaemonDeploymentSuccessful = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    return utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$6);
+};
+const waitUntilDaemonDeploymentSuccessful = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    const result = await utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$6);
+    return utilWaiter.checkExceptions(result);
+};
+
+const checkState$5 = async (client, input) => {
+    let reason;
+    try {
+        let result = await client.send(new DescribeDaemonTaskDefinitionCommand(input));
+        reason = result;
+        try {
+            const returnComparator = () => {
+                return result.daemonTaskDefinition.status;
+            };
+            if (returnComparator() === "ACTIVE") {
+                return { state: utilWaiter.WaiterState.SUCCESS, reason };
+            }
+        }
+        catch (e) { }
+        try {
+            const returnComparator = () => {
+                return result.daemonTaskDefinition.status;
+            };
+            if (returnComparator() === "DELETE_IN_PROGRESS") {
+                return { state: utilWaiter.WaiterState.FAILURE, reason };
+            }
+        }
+        catch (e) { }
+        try {
+            const returnComparator = () => {
+                return result.daemonTaskDefinition.status;
+            };
+            if (returnComparator() === "DELETED") {
+                return { state: utilWaiter.WaiterState.FAILURE, reason };
+            }
+        }
+        catch (e) { }
+    }
+    catch (exception) {
+        reason = exception;
+    }
+    return { state: utilWaiter.WaiterState.RETRY, reason };
+};
+const waitForDaemonTaskDefinitionActive = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    return utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$5);
+};
+const waitUntilDaemonTaskDefinitionActive = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    const result = await utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$5);
+    return utilWaiter.checkExceptions(result);
+};
+
+const checkState$4 = async (client, input) => {
+    let reason;
+    try {
+        let result = await client.send(new DescribeDaemonTaskDefinitionCommand(input));
+        reason = result;
+        try {
+            const returnComparator = () => {
+                return result.daemonTaskDefinition.status;
+            };
+            if (returnComparator() === "DELETED") {
+                return { state: utilWaiter.WaiterState.SUCCESS, reason };
+            }
+        }
+        catch (e) { }
+    }
+    catch (exception) {
+        reason = exception;
+    }
+    return { state: utilWaiter.WaiterState.RETRY, reason };
+};
+const waitForDaemonTaskDefinitionDeleted = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    return utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$4);
+};
+const waitUntilDaemonTaskDefinitionDeleted = async (params, input) => {
+    const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+    const result = await utilWaiter.createWaiter({ ...serviceDefaults, ...params }, input, checkState$4);
+    return utilWaiter.checkExceptions(result);
+};
 
 const checkState$3 = async (client, input) => {
     let reason;
@@ -5349,6 +5803,7 @@ const waitUntilTasksStopped = async (params, input) => {
 const commands = {
     CreateCapacityProviderCommand,
     CreateClusterCommand,
+    CreateDaemonCommand,
     CreateExpressGatewayServiceCommand,
     CreateServiceCommand,
     CreateTaskSetCommand,
@@ -5356,6 +5811,8 @@ const commands = {
     DeleteAttributesCommand,
     DeleteCapacityProviderCommand,
     DeleteClusterCommand,
+    DeleteDaemonCommand,
+    DeleteDaemonTaskDefinitionCommand,
     DeleteExpressGatewayServiceCommand,
     DeleteServiceCommand,
     DeleteTaskDefinitionsCommand,
@@ -5365,6 +5822,10 @@ const commands = {
     DescribeCapacityProvidersCommand,
     DescribeClustersCommand,
     DescribeContainerInstancesCommand,
+    DescribeDaemonCommand,
+    DescribeDaemonDeploymentsCommand,
+    DescribeDaemonRevisionsCommand,
+    DescribeDaemonTaskDefinitionCommand,
     DescribeExpressGatewayServiceCommand,
     DescribeServiceDeploymentsCommand,
     DescribeServiceRevisionsCommand,
@@ -5379,6 +5840,9 @@ const commands = {
     ListAttributesCommand,
     ListClustersCommand,
     ListContainerInstancesCommand,
+    ListDaemonDeploymentsCommand,
+    ListDaemonsCommand,
+    ListDaemonTaskDefinitionsCommand,
     ListServiceDeploymentsCommand,
     ListServicesCommand,
     ListServicesByNamespaceCommand,
@@ -5391,6 +5855,7 @@ const commands = {
     PutAttributesCommand,
     PutClusterCapacityProvidersCommand,
     RegisterContainerInstanceCommand,
+    RegisterDaemonTaskDefinitionCommand,
     RegisterTaskDefinitionCommand,
     RunTaskCommand,
     StartTaskCommand,
@@ -5406,6 +5871,7 @@ const commands = {
     UpdateClusterSettingsCommand,
     UpdateContainerAgentCommand,
     UpdateContainerInstancesStateCommand,
+    UpdateDaemonCommand,
     UpdateExpressGatewayServiceCommand,
     UpdateServiceCommand,
     UpdateServicePrimaryTaskSetCommand,
@@ -5424,6 +5890,11 @@ const paginators = {
     paginateListTasks,
 };
 const waiters = {
+    waitUntilDaemonActive,
+    waitUntilDaemonDeploymentSuccessful,
+    waitUntilDaemonDeploymentStopped,
+    waitUntilDaemonTaskDefinitionActive,
+    waitUntilDaemonTaskDefinitionDeleted,
     waitUntilServicesInactive,
     waitUntilServicesStable,
     waitUntilTasksRunning,
@@ -5573,7 +6044,9 @@ const InstanceHealthCheckState = {
     OK: "OK",
 };
 const InstanceHealthCheckType = {
+    ACCELERATED_COMPUTE: "ACCELERATED_COMPUTE",
     CONTAINER_RUNTIME: "CONTAINER_RUNTIME",
+    DAEMON: "DAEMON",
 };
 const ClusterField = {
     ATTACHMENTS: "ATTACHMENTS",
@@ -5614,28 +6087,29 @@ const LaunchType = {
 const PlatformDeviceType = {
     GPU: "GPU",
 };
-const SettingName = {
-    AWSVPC_TRUNKING: "awsvpcTrunking",
-    CONTAINER_INSIGHTS: "containerInsights",
-    CONTAINER_INSTANCE_LONG_ARN_FORMAT: "containerInstanceLongArnFormat",
-    DEFAULT_LOG_DRIVER_MODE: "defaultLogDriverMode",
-    FARGATE_EVENT_WINDOWS: "fargateEventWindows",
-    FARGATE_FIPS_MODE: "fargateFIPSMode",
-    FARGATE_TASK_RETIREMENT_WAIT_PERIOD: "fargateTaskRetirementWaitPeriod",
-    GUARD_DUTY_ACTIVATE: "guardDutyActivate",
-    SERVICE_LONG_ARN_FORMAT: "serviceLongArnFormat",
-    TAG_RESOURCE_AUTHORIZATION: "tagResourceAuthorization",
-    TASK_LONG_ARN_FORMAT: "taskLongArnFormat",
+const DaemonDeploymentRollbackMonitorsStatus = {
+    DISABLED: "DISABLED",
+    MONITORING: "MONITORING",
+    MONITORING_COMPLETE: "MONITORING_COMPLETE",
+    TRIGGERED: "TRIGGERED",
 };
-const SettingType = {
-    AWS_MANAGED: "aws_managed",
-    USER: "user",
+const DaemonDeploymentStatus = {
+    IN_PROGRESS: "IN_PROGRESS",
+    PENDING: "PENDING",
+    ROLLBACK_FAILED: "ROLLBACK_FAILED",
+    ROLLBACK_IN_PROGRESS: "ROLLBACK_IN_PROGRESS",
+    ROLLBACK_SUCCESSFUL: "ROLLBACK_SUCCESSFUL",
+    STOPPED: "STOPPED",
+    STOP_REQUESTED: "STOP_REQUESTED",
+    SUCCESSFUL: "SUCCESSFUL",
 };
-const Compatibility = {
-    EC2: "EC2",
-    EXTERNAL: "EXTERNAL",
-    FARGATE: "FARGATE",
-    MANAGED_INSTANCES: "MANAGED_INSTANCES",
+const DaemonPropagateTags = {
+    DAEMON: "DAEMON",
+    NONE: "NONE",
+};
+const DaemonStatus = {
+    ACTIVE: "ACTIVE",
+    DELETE_IN_PROGRESS: "DELETE_IN_PROGRESS",
 };
 const ContainerCondition = {
     COMPLETE: "COMPLETE",
@@ -5665,15 +6139,6 @@ const LogDriver = {
     SPLUNK: "splunk",
     SYSLOG: "syslog",
 };
-const ApplicationProtocol = {
-    GRPC: "grpc",
-    HTTP: "http",
-    HTTP2: "http2",
-};
-const ResourceType = {
-    GPU: "GPU",
-    INFERENCE_ACCELERATOR: "InferenceAccelerator",
-};
 const UlimitName = {
     CORE: "core",
     CPU: "cpu",
@@ -5690,6 +6155,55 @@ const UlimitName = {
     RTTIME: "rttime",
     SIGPENDING: "sigpending",
     STACK: "stack",
+};
+const DaemonTaskDefinitionStatus = {
+    ACTIVE: "ACTIVE",
+    DELETED: "DELETED",
+    DELETE_IN_PROGRESS: "DELETE_IN_PROGRESS",
+};
+const DaemonTaskDefinitionRevisionFilter = {
+    LAST_REGISTERED: "LAST_REGISTERED",
+};
+const SortOrder = {
+    ASC: "ASC",
+    DESC: "DESC",
+};
+const DaemonTaskDefinitionStatusFilter = {
+    ACTIVE: "ACTIVE",
+    ALL: "ALL",
+    DELETE_IN_PROGRESS: "DELETE_IN_PROGRESS",
+};
+const SettingName = {
+    AWSVPC_TRUNKING: "awsvpcTrunking",
+    CONTAINER_INSIGHTS: "containerInsights",
+    CONTAINER_INSTANCE_LONG_ARN_FORMAT: "containerInstanceLongArnFormat",
+    DEFAULT_LOG_DRIVER_MODE: "defaultLogDriverMode",
+    FARGATE_EVENT_WINDOWS: "fargateEventWindows",
+    FARGATE_FIPS_MODE: "fargateFIPSMode",
+    FARGATE_TASK_RETIREMENT_WAIT_PERIOD: "fargateTaskRetirementWaitPeriod",
+    GUARD_DUTY_ACTIVATE: "guardDutyActivate",
+    SERVICE_LONG_ARN_FORMAT: "serviceLongArnFormat",
+    TAG_RESOURCE_AUTHORIZATION: "tagResourceAuthorization",
+    TASK_LONG_ARN_FORMAT: "taskLongArnFormat",
+};
+const SettingType = {
+    AWS_MANAGED: "aws_managed",
+    USER: "user",
+};
+const Compatibility = {
+    EC2: "EC2",
+    EXTERNAL: "EXTERNAL",
+    FARGATE: "FARGATE",
+    MANAGED_INSTANCES: "MANAGED_INSTANCES",
+};
+const ApplicationProtocol = {
+    GRPC: "grpc",
+    HTTP: "http",
+    HTTP2: "http2",
+};
+const ResourceType = {
+    GPU: "GPU",
+    INFERENCE_ACCELERATOR: "InferenceAccelerator",
 };
 const VersionConsistency = {
     DISABLED: "disabled",
@@ -5892,10 +6406,6 @@ const ManagedResourceStatus = {
     FAILED: "FAILED",
     PROVISIONING: "PROVISIONING",
 };
-const SortOrder = {
-    ASC: "ASC",
-    DESC: "DESC",
-};
 const TaskField = {
     TAGS: "TAGS",
 };
@@ -5950,13 +6460,23 @@ exports.ContainerInstanceStatus = ContainerInstanceStatus;
 exports.CpuManufacturer = CpuManufacturer;
 exports.CreateCapacityProviderCommand = CreateCapacityProviderCommand;
 exports.CreateClusterCommand = CreateClusterCommand;
+exports.CreateDaemonCommand = CreateDaemonCommand;
 exports.CreateExpressGatewayServiceCommand = CreateExpressGatewayServiceCommand;
 exports.CreateServiceCommand = CreateServiceCommand;
 exports.CreateTaskSetCommand = CreateTaskSetCommand;
+exports.DaemonDeploymentRollbackMonitorsStatus = DaemonDeploymentRollbackMonitorsStatus;
+exports.DaemonDeploymentStatus = DaemonDeploymentStatus;
+exports.DaemonPropagateTags = DaemonPropagateTags;
+exports.DaemonStatus = DaemonStatus;
+exports.DaemonTaskDefinitionRevisionFilter = DaemonTaskDefinitionRevisionFilter;
+exports.DaemonTaskDefinitionStatus = DaemonTaskDefinitionStatus;
+exports.DaemonTaskDefinitionStatusFilter = DaemonTaskDefinitionStatusFilter;
 exports.DeleteAccountSettingCommand = DeleteAccountSettingCommand;
 exports.DeleteAttributesCommand = DeleteAttributesCommand;
 exports.DeleteCapacityProviderCommand = DeleteCapacityProviderCommand;
 exports.DeleteClusterCommand = DeleteClusterCommand;
+exports.DeleteDaemonCommand = DeleteDaemonCommand;
+exports.DeleteDaemonTaskDefinitionCommand = DeleteDaemonTaskDefinitionCommand;
 exports.DeleteExpressGatewayServiceCommand = DeleteExpressGatewayServiceCommand;
 exports.DeleteServiceCommand = DeleteServiceCommand;
 exports.DeleteTaskDefinitionsCommand = DeleteTaskDefinitionsCommand;
@@ -5970,6 +6490,10 @@ exports.DeregisterTaskDefinitionCommand = DeregisterTaskDefinitionCommand;
 exports.DescribeCapacityProvidersCommand = DescribeCapacityProvidersCommand;
 exports.DescribeClustersCommand = DescribeClustersCommand;
 exports.DescribeContainerInstancesCommand = DescribeContainerInstancesCommand;
+exports.DescribeDaemonCommand = DescribeDaemonCommand;
+exports.DescribeDaemonDeploymentsCommand = DescribeDaemonDeploymentsCommand;
+exports.DescribeDaemonRevisionsCommand = DescribeDaemonRevisionsCommand;
+exports.DescribeDaemonTaskDefinitionCommand = DescribeDaemonTaskDefinitionCommand;
 exports.DescribeExpressGatewayServiceCommand = DescribeExpressGatewayServiceCommand;
 exports.DescribeServiceDeploymentsCommand = DescribeServiceDeploymentsCommand;
 exports.DescribeServiceRevisionsCommand = DescribeServiceRevisionsCommand;
@@ -6003,6 +6527,9 @@ exports.ListAccountSettingsCommand = ListAccountSettingsCommand;
 exports.ListAttributesCommand = ListAttributesCommand;
 exports.ListClustersCommand = ListClustersCommand;
 exports.ListContainerInstancesCommand = ListContainerInstancesCommand;
+exports.ListDaemonDeploymentsCommand = ListDaemonDeploymentsCommand;
+exports.ListDaemonTaskDefinitionsCommand = ListDaemonTaskDefinitionsCommand;
+exports.ListDaemonsCommand = ListDaemonsCommand;
 exports.ListServiceDeploymentsCommand = ListServiceDeploymentsCommand;
 exports.ListServicesByNamespaceCommand = ListServicesByNamespaceCommand;
 exports.ListServicesCommand = ListServicesCommand;
@@ -6033,6 +6560,7 @@ exports.PutAccountSettingDefaultCommand = PutAccountSettingDefaultCommand;
 exports.PutAttributesCommand = PutAttributesCommand;
 exports.PutClusterCapacityProvidersCommand = PutClusterCapacityProvidersCommand;
 exports.RegisterContainerInstanceCommand = RegisterContainerInstanceCommand;
+exports.RegisterDaemonTaskDefinitionCommand = RegisterDaemonTaskDefinitionCommand;
 exports.RegisterTaskDefinitionCommand = RegisterTaskDefinitionCommand;
 exports.ResourceManagementType = ResourceManagementType;
 exports.ResourceType = ResourceType;
@@ -6075,6 +6603,7 @@ exports.UpdateClusterCommand = UpdateClusterCommand;
 exports.UpdateClusterSettingsCommand = UpdateClusterSettingsCommand;
 exports.UpdateContainerAgentCommand = UpdateContainerAgentCommand;
 exports.UpdateContainerInstancesStateCommand = UpdateContainerInstancesStateCommand;
+exports.UpdateDaemonCommand = UpdateDaemonCommand;
 exports.UpdateExpressGatewayServiceCommand = UpdateExpressGatewayServiceCommand;
 exports.UpdateServiceCommand = UpdateServiceCommand;
 exports.UpdateServicePrimaryTaskSetCommand = UpdateServicePrimaryTaskSetCommand;
@@ -6090,10 +6619,20 @@ exports.paginateListServicesByNamespace = paginateListServicesByNamespace;
 exports.paginateListTaskDefinitionFamilies = paginateListTaskDefinitionFamilies;
 exports.paginateListTaskDefinitions = paginateListTaskDefinitions;
 exports.paginateListTasks = paginateListTasks;
+exports.waitForDaemonActive = waitForDaemonActive;
+exports.waitForDaemonDeploymentStopped = waitForDaemonDeploymentStopped;
+exports.waitForDaemonDeploymentSuccessful = waitForDaemonDeploymentSuccessful;
+exports.waitForDaemonTaskDefinitionActive = waitForDaemonTaskDefinitionActive;
+exports.waitForDaemonTaskDefinitionDeleted = waitForDaemonTaskDefinitionDeleted;
 exports.waitForServicesInactive = waitForServicesInactive;
 exports.waitForServicesStable = waitForServicesStable;
 exports.waitForTasksRunning = waitForTasksRunning;
 exports.waitForTasksStopped = waitForTasksStopped;
+exports.waitUntilDaemonActive = waitUntilDaemonActive;
+exports.waitUntilDaemonDeploymentStopped = waitUntilDaemonDeploymentStopped;
+exports.waitUntilDaemonDeploymentSuccessful = waitUntilDaemonDeploymentSuccessful;
+exports.waitUntilDaemonTaskDefinitionActive = waitUntilDaemonTaskDefinitionActive;
+exports.waitUntilDaemonTaskDefinitionDeleted = waitUntilDaemonTaskDefinitionDeleted;
 exports.waitUntilServicesInactive = waitUntilServicesInactive;
 exports.waitUntilServicesStable = waitUntilServicesStable;
 exports.waitUntilTasksRunning = waitUntilTasksRunning;
@@ -6148,7 +6687,7 @@ exports.ECSServiceException = ECSServiceException;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BlockedException = exports.TaskSetNotFoundException = exports.ServiceDeploymentNotFoundException = exports.ConflictException = exports.ResourceNotFoundException = exports.ServiceNotActiveException = exports.PlatformUnknownException = exports.PlatformTaskDefinitionIncompatibilityException = exports.NoUpdateAvailableException = exports.MissingVersionException = exports.AttributeLimitExceededException = exports.ServiceNotFoundException = exports.TargetNotFoundException = exports.ResourceInUseException = exports.TargetNotConnectedException = exports.ClusterContainsTasksException = exports.ClusterContainsServicesException = exports.ClusterContainsContainerInstancesException = exports.ClusterContainsCapacityProviderException = exports.NamespaceNotFoundException = exports.UpdateInProgressException = exports.UnsupportedFeatureException = exports.ServerException = exports.LimitExceededException = exports.InvalidParameterException = exports.ClusterNotFoundException = exports.ClientException = exports.AccessDeniedException = void 0;
+exports.BlockedException = exports.TaskSetNotFoundException = exports.ServiceDeploymentNotFoundException = exports.ConflictException = exports.ResourceNotFoundException = exports.ServiceNotActiveException = exports.PlatformTaskDefinitionIncompatibilityException = exports.DaemonNotFoundException = exports.DaemonNotActiveException = exports.PlatformUnknownException = exports.NoUpdateAvailableException = exports.MissingVersionException = exports.AttributeLimitExceededException = exports.ServiceNotFoundException = exports.TargetNotFoundException = exports.ResourceInUseException = exports.TargetNotConnectedException = exports.ClusterContainsTasksException = exports.ClusterContainsServicesException = exports.ClusterContainsContainerInstancesException = exports.ClusterContainsCapacityProviderException = exports.NamespaceNotFoundException = exports.UpdateInProgressException = exports.UnsupportedFeatureException = exports.ServerException = exports.LimitExceededException = exports.InvalidParameterException = exports.ClusterNotFoundException = exports.ClientException = exports.AccessDeniedException = void 0;
 const ECSServiceException_1 = __nccwpck_require__(190);
 class AccessDeniedException extends ECSServiceException_1.ECSServiceException {
     name = "AccessDeniedException";
@@ -6410,19 +6949,6 @@ class NoUpdateAvailableException extends ECSServiceException_1.ECSServiceExcepti
     }
 }
 exports.NoUpdateAvailableException = NoUpdateAvailableException;
-class PlatformTaskDefinitionIncompatibilityException extends ECSServiceException_1.ECSServiceException {
-    name = "PlatformTaskDefinitionIncompatibilityException";
-    $fault = "client";
-    constructor(opts) {
-        super({
-            name: "PlatformTaskDefinitionIncompatibilityException",
-            $fault: "client",
-            ...opts,
-        });
-        Object.setPrototypeOf(this, PlatformTaskDefinitionIncompatibilityException.prototype);
-    }
-}
-exports.PlatformTaskDefinitionIncompatibilityException = PlatformTaskDefinitionIncompatibilityException;
 class PlatformUnknownException extends ECSServiceException_1.ECSServiceException {
     name = "PlatformUnknownException";
     $fault = "client";
@@ -6436,6 +6962,45 @@ class PlatformUnknownException extends ECSServiceException_1.ECSServiceException
     }
 }
 exports.PlatformUnknownException = PlatformUnknownException;
+class DaemonNotActiveException extends ECSServiceException_1.ECSServiceException {
+    name = "DaemonNotActiveException";
+    $fault = "client";
+    constructor(opts) {
+        super({
+            name: "DaemonNotActiveException",
+            $fault: "client",
+            ...opts,
+        });
+        Object.setPrototypeOf(this, DaemonNotActiveException.prototype);
+    }
+}
+exports.DaemonNotActiveException = DaemonNotActiveException;
+class DaemonNotFoundException extends ECSServiceException_1.ECSServiceException {
+    name = "DaemonNotFoundException";
+    $fault = "client";
+    constructor(opts) {
+        super({
+            name: "DaemonNotFoundException",
+            $fault: "client",
+            ...opts,
+        });
+        Object.setPrototypeOf(this, DaemonNotFoundException.prototype);
+    }
+}
+exports.DaemonNotFoundException = DaemonNotFoundException;
+class PlatformTaskDefinitionIncompatibilityException extends ECSServiceException_1.ECSServiceException {
+    name = "PlatformTaskDefinitionIncompatibilityException";
+    $fault = "client";
+    constructor(opts) {
+        super({
+            name: "PlatformTaskDefinitionIncompatibilityException",
+            $fault: "client",
+            ...opts,
+        });
+        Object.setPrototypeOf(this, PlatformTaskDefinitionIncompatibilityException.prototype);
+    }
+}
+exports.PlatformTaskDefinitionIncompatibilityException = PlatformTaskDefinitionIncompatibilityException;
 class ServiceNotActiveException extends ECSServiceException_1.ECSServiceException {
     name = "ServiceNotActiveException";
     $fault = "client";
@@ -6640,14 +7205,15 @@ exports.getRuntimeConfig = getRuntimeConfig;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Container$ = exports.ClusterSetting$ = exports.ClusterServiceConnectDefaultsRequest$ = exports.ClusterServiceConnectDefaults$ = exports.ClusterConfiguration$ = exports.Cluster$ = exports.CapacityReservationRequest$ = exports.CapacityProviderStrategyItem$ = exports.CapacityProvider$ = exports.CanaryConfiguration$ = exports.BaselineEbsBandwidthMbpsRequest$ = exports.AwsVpcConfiguration$ = exports.AutoScalingGroupProviderUpdate$ = exports.AutoScalingGroupProvider$ = exports.Attribute$ = exports.AttachmentStateChange$ = exports.Attachment$ = exports.AdvancedConfiguration$ = exports.AcceleratorTotalMemoryMiBRequest$ = exports.AcceleratorCountRequest$ = exports.errorTypeRegistries = exports.UpdateInProgressException$ = exports.UnsupportedFeatureException$ = exports.TaskSetNotFoundException$ = exports.TargetNotFoundException$ = exports.TargetNotConnectedException$ = exports.ServiceNotFoundException$ = exports.ServiceNotActiveException$ = exports.ServiceDeploymentNotFoundException$ = exports.ServerException$ = exports.ResourceNotFoundException$ = exports.ResourceInUseException$ = exports.PlatformUnknownException$ = exports.PlatformTaskDefinitionIncompatibilityException$ = exports.NoUpdateAvailableException$ = exports.NamespaceNotFoundException$ = exports.MissingVersionException$ = exports.LimitExceededException$ = exports.InvalidParameterException$ = exports.ConflictException$ = exports.ClusterNotFoundException$ = exports.ClusterContainsTasksException$ = exports.ClusterContainsServicesException$ = exports.ClusterContainsContainerInstancesException$ = exports.ClusterContainsCapacityProviderException$ = exports.ClientException$ = exports.BlockedException$ = exports.AttributeLimitExceededException$ = exports.AccessDeniedException$ = exports.ECSServiceException$ = void 0;
-exports.DescribeClustersRequest$ = exports.DescribeCapacityProvidersResponse$ = exports.DescribeCapacityProvidersRequest$ = exports.DeregisterTaskDefinitionResponse$ = exports.DeregisterTaskDefinitionRequest$ = exports.DeregisterContainerInstanceResponse$ = exports.DeregisterContainerInstanceRequest$ = exports.DeploymentLifecycleHook$ = exports.DeploymentEphemeralStorage$ = exports.DeploymentController$ = exports.DeploymentConfiguration$ = exports.DeploymentCircuitBreaker$ = exports.DeploymentAlarms$ = exports.Deployment$ = exports.DeleteTaskSetResponse$ = exports.DeleteTaskSetRequest$ = exports.DeleteTaskDefinitionsResponse$ = exports.DeleteTaskDefinitionsRequest$ = exports.DeleteServiceResponse$ = exports.DeleteServiceRequest$ = exports.DeleteExpressGatewayServiceResponse$ = exports.DeleteExpressGatewayServiceRequest$ = exports.DeleteClusterResponse$ = exports.DeleteClusterRequest$ = exports.DeleteCapacityProviderResponse$ = exports.DeleteCapacityProviderRequest$ = exports.DeleteAttributesResponse$ = exports.DeleteAttributesRequest$ = exports.DeleteAccountSettingResponse$ = exports.DeleteAccountSettingRequest$ = exports.CreateTaskSetResponse$ = exports.CreateTaskSetRequest$ = exports.CreateServiceResponse$ = exports.CreateServiceRequest$ = exports.CreateManagedInstancesProviderConfiguration$ = exports.CreateExpressGatewayServiceResponse$ = exports.CreateExpressGatewayServiceRequest$ = exports.CreatedAt$ = exports.CreateClusterResponse$ = exports.CreateClusterRequest$ = exports.CreateCapacityProviderResponse$ = exports.CreateCapacityProviderRequest$ = exports.ContainerStateChange$ = exports.ContainerRestartPolicy$ = exports.ContainerOverride$ = exports.ContainerInstanceHealthStatus$ = exports.ContainerInstance$ = exports.ContainerImage$ = exports.ContainerDependency$ = exports.ContainerDefinition$ = void 0;
-exports.InferenceAcceleratorOverride$ = exports.InferenceAccelerator$ = exports.HostVolumeProperties$ = exports.HostEntry$ = exports.HealthCheck$ = exports.GetTaskProtectionResponse$ = exports.GetTaskProtectionRequest$ = exports.FSxWindowsFileServerVolumeConfiguration$ = exports.FSxWindowsFileServerAuthorizationConfig$ = exports.FirelensConfiguration$ = exports.Failure$ = exports.ExpressGatewayServiceStatus$ = exports.ExpressGatewayServiceNetworkConfiguration$ = exports.ExpressGatewayServiceConfiguration$ = exports.ExpressGatewayServiceAwsLogsConfiguration$ = exports.ExpressGatewayScalingTarget$ = exports.ExpressGatewayRepositoryCredentials$ = exports.ExpressGatewayContainer$ = exports.ExecuteCommandResponse$ = exports.ExecuteCommandRequest$ = exports.ExecuteCommandLogConfiguration$ = exports.ExecuteCommandConfiguration$ = exports.EphemeralStorage$ = exports.EnvironmentFile$ = exports.EFSVolumeConfiguration$ = exports.EFSAuthorizationConfig$ = exports.ECSManagedResources$ = exports.ECSExpressGatewayService$ = exports.EBSTagSpecification$ = exports.DockerVolumeConfiguration$ = exports.DiscoverPollEndpointResponse$ = exports.DiscoverPollEndpointRequest$ = exports.Device$ = exports.DescribeTasksResponse$ = exports.DescribeTasksRequest$ = exports.DescribeTaskSetsResponse$ = exports.DescribeTaskSetsRequest$ = exports.DescribeTaskDefinitionResponse$ = exports.DescribeTaskDefinitionRequest$ = exports.DescribeServicesResponse$ = exports.DescribeServicesRequest$ = exports.DescribeServiceRevisionsResponse$ = exports.DescribeServiceRevisionsRequest$ = exports.DescribeServiceDeploymentsResponse$ = exports.DescribeServiceDeploymentsRequest$ = exports.DescribeExpressGatewayServiceResponse$ = exports.DescribeExpressGatewayServiceRequest$ = exports.DescribeContainerInstancesResponse$ = exports.DescribeContainerInstancesRequest$ = exports.DescribeClustersResponse$ = void 0;
-exports.ManagedScalableTarget$ = exports.ManagedMetricAlarm$ = exports.ManagedLogGroup$ = exports.ManagedLoadBalancer$ = exports.ManagedListenerRule$ = exports.ManagedListener$ = exports.ManagedInstancesStorageConfiguration$ = exports.ManagedInstancesProvider$ = exports.ManagedInstancesNetworkConfiguration$ = exports.ManagedInstancesLocalStorageConfiguration$ = exports.ManagedIngressPath$ = exports.ManagedCertificate$ = exports.ManagedAutoScaling$ = exports.ManagedApplicationAutoScalingPolicy$ = exports.ManagedAgentStateChange$ = exports.ManagedAgent$ = exports.LogConfiguration$ = exports.LoadBalancer$ = exports.ListTasksResponse$ = exports.ListTasksRequest$ = exports.ListTaskDefinitionsResponse$ = exports.ListTaskDefinitionsRequest$ = exports.ListTaskDefinitionFamiliesResponse$ = exports.ListTaskDefinitionFamiliesRequest$ = exports.ListTagsForResourceResponse$ = exports.ListTagsForResourceRequest$ = exports.ListServicesResponse$ = exports.ListServicesRequest$ = exports.ListServicesByNamespaceResponse$ = exports.ListServicesByNamespaceRequest$ = exports.ListServiceDeploymentsResponse$ = exports.ListServiceDeploymentsRequest$ = exports.ListContainerInstancesResponse$ = exports.ListContainerInstancesRequest$ = exports.ListClustersResponse$ = exports.ListClustersRequest$ = exports.ListAttributesResponse$ = exports.ListAttributesRequest$ = exports.ListAccountSettingsResponse$ = exports.ListAccountSettingsRequest$ = exports.LinuxParameters$ = exports.LinearConfiguration$ = exports.KeyValuePair$ = exports.KernelCapabilities$ = exports.InstanceRequirementsRequest$ = exports.InstanceLaunchTemplateUpdate$ = exports.InstanceLaunchTemplate$ = exports.InstanceHealthCheckResult$ = exports.IngressPathSummary$ = exports.InfrastructureOptimization$ = void 0;
-exports.ServiceConnectTlsCertificateAuthority$ = exports.ServiceConnectTestTrafficRules$ = exports.ServiceConnectTestTrafficHeaderRules$ = exports.ServiceConnectTestTrafficHeaderMatchRules$ = exports.ServiceConnectServiceResource$ = exports.ServiceConnectService$ = exports.ServiceConnectConfiguration$ = exports.ServiceConnectClientAlias$ = exports.ServiceConnectAccessLogConfiguration$ = exports.Service$ = exports.Secret$ = exports.Scale$ = exports.RuntimePlatform$ = exports.RunTaskResponse$ = exports.RunTaskRequest$ = exports.Rollback$ = exports.ResourceRequirement$ = exports.Resource$ = exports.ResolvedConfiguration$ = exports.RepositoryCredentials$ = exports.RegisterTaskDefinitionResponse$ = exports.RegisterTaskDefinitionRequest$ = exports.RegisterContainerInstanceResponse$ = exports.RegisterContainerInstanceRequest$ = exports.PutClusterCapacityProvidersResponse$ = exports.PutClusterCapacityProvidersRequest$ = exports.PutAttributesResponse$ = exports.PutAttributesRequest$ = exports.PutAccountSettingResponse$ = exports.PutAccountSettingRequest$ = exports.PutAccountSettingDefaultResponse$ = exports.PutAccountSettingDefaultRequest$ = exports.ProxyConfiguration$ = exports.ProtectedTask$ = exports.PortMapping$ = exports.PlatformDevice$ = exports.PlacementStrategy$ = exports.PlacementConstraint$ = exports.NetworkInterfaceCountRequest$ = exports.NetworkInterface$ = exports.NetworkConfiguration$ = exports.NetworkBinding$ = exports.NetworkBandwidthGbpsRequest$ = exports.MountPoint$ = exports.MemoryMiBRequest$ = exports.MemoryGiBPerVCpuRequest$ = exports.ManagedTargetGroup$ = exports.ManagedStorageConfiguration$ = exports.ManagedSecurityGroup$ = exports.ManagedScaling$ = void 0;
-exports.UpdateClusterResponse$ = exports.UpdateClusterRequest$ = exports.UpdateCapacityProviderResponse$ = exports.UpdateCapacityProviderRequest$ = exports.UntagResourceResponse$ = exports.UntagResourceRequest$ = exports.Ulimit$ = exports.TotalLocalStorageGBRequest$ = exports.Tmpfs$ = exports.TimeoutConfiguration$ = exports.TaskVolumeConfiguration$ = exports.TaskSet$ = exports.TaskOverride$ = exports.TaskManagedEBSVolumeTerminationPolicy$ = exports.TaskManagedEBSVolumeConfiguration$ = exports.TaskEphemeralStorage$ = exports.TaskDefinitionPlacementConstraint$ = exports.TaskDefinition$ = exports.Task$ = exports.TagResourceResponse$ = exports.TagResourceRequest$ = exports.Tag$ = exports.SystemControl$ = exports.SubmitTaskStateChangeResponse$ = exports.SubmitTaskStateChangeRequest$ = exports.SubmitContainerStateChangeResponse$ = exports.SubmitContainerStateChangeRequest$ = exports.SubmitAttachmentStateChangesResponse$ = exports.SubmitAttachmentStateChangesRequest$ = exports.StopTaskResponse$ = exports.StopTaskRequest$ = exports.StopServiceDeploymentResponse$ = exports.StopServiceDeploymentRequest$ = exports.StartTaskResponse$ = exports.StartTaskRequest$ = exports.Setting$ = exports.Session$ = exports.ServiceVolumeConfiguration$ = exports.ServiceRevisionSummary$ = exports.ServiceRevisionLoadBalancer$ = exports.ServiceRevision$ = exports.ServiceRegistry$ = exports.ServiceManagedEBSVolumeConfiguration$ = exports.ServiceEvent$ = exports.ServiceDeploymentCircuitBreaker$ = exports.ServiceDeploymentBrief$ = exports.ServiceDeploymentAlarms$ = exports.ServiceDeployment$ = exports.ServiceCurrentRevisionSummary$ = exports.ServiceConnectTlsConfiguration$ = void 0;
-exports.ExecuteCommand$ = exports.DiscoverPollEndpoint$ = exports.DescribeTaskSets$ = exports.DescribeTasks$ = exports.DescribeTaskDefinition$ = exports.DescribeServices$ = exports.DescribeServiceRevisions$ = exports.DescribeServiceDeployments$ = exports.DescribeExpressGatewayService$ = exports.DescribeContainerInstances$ = exports.DescribeClusters$ = exports.DescribeCapacityProviders$ = exports.DeregisterTaskDefinition$ = exports.DeregisterContainerInstance$ = exports.DeleteTaskSet$ = exports.DeleteTaskDefinitions$ = exports.DeleteService$ = exports.DeleteExpressGatewayService$ = exports.DeleteCluster$ = exports.DeleteCapacityProvider$ = exports.DeleteAttributes$ = exports.DeleteAccountSetting$ = exports.CreateTaskSet$ = exports.CreateService$ = exports.CreateExpressGatewayService$ = exports.CreateCluster$ = exports.CreateCapacityProvider$ = exports.VpcLatticeConfiguration$ = exports.VolumeFrom$ = exports.Volume$ = exports.VersionInfo$ = exports.VCpuCountRangeRequest$ = exports.UpdateTaskSetResponse$ = exports.UpdateTaskSetRequest$ = exports.UpdateTaskProtectionResponse$ = exports.UpdateTaskProtectionRequest$ = exports.UpdateServiceResponse$ = exports.UpdateServiceRequest$ = exports.UpdateServicePrimaryTaskSetResponse$ = exports.UpdateServicePrimaryTaskSetRequest$ = exports.UpdateManagedInstancesProviderConfiguration$ = exports.UpdateExpressGatewayServiceResponse$ = exports.UpdateExpressGatewayServiceRequest$ = exports.UpdatedExpressGatewayService$ = exports.UpdateContainerInstancesStateResponse$ = exports.UpdateContainerInstancesStateRequest$ = exports.UpdateContainerAgentResponse$ = exports.UpdateContainerAgentRequest$ = exports.UpdateClusterSettingsResponse$ = exports.UpdateClusterSettingsRequest$ = void 0;
-exports.UpdateTaskSet$ = exports.UpdateTaskProtection$ = exports.UpdateServicePrimaryTaskSet$ = exports.UpdateService$ = exports.UpdateExpressGatewayService$ = exports.UpdateContainerInstancesState$ = exports.UpdateContainerAgent$ = exports.UpdateClusterSettings$ = exports.UpdateCluster$ = exports.UpdateCapacityProvider$ = exports.UntagResource$ = exports.TagResource$ = exports.SubmitTaskStateChange$ = exports.SubmitContainerStateChange$ = exports.SubmitAttachmentStateChanges$ = exports.StopTask$ = exports.StopServiceDeployment$ = exports.StartTask$ = exports.RunTask$ = exports.RegisterTaskDefinition$ = exports.RegisterContainerInstance$ = exports.PutClusterCapacityProviders$ = exports.PutAttributes$ = exports.PutAccountSettingDefault$ = exports.PutAccountSetting$ = exports.ListTasks$ = exports.ListTaskDefinitions$ = exports.ListTaskDefinitionFamilies$ = exports.ListTagsForResource$ = exports.ListServicesByNamespace$ = exports.ListServices$ = exports.ListServiceDeployments$ = exports.ListContainerInstances$ = exports.ListClusters$ = exports.ListAttributes$ = exports.ListAccountSettings$ = exports.GetTaskProtection$ = void 0;
+exports.ClusterServiceConnectDefaultsRequest$ = exports.ClusterServiceConnectDefaults$ = exports.ClusterConfiguration$ = exports.Cluster$ = exports.CapacityReservationRequest$ = exports.CapacityProviderStrategyItem$ = exports.CapacityProvider$ = exports.CanaryConfiguration$ = exports.BaselineEbsBandwidthMbpsRequest$ = exports.AwsVpcConfiguration$ = exports.AutoScalingGroupProviderUpdate$ = exports.AutoScalingGroupProvider$ = exports.Attribute$ = exports.AttachmentStateChange$ = exports.Attachment$ = exports.AdvancedConfiguration$ = exports.AcceleratorTotalMemoryMiBRequest$ = exports.AcceleratorCountRequest$ = exports.errorTypeRegistries = exports.UpdateInProgressException$ = exports.UnsupportedFeatureException$ = exports.TaskSetNotFoundException$ = exports.TargetNotFoundException$ = exports.TargetNotConnectedException$ = exports.ServiceNotFoundException$ = exports.ServiceNotActiveException$ = exports.ServiceDeploymentNotFoundException$ = exports.ServerException$ = exports.ResourceNotFoundException$ = exports.ResourceInUseException$ = exports.PlatformUnknownException$ = exports.PlatformTaskDefinitionIncompatibilityException$ = exports.NoUpdateAvailableException$ = exports.NamespaceNotFoundException$ = exports.MissingVersionException$ = exports.LimitExceededException$ = exports.InvalidParameterException$ = exports.DaemonNotFoundException$ = exports.DaemonNotActiveException$ = exports.ConflictException$ = exports.ClusterNotFoundException$ = exports.ClusterContainsTasksException$ = exports.ClusterContainsServicesException$ = exports.ClusterContainsContainerInstancesException$ = exports.ClusterContainsCapacityProviderException$ = exports.ClientException$ = exports.BlockedException$ = exports.AttributeLimitExceededException$ = exports.AccessDeniedException$ = exports.ECSServiceException$ = void 0;
+exports.DeleteCapacityProviderResponse$ = exports.DeleteCapacityProviderRequest$ = exports.DeleteAttributesResponse$ = exports.DeleteAttributesRequest$ = exports.DeleteAccountSettingResponse$ = exports.DeleteAccountSettingRequest$ = exports.DaemonVolume$ = exports.DaemonTaskDefinitionSummary$ = exports.DaemonTaskDefinition$ = exports.DaemonSummary$ = exports.DaemonRollback$ = exports.DaemonRevisionDetail$ = exports.DaemonRevision$ = exports.DaemonLinuxParameters$ = exports.DaemonDetail$ = exports.DaemonDeploymentSummary$ = exports.DaemonDeploymentRevisionDetail$ = exports.DaemonDeploymentConfiguration$ = exports.DaemonDeploymentCapacityProvider$ = exports.DaemonDeploymentAlarms$ = exports.DaemonDeployment$ = exports.DaemonContainerImage$ = exports.DaemonContainerDefinition$ = exports.DaemonCircuitBreaker$ = exports.DaemonCapacityProvider$ = exports.DaemonAlarmConfiguration$ = exports.CreateTaskSetResponse$ = exports.CreateTaskSetRequest$ = exports.CreateServiceResponse$ = exports.CreateServiceRequest$ = exports.CreateManagedInstancesProviderConfiguration$ = exports.CreateExpressGatewayServiceResponse$ = exports.CreateExpressGatewayServiceRequest$ = exports.CreatedAt$ = exports.CreateDaemonResponse$ = exports.CreateDaemonRequest$ = exports.CreateClusterResponse$ = exports.CreateClusterRequest$ = exports.CreateCapacityProviderResponse$ = exports.CreateCapacityProviderRequest$ = exports.ContainerStateChange$ = exports.ContainerRestartPolicy$ = exports.ContainerOverride$ = exports.ContainerInstanceHealthStatus$ = exports.ContainerInstance$ = exports.ContainerImage$ = exports.ContainerDependency$ = exports.ContainerDefinition$ = exports.Container$ = exports.ClusterSetting$ = void 0;
+exports.DescribeTaskSetsRequest$ = exports.DescribeTaskDefinitionResponse$ = exports.DescribeTaskDefinitionRequest$ = exports.DescribeServicesResponse$ = exports.DescribeServicesRequest$ = exports.DescribeServiceRevisionsResponse$ = exports.DescribeServiceRevisionsRequest$ = exports.DescribeServiceDeploymentsResponse$ = exports.DescribeServiceDeploymentsRequest$ = exports.DescribeExpressGatewayServiceResponse$ = exports.DescribeExpressGatewayServiceRequest$ = exports.DescribeDaemonTaskDefinitionResponse$ = exports.DescribeDaemonTaskDefinitionRequest$ = exports.DescribeDaemonRevisionsResponse$ = exports.DescribeDaemonRevisionsRequest$ = exports.DescribeDaemonResponse$ = exports.DescribeDaemonRequest$ = exports.DescribeDaemonDeploymentsResponse$ = exports.DescribeDaemonDeploymentsRequest$ = exports.DescribeContainerInstancesResponse$ = exports.DescribeContainerInstancesRequest$ = exports.DescribeClustersResponse$ = exports.DescribeClustersRequest$ = exports.DescribeCapacityProvidersResponse$ = exports.DescribeCapacityProvidersRequest$ = exports.DeregisterTaskDefinitionResponse$ = exports.DeregisterTaskDefinitionRequest$ = exports.DeregisterContainerInstanceResponse$ = exports.DeregisterContainerInstanceRequest$ = exports.DeploymentLifecycleHook$ = exports.DeploymentEphemeralStorage$ = exports.DeploymentController$ = exports.DeploymentConfiguration$ = exports.DeploymentCircuitBreaker$ = exports.DeploymentAlarms$ = exports.Deployment$ = exports.DeleteTaskSetResponse$ = exports.DeleteTaskSetRequest$ = exports.DeleteTaskDefinitionsResponse$ = exports.DeleteTaskDefinitionsRequest$ = exports.DeleteServiceResponse$ = exports.DeleteServiceRequest$ = exports.DeleteExpressGatewayServiceResponse$ = exports.DeleteExpressGatewayServiceRequest$ = exports.DeleteDaemonTaskDefinitionResponse$ = exports.DeleteDaemonTaskDefinitionRequest$ = exports.DeleteDaemonResponse$ = exports.DeleteDaemonRequest$ = exports.DeleteClusterResponse$ = exports.DeleteClusterRequest$ = void 0;
+exports.ListAttributesResponse$ = exports.ListAttributesRequest$ = exports.ListAccountSettingsResponse$ = exports.ListAccountSettingsRequest$ = exports.LinuxParameters$ = exports.LinearConfiguration$ = exports.KeyValuePair$ = exports.KernelCapabilities$ = exports.InstanceRequirementsRequest$ = exports.InstanceLaunchTemplateUpdate$ = exports.InstanceLaunchTemplate$ = exports.InstanceHealthCheckResult$ = exports.IngressPathSummary$ = exports.InfrastructureOptimization$ = exports.InferenceAcceleratorOverride$ = exports.InferenceAccelerator$ = exports.HostVolumeProperties$ = exports.HostEntry$ = exports.HealthCheck$ = exports.GetTaskProtectionResponse$ = exports.GetTaskProtectionRequest$ = exports.FSxWindowsFileServerVolumeConfiguration$ = exports.FSxWindowsFileServerAuthorizationConfig$ = exports.FirelensConfiguration$ = exports.Failure$ = exports.ExpressGatewayServiceStatus$ = exports.ExpressGatewayServiceNetworkConfiguration$ = exports.ExpressGatewayServiceConfiguration$ = exports.ExpressGatewayServiceAwsLogsConfiguration$ = exports.ExpressGatewayScalingTarget$ = exports.ExpressGatewayRepositoryCredentials$ = exports.ExpressGatewayContainer$ = exports.ExecuteCommandResponse$ = exports.ExecuteCommandRequest$ = exports.ExecuteCommandLogConfiguration$ = exports.ExecuteCommandConfiguration$ = exports.EphemeralStorage$ = exports.EnvironmentFile$ = exports.EFSVolumeConfiguration$ = exports.EFSAuthorizationConfig$ = exports.ECSManagedResources$ = exports.ECSExpressGatewayService$ = exports.EBSTagSpecification$ = exports.DockerVolumeConfiguration$ = exports.DiscoverPollEndpointResponse$ = exports.DiscoverPollEndpointRequest$ = exports.Device$ = exports.DescribeTasksResponse$ = exports.DescribeTasksRequest$ = exports.DescribeTaskSetsResponse$ = void 0;
+exports.NetworkBandwidthGbpsRequest$ = exports.MountPoint$ = exports.MemoryMiBRequest$ = exports.MemoryGiBPerVCpuRequest$ = exports.ManagedTargetGroup$ = exports.ManagedStorageConfiguration$ = exports.ManagedSecurityGroup$ = exports.ManagedScaling$ = exports.ManagedScalableTarget$ = exports.ManagedMetricAlarm$ = exports.ManagedLogGroup$ = exports.ManagedLoadBalancer$ = exports.ManagedListenerRule$ = exports.ManagedListener$ = exports.ManagedInstancesStorageConfiguration$ = exports.ManagedInstancesProvider$ = exports.ManagedInstancesNetworkConfiguration$ = exports.ManagedInstancesLocalStorageConfiguration$ = exports.ManagedIngressPath$ = exports.ManagedCertificate$ = exports.ManagedAutoScaling$ = exports.ManagedApplicationAutoScalingPolicy$ = exports.ManagedAgentStateChange$ = exports.ManagedAgent$ = exports.LogConfiguration$ = exports.LoadBalancer$ = exports.ListTasksResponse$ = exports.ListTasksRequest$ = exports.ListTaskDefinitionsResponse$ = exports.ListTaskDefinitionsRequest$ = exports.ListTaskDefinitionFamiliesResponse$ = exports.ListTaskDefinitionFamiliesRequest$ = exports.ListTagsForResourceResponse$ = exports.ListTagsForResourceRequest$ = exports.ListServicesResponse$ = exports.ListServicesRequest$ = exports.ListServicesByNamespaceResponse$ = exports.ListServicesByNamespaceRequest$ = exports.ListServiceDeploymentsResponse$ = exports.ListServiceDeploymentsRequest$ = exports.ListDaemonTaskDefinitionsResponse$ = exports.ListDaemonTaskDefinitionsRequest$ = exports.ListDaemonsResponse$ = exports.ListDaemonsRequest$ = exports.ListDaemonDeploymentsResponse$ = exports.ListDaemonDeploymentsRequest$ = exports.ListContainerInstancesResponse$ = exports.ListContainerInstancesRequest$ = exports.ListClustersResponse$ = exports.ListClustersRequest$ = void 0;
+exports.ServiceDeploymentBrief$ = exports.ServiceDeploymentAlarms$ = exports.ServiceDeployment$ = exports.ServiceCurrentRevisionSummary$ = exports.ServiceConnectTlsConfiguration$ = exports.ServiceConnectTlsCertificateAuthority$ = exports.ServiceConnectTestTrafficRules$ = exports.ServiceConnectTestTrafficHeaderRules$ = exports.ServiceConnectTestTrafficHeaderMatchRules$ = exports.ServiceConnectServiceResource$ = exports.ServiceConnectService$ = exports.ServiceConnectConfiguration$ = exports.ServiceConnectClientAlias$ = exports.ServiceConnectAccessLogConfiguration$ = exports.Service$ = exports.Secret$ = exports.Scale$ = exports.S3FilesVolumeConfiguration$ = exports.RuntimePlatform$ = exports.RunTaskResponse$ = exports.RunTaskRequest$ = exports.Rollback$ = exports.ResourceRequirement$ = exports.Resource$ = exports.ResolvedConfiguration$ = exports.RepositoryCredentials$ = exports.RegisterTaskDefinitionResponse$ = exports.RegisterTaskDefinitionRequest$ = exports.RegisterDaemonTaskDefinitionResponse$ = exports.RegisterDaemonTaskDefinitionRequest$ = exports.RegisterContainerInstanceResponse$ = exports.RegisterContainerInstanceRequest$ = exports.PutClusterCapacityProvidersResponse$ = exports.PutClusterCapacityProvidersRequest$ = exports.PutAttributesResponse$ = exports.PutAttributesRequest$ = exports.PutAccountSettingResponse$ = exports.PutAccountSettingRequest$ = exports.PutAccountSettingDefaultResponse$ = exports.PutAccountSettingDefaultRequest$ = exports.ProxyConfiguration$ = exports.ProtectedTask$ = exports.PortMapping$ = exports.PlatformDevice$ = exports.PlacementStrategy$ = exports.PlacementConstraint$ = exports.NetworkInterfaceCountRequest$ = exports.NetworkInterface$ = exports.NetworkConfiguration$ = exports.NetworkBinding$ = void 0;
+exports.UpdateContainerInstancesStateRequest$ = exports.UpdateContainerAgentResponse$ = exports.UpdateContainerAgentRequest$ = exports.UpdateClusterSettingsResponse$ = exports.UpdateClusterSettingsRequest$ = exports.UpdateClusterResponse$ = exports.UpdateClusterRequest$ = exports.UpdateCapacityProviderResponse$ = exports.UpdateCapacityProviderRequest$ = exports.UntagResourceResponse$ = exports.UntagResourceRequest$ = exports.Ulimit$ = exports.TotalLocalStorageGBRequest$ = exports.Tmpfs$ = exports.TimeoutConfiguration$ = exports.TaskVolumeConfiguration$ = exports.TaskSet$ = exports.TaskOverride$ = exports.TaskManagedEBSVolumeTerminationPolicy$ = exports.TaskManagedEBSVolumeConfiguration$ = exports.TaskEphemeralStorage$ = exports.TaskDefinitionPlacementConstraint$ = exports.TaskDefinition$ = exports.Task$ = exports.TagResourceResponse$ = exports.TagResourceRequest$ = exports.Tag$ = exports.SystemControl$ = exports.SubmitTaskStateChangeResponse$ = exports.SubmitTaskStateChangeRequest$ = exports.SubmitContainerStateChangeResponse$ = exports.SubmitContainerStateChangeRequest$ = exports.SubmitAttachmentStateChangesResponse$ = exports.SubmitAttachmentStateChangesRequest$ = exports.StopTaskResponse$ = exports.StopTaskRequest$ = exports.StopServiceDeploymentResponse$ = exports.StopServiceDeploymentRequest$ = exports.StartTaskResponse$ = exports.StartTaskRequest$ = exports.Setting$ = exports.Session$ = exports.ServiceVolumeConfiguration$ = exports.ServiceRevisionSummary$ = exports.ServiceRevisionLoadBalancer$ = exports.ServiceRevision$ = exports.ServiceRegistry$ = exports.ServiceManagedEBSVolumeConfiguration$ = exports.ServiceEvent$ = exports.ServiceDeploymentCircuitBreaker$ = void 0;
+exports.DescribeTaskDefinition$ = exports.DescribeServices$ = exports.DescribeServiceRevisions$ = exports.DescribeServiceDeployments$ = exports.DescribeExpressGatewayService$ = exports.DescribeDaemonTaskDefinition$ = exports.DescribeDaemonRevisions$ = exports.DescribeDaemonDeployments$ = exports.DescribeDaemon$ = exports.DescribeContainerInstances$ = exports.DescribeClusters$ = exports.DescribeCapacityProviders$ = exports.DeregisterTaskDefinition$ = exports.DeregisterContainerInstance$ = exports.DeleteTaskSet$ = exports.DeleteTaskDefinitions$ = exports.DeleteService$ = exports.DeleteExpressGatewayService$ = exports.DeleteDaemonTaskDefinition$ = exports.DeleteDaemon$ = exports.DeleteCluster$ = exports.DeleteCapacityProvider$ = exports.DeleteAttributes$ = exports.DeleteAccountSetting$ = exports.CreateTaskSet$ = exports.CreateService$ = exports.CreateExpressGatewayService$ = exports.CreateDaemon$ = exports.CreateCluster$ = exports.CreateCapacityProvider$ = exports.VpcLatticeConfiguration$ = exports.VolumeFrom$ = exports.Volume$ = exports.VersionInfo$ = exports.VCpuCountRangeRequest$ = exports.UpdateTaskSetResponse$ = exports.UpdateTaskSetRequest$ = exports.UpdateTaskProtectionResponse$ = exports.UpdateTaskProtectionRequest$ = exports.UpdateServiceResponse$ = exports.UpdateServiceRequest$ = exports.UpdateServicePrimaryTaskSetResponse$ = exports.UpdateServicePrimaryTaskSetRequest$ = exports.UpdateManagedInstancesProviderConfiguration$ = exports.UpdateExpressGatewayServiceResponse$ = exports.UpdateExpressGatewayServiceRequest$ = exports.UpdatedExpressGatewayService$ = exports.UpdateDaemonResponse$ = exports.UpdateDaemonRequest$ = exports.UpdateContainerInstancesStateResponse$ = void 0;
+exports.UpdateTaskSet$ = exports.UpdateTaskProtection$ = exports.UpdateServicePrimaryTaskSet$ = exports.UpdateService$ = exports.UpdateExpressGatewayService$ = exports.UpdateDaemon$ = exports.UpdateContainerInstancesState$ = exports.UpdateContainerAgent$ = exports.UpdateClusterSettings$ = exports.UpdateCluster$ = exports.UpdateCapacityProvider$ = exports.UntagResource$ = exports.TagResource$ = exports.SubmitTaskStateChange$ = exports.SubmitContainerStateChange$ = exports.SubmitAttachmentStateChanges$ = exports.StopTask$ = exports.StopServiceDeployment$ = exports.StartTask$ = exports.RunTask$ = exports.RegisterTaskDefinition$ = exports.RegisterDaemonTaskDefinition$ = exports.RegisterContainerInstance$ = exports.PutClusterCapacityProviders$ = exports.PutAttributes$ = exports.PutAccountSettingDefault$ = exports.PutAccountSetting$ = exports.ListTasks$ = exports.ListTaskDefinitions$ = exports.ListTaskDefinitionFamilies$ = exports.ListTagsForResource$ = exports.ListServicesByNamespace$ = exports.ListServices$ = exports.ListServiceDeployments$ = exports.ListDaemonTaskDefinitions$ = exports.ListDaemons$ = exports.ListDaemonDeployments$ = exports.ListContainerInstances$ = exports.ListClusters$ = exports.ListAttributes$ = exports.ListAccountSettings$ = exports.GetTaskProtection$ = exports.ExecuteCommand$ = exports.DiscoverPollEndpoint$ = exports.DescribeTaskSets$ = exports.DescribeTasks$ = void 0;
 const _A = "Attachment";
 const _AC = "AdvancedConfiguration";
 const _ACR = "AcceleratorCountRequest";
@@ -6688,9 +7254,12 @@ const _CCTE = "ClusterContainsTasksException";
 const _CCl = "ClusterConfiguration";
 const _CCr = "CreateCluster";
 const _CD = "ContainerDefinition";
+const _CDR = "CreateDaemonRequest";
+const _CDRr = "CreateDaemonResponse";
 const _CDo = "ContainerDependency";
 const _CDon = "ContainerDefinitions";
 const _CDont = "ContainerDependencies";
+const _CDr = "CreateDaemon";
 const _CE = "ClientException";
 const _CEGS = "CreateExpressGatewayService";
 const _CEGSR = "CreateExpressGatewayServiceRequest";
@@ -6730,6 +7299,7 @@ const _Co = "Container";
 const _Con = "Containers";
 const _D = "Deployment";
 const _DA = "DeploymentAlarms";
+const _DAC = "DaemonAlarmConfiguration";
 const _DAR = "DeleteAttributesRequest";
 const _DARe = "DeleteAttributesResponse";
 const _DAS = "DeleteAccountSetting";
@@ -6737,19 +7307,26 @@ const _DASR = "DeleteAccountSettingRequest";
 const _DASRe = "DeleteAccountSettingResponse";
 const _DAe = "DeleteAttributes";
 const _DC = "DeploymentConfiguration";
-const _DCB = "DeploymentCircuitBreaker";
-const _DCI = "DeregisterContainerInstance";
+const _DCB = "DaemonCircuitBreaker";
+const _DCBe = "DeploymentCircuitBreaker";
+const _DCD = "DaemonContainerDefinition";
+const _DCDL = "DaemonContainerDefinitionList";
+const _DCI = "DaemonContainerImage";
 const _DCIR = "DeregisterContainerInstanceRequest";
 const _DCIRe = "DeregisterContainerInstanceResponse";
 const _DCIRes = "DescribeContainerInstancesRequest";
 const _DCIResc = "DescribeContainerInstancesResponse";
-const _DCIe = "DescribeContainerInstances";
-const _DCP = "DeleteCapacityProvider";
+const _DCIa = "DaemonContainerImages";
+const _DCIe = "DeregisterContainerInstance";
+const _DCIes = "DescribeContainerInstances";
+const _DCP = "DaemonCapacityProvider";
+const _DCPL = "DaemonCapacityProviderList";
 const _DCPR = "DeleteCapacityProviderRequest";
 const _DCPRe = "DeleteCapacityProviderResponse";
 const _DCPRes = "DescribeCapacityProvidersRequest";
 const _DCPResc = "DescribeCapacityProvidersResponse";
-const _DCPe = "DescribeCapacityProviders";
+const _DCPe = "DeleteCapacityProvider";
+const _DCPes = "DescribeCapacityProviders";
 const _DCR = "DeleteClusterRequest";
 const _DCRe = "DeleteClusterResponse";
 const _DCRes = "DescribeClustersRequest";
@@ -6757,6 +7334,35 @@ const _DCResc = "DescribeClustersResponse";
 const _DCe = "DeploymentController";
 const _DCel = "DeleteCluster";
 const _DCes = "DescribeClusters";
+const _DD = "DaemonDeployment";
+const _DDA = "DaemonDeploymentAlarms";
+const _DDC = "DaemonDeploymentConfiguration";
+const _DDCP = "DaemonDeploymentCapacityProvider";
+const _DDCPL = "DaemonDeploymentCapacityProviderList";
+const _DDD = "DescribeDaemonDeployments";
+const _DDDR = "DescribeDaemonDeploymentsRequest";
+const _DDDRe = "DescribeDaemonDeploymentsResponse";
+const _DDL = "DaemonDeploymentList";
+const _DDR = "DeleteDaemonRequest";
+const _DDRD = "DaemonDeploymentRevisionDetail";
+const _DDRDL = "DaemonDeploymentRevisionDetailList";
+const _DDRR = "DescribeDaemonRevisionsRequest";
+const _DDRRe = "DescribeDaemonRevisionsResponse";
+const _DDRe = "DeleteDaemonResponse";
+const _DDRes = "DescribeDaemonRequest";
+const _DDResc = "DescribeDaemonResponse";
+const _DDRescr = "DescribeDaemonRevisions";
+const _DDS = "DaemonDeploymentSummary";
+const _DDSL = "DaemonDeploymentSummaryList";
+const _DDTD = "DeleteDaemonTaskDefinition";
+const _DDTDR = "DeleteDaemonTaskDefinitionRequest";
+const _DDTDRe = "DeleteDaemonTaskDefinitionResponse";
+const _DDTDRes = "DescribeDaemonTaskDefinitionRequest";
+const _DDTDResc = "DescribeDaemonTaskDefinitionResponse";
+const _DDTDe = "DescribeDaemonTaskDefinition";
+const _DDa = "DaemonDetail";
+const _DDe = "DeleteDaemon";
+const _DDes = "DescribeDaemon";
 const _DEGS = "DeleteExpressGatewayService";
 const _DEGSR = "DeleteExpressGatewayServiceRequest";
 const _DEGSRe = "DeleteExpressGatewayServiceResponse";
@@ -6767,13 +7373,22 @@ const _DES = "DeploymentEphemeralStorage";
 const _DL = "DevicesList";
 const _DLH = "DeploymentLifecycleHook";
 const _DLHL = "DeploymentLifecycleHookList";
+const _DLP = "DaemonLinuxParameters";
+const _DNAE = "DaemonNotActiveException";
+const _DNFE = "DaemonNotFoundException";
 const _DPE = "DiscoverPollEndpoint";
 const _DPER = "DiscoverPollEndpointRequest";
 const _DPERi = "DiscoverPollEndpointResponse";
-const _DS = "DeleteService";
+const _DR = "DaemonRevision";
+const _DRD = "DaemonRevisionDetail";
+const _DRDL = "DaemonRevisionDetailList";
+const _DRa = "DaemonRollback";
+const _DRae = "DaemonRevisions";
+const _DS = "DaemonSummary";
 const _DSD = "DescribeServiceDeployments";
 const _DSDR = "DescribeServiceDeploymentsRequest";
 const _DSDRe = "DescribeServiceDeploymentsResponse";
+const _DSL = "DaemonSummariesList";
 const _DSR = "DeleteServiceRequest";
 const _DSRR = "DescribeServiceRevisionsRequest";
 const _DSRRe = "DescribeServiceRevisionsResponse";
@@ -6781,16 +7396,20 @@ const _DSRe = "DeleteServiceResponse";
 const _DSRes = "DescribeServicesRequest";
 const _DSResc = "DescribeServicesResponse";
 const _DSRescr = "DescribeServiceRevisions";
-const _DSe = "DescribeServices";
+const _DSe = "DeleteService";
+const _DSes = "DescribeServices";
 const _DT = "DescribeTasks";
-const _DTD = "DeleteTaskDefinitions";
+const _DTD = "DaemonTaskDefinition";
 const _DTDR = "DeleteTaskDefinitionsRequest";
 const _DTDRe = "DeleteTaskDefinitionsResponse";
 const _DTDRer = "DeregisterTaskDefinitionRequest";
 const _DTDRere = "DeregisterTaskDefinitionResponse";
 const _DTDRes = "DescribeTaskDefinitionRequest";
 const _DTDResc = "DescribeTaskDefinitionResponse";
-const _DTDe = "DeregisterTaskDefinition";
+const _DTDS = "DaemonTaskDefinitionSummary";
+const _DTDSa = "DaemonTaskDefinitionSummaries";
+const _DTDe = "DeleteTaskDefinitions";
+const _DTDer = "DeregisterTaskDefinition";
 const _DTDes = "DescribeTaskDefinition";
 const _DTR = "DescribeTasksRequest";
 const _DTRe = "DescribeTasksResponse";
@@ -6800,7 +7419,9 @@ const _DTSRe = "DeleteTaskSetResponse";
 const _DTSRes = "DescribeTaskSetsRequest";
 const _DTSResc = "DescribeTaskSetsResponse";
 const _DTSe = "DescribeTaskSets";
+const _DV = "DaemonVolume";
 const _DVC = "DockerVolumeConfiguration";
+const _DVL = "DaemonVolumeList";
 const _De = "Device";
 const _Dep = "Deployments";
 const _EBSTS = "EBSTagSpecification";
@@ -6873,6 +7494,15 @@ const _LCR = "ListClustersRequest";
 const _LCRi = "ListClustersResponse";
 const _LCi = "ListClusters";
 const _LCo = "LogConfiguration";
+const _LD = "ListDaemons";
+const _LDD = "ListDaemonDeployments";
+const _LDDR = "ListDaemonDeploymentsRequest";
+const _LDDRi = "ListDaemonDeploymentsResponse";
+const _LDR = "ListDaemonsRequest";
+const _LDRi = "ListDaemonsResponse";
+const _LDTD = "ListDaemonTaskDefinitions";
+const _LDTDR = "ListDaemonTaskDefinitionsRequest";
+const _LDTDRi = "ListDaemonTaskDefinitionsResponse";
 const _LEE = "LimitExceededException";
 const _LP = "LinuxParameters";
 const _LS = "ListServices";
@@ -6973,6 +7603,9 @@ const _RCI = "RegisterContainerInstance";
 const _RCIR = "RegisterContainerInstanceRequest";
 const _RCIRe = "RegisterContainerInstanceResponse";
 const _RCe = "ResolvedConfiguration";
+const _RDTD = "RegisterDaemonTaskDefinition";
+const _RDTDR = "RegisterDaemonTaskDefinitionRequest";
+const _RDTDRe = "RegisterDaemonTaskDefinitionResponse";
 const _RIUE = "ResourceInUseException";
 const _RNFE = "ResourceNotFoundException";
 const _RP = "RuntimePlatform";
@@ -7020,6 +7653,7 @@ const _SDe = "ServiceDeployments";
 const _SE = "ServerException";
 const _SEe = "ServiceEvent";
 const _SEer = "ServiceEvents";
+const _SFVC = "S3FilesVolumeConfiguration";
 const _SL = "SecretList";
 const _SMEBSVC = "ServiceManagedEBSVolumeConfiguration";
 const _SNAE = "ServiceNotActiveException";
@@ -7096,6 +7730,9 @@ const _UCRp = "UpdateClusterResponse";
 const _UCS = "UpdateClusterSettings";
 const _UCSR = "UpdateClusterSettingsRequest";
 const _UCSRp = "UpdateClusterSettingsResponse";
+const _UD = "UpdateDaemon";
+const _UDR = "UpdateDaemonRequest";
+const _UDRp = "UpdateDaemonResponse";
 const _UEGS = "UpdatedExpressGatewayService";
 const _UEGSR = "UpdateExpressGatewayServiceRequest";
 const _UEGSRp = "UpdateExpressGatewayServiceResponse";
@@ -7146,6 +7783,7 @@ const _aN = "alarmNames";
 const _aNc = "acceleratorNames";
 const _aNt = "attributeName";
 const _aP = "appProtocol";
+const _aPA = "accessPointArn";
 const _aPAA = "awsPcaAuthorityArn";
 const _aPI = "assignPublicIp";
 const _aPIc = "accessPointId";
@@ -7188,17 +7826,18 @@ const _cAo = "containerArn";
 const _cAon = "connectivityAt";
 const _cAp = "cpuArchitecture";
 const _cAr = "createdAt";
-const _cB = "createdBy";
+const _cB = "circuitBreaker";
 const _cBTIM = "canaryBakeTimeInMinutes";
+const _cBr = "createdBy";
 const _cC = "canaryConfiguration";
-const _cD = "currentDeployment";
+const _cD = "containerDefinitions";
 const _cDC = "computedDesiredCount";
-const _cDo = "containerDefinitions";
-const _cI = "containerInstance";
+const _cDu = "currentDeployment";
+const _cI = "containerImages";
 const _cIA = "containerInstanceArn";
 const _cIAo = "containerInstanceArns";
-const _cIo = "containerInstances";
-const _cIon = "containerImages";
+const _cIo = "containerInstance";
+const _cIon = "containerInstances";
 const _cM = "cpuManufacturers";
 const _cN = "clusterName";
 const _cNo = "containerName";
@@ -7206,6 +7845,7 @@ const _cO = "containerOverrides";
 const _cOT = "capacityOptionType";
 const _cP = "canaryPercent";
 const _cPA = "capacityProviderArn";
+const _cPAa = "capacityProviderArns";
 const _cPN = "capacityProviderName";
 const _cPR = "containerPortRange";
 const _cPS = "capacityProviderStrategy";
@@ -7214,7 +7854,8 @@ const _cPap = "capacityProviders";
 const _cPo = "containerPath";
 const _cPon = "containerPort";
 const _cPr = "credentialsParameter";
-const _cR = "capacityReservations";
+const _cR = "currentRevisions";
+const _cRa = "capacityReservations";
 const _cS = "credentialSpecs";
 const _cSD = "currentServiceDeployment";
 const _cSR = "currentServiceRevisions";
@@ -7235,15 +7876,22 @@ const _conta = "containers";
 const _cou = "count";
 const _cp = "cpu";
 const _d = "details";
-const _dA = "discoveryArn";
-const _dAe = "deregisteredAt";
-const _dC = "desiredCount";
+const _dA = "daemonArn";
+const _dAe = "deploymentArn";
+const _dAer = "deregisteredAt";
+const _dAi = "discoveryArn";
+const _dC = "deploymentConfiguration";
 const _dCB = "deploymentCircuitBreaker";
 const _dCPS = "defaultCapacityProviderStrategy";
-const _dCe = "deploymentConfiguration";
+const _dCe = "desiredCount";
 const _dCep = "deploymentController";
+const _dD = "daemonDeployments";
+const _dDA = "daemonDeploymentArn";
+const _dDAa = "daemonDeploymentArns";
+const _dIC = "drainingInstanceCount";
 const _dL = "dockerLabels";
 const _dN = "disableNetworking";
+const _dNa = "daemonName";
 const _dNe = "deviceName";
 const _dNi = "discoveryName";
 const _dNn = "dnsName";
@@ -7251,17 +7899,27 @@ const _dNo = "domainName";
 const _dO = "dependsOn";
 const _dOT = "deleteOnTermination";
 const _dOr = "driverOpts";
+const _dP = "drainPercent";
+const _dR = "daemonRevisions";
+const _dRA = "daemonRevisionArn";
+const _dRAa = "daemonRevisionArns";
+const _dRAe = "deleteRequestedAt";
 const _dS = "dnsServers";
 const _dSD = "dnsSearchDomains";
+const _dSL = "daemonSummariesList";
 const _dSO = "dockerSecurityOptions";
 const _dSe = "desiredStatus";
 const _dT = "deviceType";
+const _dTD = "daemonTaskDefinition";
+const _dTDA = "daemonTaskDefinitionArn";
+const _dTDa = "daemonTaskDefinitions";
 const _dV = "doubleValue";
 const _dVC = "dockerVolumeConfiguration";
 const _dVo = "dockerVersion";
-const _de = "detail";
+const _da = "daemon";
+const _de = "devices";
 const _dep = "deployments";
-const _dev = "devices";
+const _det = "detail";
 const _do = "domain";
 const _dr = "driver";
 const _dro = "drop";
@@ -7295,7 +7953,7 @@ const _es = "essential";
 const _ev = "events";
 const _ex = "expression";
 const _exa = "exact";
-const _f = "force";
+const _f = "family";
 const _fA = "finishedAt";
 const _fC = "firelensConfiguration";
 const _fCa = "failureCount";
@@ -7304,16 +7962,17 @@ const _fES = "fargateEphemeralStorage";
 const _fESKKI = "fargateEphemeralStorageKmsKeyId";
 const _fND = "forceNewDeployment";
 const _fP = "familyPrefix";
+const _fSA = "fileSystemArn";
 const _fSI = "fileSystemId";
 const _fT = "failedTasks";
 const _fTi = "filesystemType";
 const _fWFSVC = "fsxWindowsFileServerVolumeConfiguration";
 const _fa = "failures";
 const _fam = "families";
-const _fami = "family";
 const _fi = "filter";
 const _fie = "field";
-const _fo = "format";
+const _fo = "force";
+const _for = "format";
 const _g = "group";
 const _gDE = "guardDutyEnabled";
 const _gI = "gpuIds";
@@ -7323,6 +7982,7 @@ const _hCGPS = "healthCheckGracePeriodSeconds";
 const _hCP = "healthCheckPath";
 const _hCPe = "healthCheckPort";
 const _hD = "hookDetails";
+const _hE = "httpError";
 const _hL = "hardLimit";
 const _hP = "hostPath";
 const _hPR = "hostPortRange";
@@ -7478,6 +8138,7 @@ const _rAes = "resourceArn";
 const _rB = "registeredBy";
 const _rC = "repositoryCredentials";
 const _rCIC = "registeredContainerInstancesCount";
+const _rCP = "rollbackCapacityProviders";
 const _rCe = "requiresCompatibilities";
 const _rCes = "resolvedConfiguration";
 const _rCu = "runningCount";
@@ -7485,6 +8146,7 @@ const _rD = "rootDirectory";
 const _rGA = "reservationGroupArn";
 const _rHS = "requireHibernateSupport";
 const _rI = "resourceIds";
+const _rIC = "runningInstanceCount";
 const _rIe = "referenceId";
 const _rIu = "runtimeId";
 const _rMT = "resourceManagementType";
@@ -7503,18 +8165,19 @@ const _rT = "resourceType";
 const _rTC = "runningTasksCount";
 const _rTCe = "requestedTaskCount";
 const _rTCu = "runningTaskCount";
+const _rTDRA = "rollbackTargetDaemonRevisionArn";
 const _rTTW = "requestedTestTrafficWeight";
-const _re = "retries";
-const _rev = "revision";
+const _re = "revision";
+const _ret = "retries";
 const _ro = "role";
 const _rol = "rollback";
 const _ru = "rule";
 const _s = "smithy.ts.sdk.synthetic.com.amazonaws.ecs";
-const _sA = "serviceArn";
-const _sAe = "serviceArns";
-const _sAt = "startedAt";
-const _sAto = "stoppedAt";
-const _sAtop = "stoppingAt";
+const _sA = "startedAt";
+const _sAe = "serviceArn";
+const _sAer = "serviceArns";
+const _sAt = "stoppedAt";
+const _sAto = "stoppingAt";
 const _sB = "startedBy";
 const _sBN = "s3BucketName";
 const _sBTIM = "stepBakeTimeInMinutes";
@@ -7530,6 +8193,7 @@ const _sCtop = "stopCode";
 const _sD = "serviceDeployments";
 const _sDA = "serviceDeploymentArns";
 const _sDAe = "serviceDeploymentArn";
+const _sDR = "sourceDaemonRevisions";
 const _sEE = "s3EncryptionEnabled";
 const _sG = "securityGroups";
 const _sGI = "securityGroupIds";
@@ -7567,6 +8231,7 @@ const _sTt = "stopTimeout";
 const _sTto = "stopType";
 const _sU = "streamUrl";
 const _sV = "sourceVolume";
+const _sVC = "s3filesVolumeConfiguration";
 const _sc = "scale";
 const _sch = "scheme";
 const _sco = "scope";
@@ -7593,6 +8258,9 @@ const _tCa = "targetConfiguration";
 const _tD = "taskDefinition";
 const _tDA = "taskDefinitionArns";
 const _tDAa = "taskDefinitionArn";
+const _tDIC = "totalDrainingInstanceCount";
+const _tDR = "targetDaemonRevision";
+const _tDRA = "targetDaemonRevisionArn";
 const _tDa = "taskDefinitions";
 const _tE = "telemetryEndpoint";
 const _tEP = "transitEncryptionPort";
@@ -7606,6 +8274,8 @@ const _tLSGB = "totalLocalStorageGB";
 const _tP = "terminationPolicy";
 const _tR = "totalResources";
 const _tRA = "taskRoleArn";
+const _tRC = "totalRunningCount";
+const _tRIC = "totalRunningInstanceCount";
 const _tS = "taskSet";
 const _tSA = "taskSetArn";
 const _tSR = "targetServiceRevision";
@@ -7655,7 +8325,7 @@ exports.ECSServiceException$ = [-3, _s, "ECSServiceException", 0, [], []];
 _s_registry.registerError(exports.ECSServiceException$, ECSServiceException_1.ECSServiceException);
 const n0_registry = schema_1.TypeRegistry.for(n0);
 exports.AccessDeniedException$ = [-3, n0, _ADE,
-    { [_e]: _c },
+    { [_e]: _c, [_hE]: 403 },
     [_m],
     [0]
 ];
@@ -7714,6 +8384,18 @@ exports.ConflictException$ = [-3, n0, _CEo,
     [64 | 0, 0]
 ];
 n0_registry.registerError(exports.ConflictException$, errors_1.ConflictException);
+exports.DaemonNotActiveException$ = [-3, n0, _DNAE,
+    { [_e]: _c },
+    [_m],
+    [0]
+];
+n0_registry.registerError(exports.DaemonNotActiveException$, errors_1.DaemonNotActiveException);
+exports.DaemonNotFoundException$ = [-3, n0, _DNFE,
+    { [_e]: _c },
+    [_m],
+    [0]
+];
+n0_registry.registerError(exports.DaemonNotFoundException$, errors_1.DaemonNotFoundException);
 exports.InvalidParameterException$ = [-3, n0, _IPE,
     { [_e]: _c },
     [_m],
@@ -7930,7 +8612,7 @@ exports.Container$ = [3, n0, _Co,
 exports.ContainerDefinition$ = [3, n0, _CD,
     0,
     [_n, _im, _rC, _cp, _me, _mR, _l, _pM, _es, _rPe, _eP, _com, _en, _eF, _mP, _vF, _lP, _sec, _dO, _sT, _sTt, _vC, _h, _u, _wD, _dN, _p, _rRF, _dS, _dSD, _eH, _dSO, _in, _pT, _dL, _ul, _lC, _hC, _sC, _rR, _fC, _cS],
-    [0, 0, () => exports.RepositoryCredentials$, 1, 1, 1, 64 | 0, () => PortMappingList, 2, () => exports.ContainerRestartPolicy$, 64 | 0, 64 | 0, () => EnvironmentVariables, () => EnvironmentFiles, () => MountPointList, () => VolumeFromList, () => exports.LinuxParameters$, () => SecretList, () => ContainerDependencies, 1, 1, 0, 0, 0, 0, 2, 2, 2, 64 | 0, 64 | 0, () => HostEntryList, 64 | 0, 2, 2, 128 | 0, () => UlimitList, () => exports.LogConfiguration$, () => exports.HealthCheck$, () => SystemControls, () => ResourceRequirements, () => exports.FirelensConfiguration$, 64 | 0]
+    [0, 0, [() => exports.RepositoryCredentials$, 0], 1, 1, 1, 64 | 0, () => PortMappingList, 2, () => exports.ContainerRestartPolicy$, 64 | 0, 64 | 0, [() => EnvironmentVariables, 0], () => EnvironmentFiles, () => MountPointList, () => VolumeFromList, () => exports.LinuxParameters$, () => SecretList, () => ContainerDependencies, 1, 1, 0, 0, 0, 0, 2, 2, 2, 64 | 0, 64 | 0, () => HostEntryList, 64 | 0, 2, 2, 128 | 0, () => UlimitList, () => exports.LogConfiguration$, () => exports.HealthCheck$, () => SystemControls, () => ResourceRequirements, () => exports.FirelensConfiguration$, 64 | 0]
 ];
 exports.ContainerDependency$ = [3, n0, _CDo,
     0,
@@ -7955,7 +8637,7 @@ exports.ContainerInstanceHealthStatus$ = [3, n0, _CIHS,
 exports.ContainerOverride$ = [3, n0, _CO,
     0,
     [_n, _com, _en, _eF, _cp, _me, _mR, _rR],
-    [0, 64 | 0, () => EnvironmentVariables, () => EnvironmentFiles, 1, 1, 1, () => ResourceRequirements]
+    [0, 64 | 0, [() => EnvironmentVariables, 0], () => EnvironmentFiles, 1, 1, 1, () => ResourceRequirements]
 ];
 exports.ContainerRestartPolicy$ = [3, n0, _CRP,
     0,
@@ -7987,6 +8669,16 @@ exports.CreateClusterResponse$ = [3, n0, _CCRr,
     [_cl],
     [() => exports.Cluster$]
 ];
+exports.CreateDaemonRequest$ = [3, n0, _CDR,
+    0,
+    [_dNa, _dTDA, _cPAa, _cA, _dC, _ta, _pTr, _eECSMT, _eEC, _cT],
+    [0, 0, 64 | 0, 0, () => exports.DaemonDeploymentConfiguration$, () => Tags, 0, 2, 2, 0], 3
+];
+exports.CreateDaemonResponse$ = [3, n0, _CDRr,
+    0,
+    [_dA, _st, _cAr, _dAe],
+    [0, 0, 4, 0]
+];
 exports.CreatedAt$ = [3, n0, _CA,
     0,
     [_be, _af],
@@ -7995,12 +8687,12 @@ exports.CreatedAt$ = [3, n0, _CA,
 exports.CreateExpressGatewayServiceRequest$ = [3, n0, _CEGSR,
     0,
     [_eRA, _iRA, _pC, _sN, _cl, _hCP, _tRA, _nC, _cp, _me, _sTc, _ta],
-    [0, 0, () => exports.ExpressGatewayContainer$, 0, 0, 0, 0, () => exports.ExpressGatewayServiceNetworkConfiguration$, 0, 0, () => exports.ExpressGatewayScalingTarget$, () => Tags], 3
+    [0, 0, [() => exports.ExpressGatewayContainer$, 0], 0, 0, 0, 0, () => exports.ExpressGatewayServiceNetworkConfiguration$, 0, 0, () => exports.ExpressGatewayScalingTarget$, () => Tags], 3
 ];
 exports.CreateExpressGatewayServiceResponse$ = [3, n0, _CEGSRr,
     0,
     [_ser],
-    [() => exports.ECSExpressGatewayService$]
+    [[() => exports.ECSExpressGatewayService$, 0]]
 ];
 exports.CreateManagedInstancesProviderConfiguration$ = [3, n0, _CMIPC,
     0,
@@ -8009,7 +8701,7 @@ exports.CreateManagedInstancesProviderConfiguration$ = [3, n0, _CMIPC,
 ];
 exports.CreateServiceRequest$ = [3, n0, _CSR,
     0,
-    [_sN, _cl, _tD, _aZR, _lB, _sRe, _dC, _cT, _lT, _cPS, _pV, _ro, _dCe, _pCl, _pS, _nC, _hCGPS, _sS, _dCep, _ta, _eECSMT, _pTr, _eEC, _sCC, _vCo, _vLC],
+    [_sN, _cl, _tD, _aZR, _lB, _sRe, _dCe, _cT, _lT, _cPS, _pV, _ro, _dC, _pCl, _pS, _nC, _hCGPS, _sS, _dCep, _ta, _eECSMT, _pTr, _eEC, _sCC, _vCo, _vLC],
     [0, 0, 0, 0, () => LoadBalancers, () => ServiceRegistries, 1, 0, 0, () => CapacityProviderStrategy, 0, 0, () => exports.DeploymentConfiguration$, () => PlacementConstraints, () => PlacementStrategies, () => exports.NetworkConfiguration$, 1, 0, () => exports.DeploymentController$, () => Tags, 2, 0, 2, () => exports.ServiceConnectConfiguration$, () => ServiceVolumeConfigurations, () => VpcLatticeConfigurations], 1
 ];
 exports.CreateServiceResponse$ = [3, n0, _CSRr,
@@ -8026,6 +8718,106 @@ exports.CreateTaskSetResponse$ = [3, n0, _CTSRr,
     0,
     [_tS],
     [() => exports.TaskSet$]
+];
+exports.DaemonAlarmConfiguration$ = [3, n0, _DAC,
+    0,
+    [_aN, _enab],
+    [64 | 0, 2]
+];
+exports.DaemonCapacityProvider$ = [3, n0, _DCP,
+    0,
+    [_ar, _rCu],
+    [0, 1]
+];
+exports.DaemonCircuitBreaker$ = [3, n0, _DCB,
+    0,
+    [_fCa, _st, _th],
+    [1, 0, 1]
+];
+exports.DaemonContainerDefinition$ = [3, n0, _DCD,
+    0,
+    [_im, _n, _me, _mR, _rC, _hC, _cp, _es, _eP, _com, _wD, _eF, _en, _sec, _rRF, _mP, _lC, _fC, _p, _u, _ul, _lP, _dO, _sT, _sTt, _sC, _in, _pT, _rPe],
+    [0, 0, 1, 1, [() => exports.RepositoryCredentials$, 0], () => exports.HealthCheck$, 1, 2, 64 | 0, 64 | 0, 0, () => EnvironmentFiles, [() => EnvironmentVariables, 0], () => SecretList, 2, () => MountPointList, () => exports.LogConfiguration$, () => exports.FirelensConfiguration$, 2, 0, () => UlimitList, () => exports.DaemonLinuxParameters$, () => ContainerDependencies, 1, 1, () => SystemControls, 2, 2, () => exports.ContainerRestartPolicy$], 1
+];
+exports.DaemonContainerImage$ = [3, n0, _DCI,
+    0,
+    [_cNo, _iD, _im],
+    [0, 0, 0]
+];
+exports.DaemonDeployment$ = [3, n0, _DD,
+    0,
+    [_dDA, _cA, _st, _sR, _tDR, _sDR, _cB, _al, _rol, _dC, _cAr, _sA, _sAt, _fA],
+    [0, 0, 0, 0, () => exports.DaemonDeploymentRevisionDetail$, () => DaemonDeploymentRevisionDetailList, () => exports.DaemonCircuitBreaker$, () => exports.DaemonDeploymentAlarms$, () => exports.DaemonRollback$, () => exports.DaemonDeploymentConfiguration$, 4, 4, 4, 4]
+];
+exports.DaemonDeploymentAlarms$ = [3, n0, _DDA,
+    0,
+    [_st, _aN, _tAN],
+    [0, 64 | 0, 64 | 0]
+];
+exports.DaemonDeploymentCapacityProvider$ = [3, n0, _DDCP,
+    0,
+    [_ar, _rIC, _dIC],
+    [0, 1, 1]
+];
+exports.DaemonDeploymentConfiguration$ = [3, n0, _DDC,
+    0,
+    [_dP, _al, _bTIM],
+    [1, () => exports.DaemonAlarmConfiguration$, 1]
+];
+exports.DaemonDeploymentRevisionDetail$ = [3, n0, _DDRD,
+    0,
+    [_ar, _cPap, _tRIC, _tDIC],
+    [0, () => DaemonDeploymentCapacityProviderList, 1, 1]
+];
+exports.DaemonDeploymentSummary$ = [3, n0, _DDS,
+    0,
+    [_dDA, _dA, _cA, _st, _sR, _tDRA, _cAr, _sA, _sAt, _fA],
+    [0, 0, 0, 0, 0, 0, 4, 4, 4, 4]
+];
+exports.DaemonDetail$ = [3, n0, _DDa,
+    0,
+    [_dA, _cA, _st, _cR, _dAe, _cAr, _uA],
+    [0, 0, 0, () => DaemonRevisionDetailList, 0, 4, 4]
+];
+exports.DaemonLinuxParameters$ = [3, n0, _DLP,
+    0,
+    [_ca, _de, _iPE, _tm],
+    [() => exports.KernelCapabilities$, () => DevicesList, 2, () => TmpfsList]
+];
+exports.DaemonRevision$ = [3, n0, _DR,
+    0,
+    [_dRA, _cA, _dA, _dTDA, _cAr, _cI, _pTr, _eECSMT, _eEC],
+    [0, 0, 0, 0, 4, () => DaemonContainerImages, 0, 2, 2]
+];
+exports.DaemonRevisionDetail$ = [3, n0, _DRD,
+    0,
+    [_ar, _cPap, _tRC],
+    [0, () => DaemonCapacityProviderList, 1]
+];
+exports.DaemonRollback$ = [3, n0, _DRa,
+    0,
+    [_r, _sA, _rTDRA, _rCP],
+    [0, 4, 0, 64 | 0]
+];
+exports.DaemonSummary$ = [3, n0, _DS,
+    0,
+    [_dA, _st, _cAr, _uA],
+    [0, 0, 4, 4]
+];
+exports.DaemonTaskDefinition$ = [3, n0, _DTD,
+    0,
+    [_dTDA, _f, _re, _tRA, _eRA, _cD, _vo, _cp, _me, _st, _rAe, _dRAe, _rB],
+    [0, 0, 1, 0, 0, [() => DaemonContainerDefinitionList, 0], () => DaemonVolumeList, 0, 0, 0, 4, 4, 0]
+];
+exports.DaemonTaskDefinitionSummary$ = [3, n0, _DTDS,
+    0,
+    [_ar, _rAe, _rB, _dRAe, _st],
+    [0, 4, 0, 4, 0]
+];
+exports.DaemonVolume$ = [3, n0, _DV,
+    0,
+    [_n, _ho],
+    [0, () => exports.HostVolumeProperties$]
 ];
 exports.DeleteAccountSettingRequest$ = [3, n0, _DASR,
     0,
@@ -8067,19 +8859,39 @@ exports.DeleteClusterResponse$ = [3, n0, _DCRe,
     [_cl],
     [() => exports.Cluster$]
 ];
+exports.DeleteDaemonRequest$ = [3, n0, _DDR,
+    0,
+    [_dA],
+    [0], 1
+];
+exports.DeleteDaemonResponse$ = [3, n0, _DDRe,
+    0,
+    [_dA, _st, _cAr, _uA, _dAe],
+    [0, 0, 4, 4, 0]
+];
+exports.DeleteDaemonTaskDefinitionRequest$ = [3, n0, _DDTDR,
+    0,
+    [_dTD],
+    [0], 1
+];
+exports.DeleteDaemonTaskDefinitionResponse$ = [3, n0, _DDTDRe,
+    0,
+    [_dTDA],
+    [0]
+];
 exports.DeleteExpressGatewayServiceRequest$ = [3, n0, _DEGSR,
     0,
-    [_sA],
+    [_sAe],
     [0], 1
 ];
 exports.DeleteExpressGatewayServiceResponse$ = [3, n0, _DEGSRe,
     0,
     [_ser],
-    [() => exports.ECSExpressGatewayService$]
+    [[() => exports.ECSExpressGatewayService$, 0]]
 ];
 exports.DeleteServiceRequest$ = [3, n0, _DSR,
     0,
-    [_ser, _cl, _f],
+    [_ser, _cl, _fo],
     [0, 0, 2], 1
 ];
 exports.DeleteServiceResponse$ = [3, n0, _DSRe,
@@ -8095,11 +8907,11 @@ exports.DeleteTaskDefinitionsRequest$ = [3, n0, _DTDR,
 exports.DeleteTaskDefinitionsResponse$ = [3, n0, _DTDRe,
     0,
     [_tDa, _fa],
-    [() => TaskDefinitionList, () => Failures]
+    [[() => TaskDefinitionList, 0], () => Failures]
 ];
 exports.DeleteTaskSetRequest$ = [3, n0, _DTSR,
     0,
-    [_cl, _ser, _tS, _f],
+    [_cl, _ser, _tS, _fo],
     [0, 0, 0, 2], 3
 ];
 exports.DeleteTaskSetResponse$ = [3, n0, _DTSRe,
@@ -8109,7 +8921,7 @@ exports.DeleteTaskSetResponse$ = [3, n0, _DTSRe,
 ];
 exports.Deployment$ = [3, n0, _D,
     0,
-    [_i, _st, _tD, _dC, _pCe, _rCu, _fT, _cAr, _uA, _cPS, _lT, _pV, _pF, _nC, _rS, _rSR, _sCC, _sCR, _vCo, _fES, _vLC],
+    [_i, _st, _tD, _dCe, _pCe, _rCu, _fT, _cAr, _uA, _cPS, _lT, _pV, _pF, _nC, _rS, _rSR, _sCC, _sCR, _vCo, _fES, _vLC],
     [0, 0, 0, 1, 1, 1, 1, 4, 4, () => CapacityProviderStrategy, 0, 0, 0, () => exports.NetworkConfiguration$, 0, 0, () => exports.ServiceConnectConfiguration$, () => ServiceConnectServiceResourceList, () => ServiceVolumeConfigurations, () => exports.DeploymentEphemeralStorage$, () => VpcLatticeConfigurations]
 ];
 exports.DeploymentAlarms$ = [3, n0, _DA,
@@ -8117,7 +8929,7 @@ exports.DeploymentAlarms$ = [3, n0, _DA,
     [_aN, _rol, _enab],
     [64 | 0, 2, 2], 3
 ];
-exports.DeploymentCircuitBreaker$ = [3, n0, _DCB,
+exports.DeploymentCircuitBreaker$ = [3, n0, _DCBe,
     0,
     [_enab, _rol],
     [2, 2], 2
@@ -8144,12 +8956,12 @@ exports.DeploymentLifecycleHook$ = [3, n0, _DLH,
 ];
 exports.DeregisterContainerInstanceRequest$ = [3, n0, _DCIR,
     0,
-    [_cI, _cl, _f],
+    [_cIo, _cl, _fo],
     [0, 0, 2], 1
 ];
 exports.DeregisterContainerInstanceResponse$ = [3, n0, _DCIRe,
     0,
-    [_cI],
+    [_cIo],
     [() => exports.ContainerInstance$]
 ];
 exports.DeregisterTaskDefinitionRequest$ = [3, n0, _DTDRer,
@@ -8160,7 +8972,7 @@ exports.DeregisterTaskDefinitionRequest$ = [3, n0, _DTDRer,
 exports.DeregisterTaskDefinitionResponse$ = [3, n0, _DTDRere,
     0,
     [_tD],
-    [() => exports.TaskDefinition$]
+    [[() => exports.TaskDefinition$, 0]]
 ];
 exports.DescribeCapacityProvidersRequest$ = [3, n0, _DCPRes,
     0,
@@ -8184,23 +8996,63 @@ exports.DescribeClustersResponse$ = [3, n0, _DCResc,
 ];
 exports.DescribeContainerInstancesRequest$ = [3, n0, _DCIRes,
     0,
-    [_cIo, _cl, _inc],
+    [_cIon, _cl, _inc],
     [64 | 0, 0, 64 | 0], 1
 ];
 exports.DescribeContainerInstancesResponse$ = [3, n0, _DCIResc,
     0,
-    [_cIo, _fa],
+    [_cIon, _fa],
     [() => ContainerInstances, () => Failures]
+];
+exports.DescribeDaemonDeploymentsRequest$ = [3, n0, _DDDR,
+    0,
+    [_dDAa],
+    [64 | 0], 1
+];
+exports.DescribeDaemonDeploymentsResponse$ = [3, n0, _DDDRe,
+    0,
+    [_fa, _dD],
+    [() => Failures, () => DaemonDeploymentList]
+];
+exports.DescribeDaemonRequest$ = [3, n0, _DDRes,
+    0,
+    [_dA],
+    [0], 1
+];
+exports.DescribeDaemonResponse$ = [3, n0, _DDResc,
+    0,
+    [_da],
+    [() => exports.DaemonDetail$]
+];
+exports.DescribeDaemonRevisionsRequest$ = [3, n0, _DDRR,
+    0,
+    [_dRAa],
+    [64 | 0], 1
+];
+exports.DescribeDaemonRevisionsResponse$ = [3, n0, _DDRRe,
+    0,
+    [_dR, _fa],
+    [() => DaemonRevisions, () => Failures]
+];
+exports.DescribeDaemonTaskDefinitionRequest$ = [3, n0, _DDTDRes,
+    0,
+    [_dTD],
+    [0], 1
+];
+exports.DescribeDaemonTaskDefinitionResponse$ = [3, n0, _DDTDResc,
+    0,
+    [_dTD],
+    [[() => exports.DaemonTaskDefinition$, 0]]
 ];
 exports.DescribeExpressGatewayServiceRequest$ = [3, n0, _DEGSRes,
     0,
-    [_sA, _inc],
+    [_sAe, _inc],
     [0, 64 | 0], 1
 ];
 exports.DescribeExpressGatewayServiceResponse$ = [3, n0, _DEGSResc,
     0,
     [_ser],
-    [() => exports.ECSExpressGatewayService$]
+    [[() => exports.ECSExpressGatewayService$, 0]]
 ];
 exports.DescribeServiceDeploymentsRequest$ = [3, n0, _DSDR,
     0,
@@ -8240,7 +9092,7 @@ exports.DescribeTaskDefinitionRequest$ = [3, n0, _DTDRes,
 exports.DescribeTaskDefinitionResponse$ = [3, n0, _DTDResc,
     0,
     [_tD, _ta],
-    [() => exports.TaskDefinition$, () => Tags]
+    [[() => exports.TaskDefinition$, 0], () => Tags]
 ];
 exports.DescribeTaskSetsRequest$ = [3, n0, _DTSRes,
     0,
@@ -8260,7 +9112,7 @@ exports.DescribeTasksRequest$ = [3, n0, _DTR,
 exports.DescribeTasksResponse$ = [3, n0, _DTRe,
     0,
     [_tas, _fa],
-    [() => Tasks, () => Failures]
+    [[() => Tasks, 0], () => Failures]
 ];
 exports.Device$ = [3, n0, _De,
     0,
@@ -8269,7 +9121,7 @@ exports.Device$ = [3, n0, _De,
 ];
 exports.DiscoverPollEndpointRequest$ = [3, n0, _DPER,
     0,
-    [_cI, _cl],
+    [_cIo, _cl],
     [0, 0]
 ];
 exports.DiscoverPollEndpointResponse$ = [3, n0, _DPERi,
@@ -8289,8 +9141,8 @@ exports.EBSTagSpecification$ = [3, n0, _EBSTS,
 ];
 exports.ECSExpressGatewayService$ = [3, n0, _ECSEGS,
     0,
-    [_cl, _sN, _sA, _iRA, _st, _cD, _aCc, _ta, _cAr, _uA],
-    [0, 0, 0, 0, () => exports.ExpressGatewayServiceStatus$, 0, () => ExpressGatewayServiceConfigurations, () => Tags, 4, 4]
+    [_cl, _sN, _sAe, _iRA, _st, _cDu, _aCc, _ta, _cAr, _uA],
+    [0, 0, 0, 0, () => exports.ExpressGatewayServiceStatus$, 0, [() => ExpressGatewayServiceConfigurations, 0], () => Tags, 4, 4]
 ];
 exports.ECSManagedResources$ = [3, n0, _ECSMR,
     0,
@@ -8340,7 +9192,7 @@ exports.ExecuteCommandResponse$ = [3, n0, _ECRx,
 exports.ExpressGatewayContainer$ = [3, n0, _EGC,
     0,
     [_im, _cPon, _aLC, _rC, _com, _en, _sec],
-    [0, 1, () => exports.ExpressGatewayServiceAwsLogsConfiguration$, () => exports.ExpressGatewayRepositoryCredentials$, 64 | 0, () => EnvironmentVariables, () => SecretList], 1
+    [0, 1, () => exports.ExpressGatewayServiceAwsLogsConfiguration$, () => exports.ExpressGatewayRepositoryCredentials$, 64 | 0, [() => EnvironmentVariables, 0], () => SecretList], 1
 ];
 exports.ExpressGatewayRepositoryCredentials$ = [3, n0, _EGRC,
     0,
@@ -8360,7 +9212,7 @@ exports.ExpressGatewayServiceAwsLogsConfiguration$ = [3, n0, _EGSALC,
 exports.ExpressGatewayServiceConfiguration$ = [3, n0, _EGSC,
     0,
     [_sRAe, _eRA, _tRA, _cp, _me, _nC, _hCP, _pC, _sTc, _iP, _cAr],
-    [0, 0, 0, 0, 0, () => exports.ExpressGatewayServiceNetworkConfiguration$, 0, () => exports.ExpressGatewayContainer$, () => exports.ExpressGatewayScalingTarget$, () => IngressPathSummaries, 4]
+    [0, 0, 0, 0, 0, () => exports.ExpressGatewayServiceNetworkConfiguration$, 0, [() => exports.ExpressGatewayContainer$, 0], () => exports.ExpressGatewayScalingTarget$, () => IngressPathSummaries, 4]
 ];
 exports.ExpressGatewayServiceNetworkConfiguration$ = [3, n0, _EGSNC,
     0,
@@ -8374,7 +9226,7 @@ exports.ExpressGatewayServiceStatus$ = [3, n0, _EGSS,
 ];
 exports.Failure$ = [3, n0, _F,
     0,
-    [_ar, _r, _de],
+    [_ar, _r, _det],
     [0, 0, 0]
 ];
 exports.FirelensConfiguration$ = [3, n0, _FC,
@@ -8404,7 +9256,7 @@ exports.GetTaskProtectionResponse$ = [3, n0, _GTPRe,
 ];
 exports.HealthCheck$ = [3, n0, _HC,
     0,
-    [_com, _int, _ti, _re, _sP],
+    [_com, _int, _ti, _ret, _sP],
     [64 | 0, 1, 1, 1, 1], 1
 ];
 exports.HostEntry$ = [3, n0, _HE,
@@ -8444,12 +9296,12 @@ exports.InstanceHealthCheckResult$ = [3, n0, _IHCR,
 ];
 exports.InstanceLaunchTemplate$ = [3, n0, _ILT,
     0,
-    [_eIPA, _nC, _sCto, _lSCo, _mo, _cOT, _iMTP, _iR, _fE, _cR],
+    [_eIPA, _nC, _sCto, _lSCo, _mo, _cOT, _iMTP, _iR, _fE, _cRa],
     [0, () => exports.ManagedInstancesNetworkConfiguration$, () => exports.ManagedInstancesStorageConfiguration$, () => exports.ManagedInstancesLocalStorageConfiguration$, 0, 0, 2, [() => exports.InstanceRequirementsRequest$, 0], 2, () => exports.CapacityReservationRequest$], 2
 ];
 exports.InstanceLaunchTemplateUpdate$ = [3, n0, _ILTU,
     0,
-    [_eIPA, _nC, _sCto, _iMTP, _lSCo, _mo, _iR, _cR],
+    [_eIPA, _nC, _sCto, _iMTP, _lSCo, _mo, _iR, _cRa],
     [0, () => exports.ManagedInstancesNetworkConfiguration$, () => exports.ManagedInstancesStorageConfiguration$, 2, () => exports.ManagedInstancesLocalStorageConfiguration$, 0, [() => exports.InstanceRequirementsRequest$, 0], () => exports.CapacityReservationRequest$]
 ];
 exports.InstanceRequirementsRequest$ = [3, n0, _IRR,
@@ -8474,7 +9326,7 @@ exports.LinearConfiguration$ = [3, n0, _LC,
 ];
 exports.LinuxParameters$ = [3, n0, _LP,
     0,
-    [_ca, _dev, _iPE, _sMS, _tm, _mSa, _sw],
+    [_ca, _de, _iPE, _sMS, _tm, _mSa, _sw],
     [() => exports.KernelCapabilities$, () => DevicesList, 2, 1, () => TmpfsList, 1, 1]
 ];
 exports.ListAccountSettingsRequest$ = [3, n0, _LASR,
@@ -8517,6 +9369,36 @@ exports.ListContainerInstancesResponse$ = [3, n0, _LCIRi,
     [_cIAo, _nT],
     [64 | 0, 0]
 ];
+exports.ListDaemonDeploymentsRequest$ = [3, n0, _LDDR,
+    0,
+    [_dA, _st, _cAr, _mRa, _nT],
+    [0, 64 | 0, () => exports.CreatedAt$, 1, 0], 1
+];
+exports.ListDaemonDeploymentsResponse$ = [3, n0, _LDDRi,
+    0,
+    [_nT, _dD],
+    [0, () => DaemonDeploymentSummaryList]
+];
+exports.ListDaemonsRequest$ = [3, n0, _LDR,
+    0,
+    [_cA, _cPAa, _mRa, _nT],
+    [0, 64 | 0, 1, 0]
+];
+exports.ListDaemonsResponse$ = [3, n0, _LDRi,
+    0,
+    [_dSL, _nT],
+    [() => DaemonSummariesList, 0]
+];
+exports.ListDaemonTaskDefinitionsRequest$ = [3, n0, _LDTDR,
+    0,
+    [_fP, _f, _re, _st, _so, _nT, _mRa],
+    [0, 0, 0, 0, 0, 0, 1]
+];
+exports.ListDaemonTaskDefinitionsResponse$ = [3, n0, _LDTDRi,
+    0,
+    [_dTDa, _nT],
+    [() => DaemonTaskDefinitionSummaries, 0]
+];
 exports.ListServiceDeploymentsRequest$ = [3, n0, _LSDR,
     0,
     [_ser, _cl, _st, _cAr, _nT, _mRa],
@@ -8534,7 +9416,7 @@ exports.ListServicesByNamespaceRequest$ = [3, n0, _LSBNR,
 ];
 exports.ListServicesByNamespaceResponse$ = [3, n0, _LSBNRi,
     0,
-    [_sAe, _nT],
+    [_sAer, _nT],
     [64 | 0, 0]
 ];
 exports.ListServicesRequest$ = [3, n0, _LSR,
@@ -8544,7 +9426,7 @@ exports.ListServicesRequest$ = [3, n0, _LSR,
 ];
 exports.ListServicesResponse$ = [3, n0, _LSRi,
     0,
-    [_sAe, _nT],
+    [_sAer, _nT],
     [64 | 0, 0]
 ];
 exports.ListTagsForResourceRequest$ = [3, n0, _LTFRR,
@@ -8579,8 +9461,8 @@ exports.ListTaskDefinitionsResponse$ = [3, n0, _LTDRi,
 ];
 exports.ListTasksRequest$ = [3, n0, _LTR,
     0,
-    [_cl, _cI, _fami, _nT, _mRa, _sB, _sN, _dSe, _lT],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0]
+    [_cl, _cIo, _f, _nT, _mRa, _sB, _sN, _dSe, _lT, _dNa],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
 ];
 exports.ListTasksResponse$ = [3, n0, _LTRi,
     0,
@@ -8814,21 +9696,31 @@ exports.RegisterContainerInstanceRequest$ = [3, n0, _RCIR,
 ];
 exports.RegisterContainerInstanceResponse$ = [3, n0, _RCIRe,
     0,
-    [_cI],
+    [_cIo],
     [() => exports.ContainerInstance$]
+];
+exports.RegisterDaemonTaskDefinitionRequest$ = [3, n0, _RDTDR,
+    0,
+    [_f, _cD, _tRA, _eRA, _cp, _me, _vo, _ta],
+    [0, [() => DaemonContainerDefinitionList, 0], 0, 0, 0, 0, () => DaemonVolumeList, () => Tags], 2
+];
+exports.RegisterDaemonTaskDefinitionResponse$ = [3, n0, _RDTDRe,
+    0,
+    [_dTDA],
+    [0]
 ];
 exports.RegisterTaskDefinitionRequest$ = [3, n0, _RTDR,
     0,
-    [_fami, _cDo, _tRA, _eRA, _nM, _vo, _pCl, _rCe, _cp, _me, _ta, _pMi, _iM, _pCr, _iAn, _eSp, _rPu, _eFI],
-    [0, () => ContainerDefinitions, 0, 0, 0, () => VolumeList, () => TaskDefinitionPlacementConstraints, 64 | 0, 0, 0, () => Tags, 0, 0, () => exports.ProxyConfiguration$, () => InferenceAccelerators, () => exports.EphemeralStorage$, () => exports.RuntimePlatform$, 2], 2
+    [_f, _cD, _tRA, _eRA, _nM, _vo, _pCl, _rCe, _cp, _me, _ta, _pMi, _iM, _pCr, _iAn, _eSp, _rPu, _eFI],
+    [0, [() => ContainerDefinitions, 0], 0, 0, 0, () => VolumeList, () => TaskDefinitionPlacementConstraints, 64 | 0, 0, 0, () => Tags, 0, 0, () => exports.ProxyConfiguration$, () => InferenceAccelerators, () => exports.EphemeralStorage$, () => exports.RuntimePlatform$, 2], 2
 ];
 exports.RegisterTaskDefinitionResponse$ = [3, n0, _RTDRe,
     0,
     [_tD, _ta],
-    [() => exports.TaskDefinition$, () => Tags]
+    [[() => exports.TaskDefinition$, 0], () => Tags]
 ];
 exports.RepositoryCredentials$ = [3, n0, _RC,
-    0,
+    8,
     [_cPr],
     [0], 1
 ];
@@ -8849,23 +9741,28 @@ exports.ResourceRequirement$ = [3, n0, _RR,
 ];
 exports.Rollback$ = [3, n0, _Ro,
     0,
-    [_r, _sAt, _sRAe],
+    [_r, _sA, _sRAe],
     [0, 4, 0]
 ];
 exports.RunTaskRequest$ = [3, n0, _RTR,
     0,
     [_tD, _cPS, _cl, _cou, _eECSMT, _eEC, _g, _lT, _nC, _ov, _pCl, _pS, _pV, _pTr, _rIe, _sB, _ta, _cT, _vCo],
-    [0, () => CapacityProviderStrategy, 0, 1, 2, 2, 0, 0, () => exports.NetworkConfiguration$, () => exports.TaskOverride$, () => PlacementConstraints, () => PlacementStrategies, 0, 0, 0, 0, () => Tags, [0, 4], () => TaskVolumeConfigurations], 1
+    [0, () => CapacityProviderStrategy, 0, 1, 2, 2, 0, 0, () => exports.NetworkConfiguration$, [() => exports.TaskOverride$, 0], () => PlacementConstraints, () => PlacementStrategies, 0, 0, 0, 0, () => Tags, [0, 4], () => TaskVolumeConfigurations], 1
 ];
 exports.RunTaskResponse$ = [3, n0, _RTRu,
     0,
     [_tas, _fa],
-    [() => Tasks, () => Failures]
+    [[() => Tasks, 0], () => Failures]
 ];
 exports.RuntimePlatform$ = [3, n0, _RP,
     0,
     [_cAp, _oSF],
     [0, 0]
+];
+exports.S3FilesVolumeConfiguration$ = [3, n0, _SFVC,
+    0,
+    [_fSA, _rD, _tEP, _aPA],
+    [0, 0, 1, 0], 1
 ];
 exports.Scale$ = [3, n0, _S,
     0,
@@ -8879,12 +9776,12 @@ exports.Secret$ = [3, n0, _Se,
 ];
 exports.Service$ = [3, n0, _Ser,
     0,
-    [_sA, _sN, _cA, _lB, _sRe, _st, _dC, _rCu, _pCe, _lT, _cPS, _pV, _pF, _tD, _dCe, _tSa, _dep, _rA, _ev, _cAr, _cSD, _cSR, _pCl, _pS, _nC, _hCGPS, _sS, _dCep, _ta, _cB, _eECSMT, _pTr, _eEC, _aZR, _rMT],
+    [_sAe, _sN, _cA, _lB, _sRe, _st, _dCe, _rCu, _pCe, _lT, _cPS, _pV, _pF, _tD, _dC, _tSa, _dep, _rA, _ev, _cAr, _cSD, _cSR, _pCl, _pS, _nC, _hCGPS, _sS, _dCep, _ta, _cBr, _eECSMT, _pTr, _eEC, _aZR, _rMT],
     [0, 0, 0, () => LoadBalancers, () => ServiceRegistries, 0, 1, 1, 1, 0, () => CapacityProviderStrategy, 0, 0, 0, () => exports.DeploymentConfiguration$, () => TaskSets, () => Deployments, 0, () => ServiceEvents, 4, 0, () => ServiceCurrentRevisionSummaryList, () => PlacementConstraints, () => PlacementStrategies, () => exports.NetworkConfiguration$, 1, 0, () => exports.DeploymentController$, () => Tags, 0, 2, 0, 2, 0, 0]
 ];
 exports.ServiceConnectAccessLogConfiguration$ = [3, n0, _SCALC,
     0,
-    [_fo, _iQP],
+    [_for, _iQP],
     [0, 0], 1
 ];
 exports.ServiceConnectClientAlias$ = [3, n0, _SCCA,
@@ -8904,7 +9801,7 @@ exports.ServiceConnectService$ = [3, n0, _SCS,
 ];
 exports.ServiceConnectServiceResource$ = [3, n0, _SCSR,
     0,
-    [_dNi, _dA],
+    [_dNi, _dAi],
     [0, 0]
 ];
 exports.ServiceConnectTestTrafficHeaderMatchRules$ = [3, n0, _SCTTHMR,
@@ -8939,7 +9836,7 @@ exports.ServiceCurrentRevisionSummary$ = [3, n0, _SCRS,
 ];
 exports.ServiceDeployment$ = [3, n0, _SD,
     0,
-    [_sDAe, _sA, _cA, _cAr, _sAt, _fA, _sAto, _uA, _sSR, _tSR, _st, _sR, _lSif, _dCe, _rol, _dCB, _al],
+    [_sDAe, _sAe, _cA, _cAr, _sA, _fA, _sAt, _uA, _sSR, _tSR, _st, _sR, _lSif, _dC, _rol, _dCB, _al],
     [0, 0, 0, 4, 4, 4, 4, 4, () => ServiceRevisionsSummaryList, () => exports.ServiceRevisionSummary$, 0, 0, 0, () => exports.DeploymentConfiguration$, () => exports.Rollback$, () => exports.ServiceDeploymentCircuitBreaker$, () => exports.ServiceDeploymentAlarms$]
 ];
 exports.ServiceDeploymentAlarms$ = [3, n0, _SDA,
@@ -8949,7 +9846,7 @@ exports.ServiceDeploymentAlarms$ = [3, n0, _SDA,
 ];
 exports.ServiceDeploymentBrief$ = [3, n0, _SDB,
     0,
-    [_sDAe, _sA, _cA, _sAt, _cAr, _fA, _tSRA, _st, _sR],
+    [_sDAe, _sAe, _cA, _sA, _cAr, _fA, _tSRA, _st, _sR],
     [0, 0, 0, 4, 4, 4, 0, 0, 0]
 ];
 exports.ServiceDeploymentCircuitBreaker$ = [3, n0, _SDCB,
@@ -8974,7 +9871,7 @@ exports.ServiceRegistry$ = [3, n0, _SR,
 ];
 exports.ServiceRevision$ = [3, n0, _SRe,
     0,
-    [_sRAe, _sA, _cA, _tD, _cPS, _lT, _pV, _pF, _lB, _sRe, _nC, _cIon, _gDE, _sCC, _vCo, _fES, _cAr, _vLC, _rCes, _eMR],
+    [_sRAe, _sAe, _cA, _tD, _cPS, _lT, _pV, _pF, _lB, _sRe, _nC, _cI, _gDE, _sCC, _vCo, _fES, _cAr, _vLC, _rCes, _eMR],
     [0, 0, 0, 0, () => CapacityProviderStrategy, 0, 0, 0, () => LoadBalancers, () => ServiceRegistries, () => exports.NetworkConfiguration$, () => ContainerImages, 2, () => exports.ServiceConnectConfiguration$, () => ServiceVolumeConfigurations, () => exports.DeploymentEphemeralStorage$, 4, () => VpcLatticeConfigurations, () => exports.ResolvedConfiguration$, () => exports.ECSManagedResources$]
 ];
 exports.ServiceRevisionLoadBalancer$ = [3, n0, _SRLB,
@@ -9004,13 +9901,13 @@ exports.Setting$ = [3, n0, _Set,
 ];
 exports.StartTaskRequest$ = [3, n0, _STR,
     0,
-    [_cIo, _tD, _cl, _eECSMT, _eEC, _g, _nC, _ov, _pTr, _rIe, _sB, _ta, _vCo],
-    [64 | 0, 0, 0, 2, 2, 0, () => exports.NetworkConfiguration$, () => exports.TaskOverride$, 0, 0, 0, () => Tags, () => TaskVolumeConfigurations], 2
+    [_cIon, _tD, _cl, _eECSMT, _eEC, _g, _nC, _ov, _pTr, _rIe, _sB, _ta, _vCo],
+    [64 | 0, 0, 0, 2, 2, 0, () => exports.NetworkConfiguration$, [() => exports.TaskOverride$, 0], 0, 0, 0, () => Tags, () => TaskVolumeConfigurations], 2
 ];
 exports.StartTaskResponse$ = [3, n0, _STRt,
     0,
     [_tas, _fa],
-    [() => Tasks, () => Failures]
+    [[() => Tasks, 0], () => Failures]
 ];
 exports.StopServiceDeploymentRequest$ = [3, n0, _SSDR,
     0,
@@ -9030,7 +9927,7 @@ exports.StopTaskRequest$ = [3, n0, _STRto,
 exports.StopTaskResponse$ = [3, n0, _STRtop,
     0,
     [_task],
-    [() => exports.Task$]
+    [[() => exports.Task$, 0]]
 ];
 exports.SubmitAttachmentStateChangesRequest$ = [3, n0, _SASCR,
     0,
@@ -9084,13 +9981,13 @@ exports.TagResourceResponse$ = [3, n0, _TRRa,
 ];
 exports.Task$ = [3, n0, _Ta,
     0,
-    [_a, _at, _aZ, _cPN, _cA, _conn, _cAon, _cIA, _conta, _cp, _cAr, _dSe, _eEC, _eSA, _g, _hS, _iAn, _lS, _lT, _me, _ov, _pV, _pF, _pSA, _pSAu, _sAt, _sB, _sCtop, _sAto, _sRt, _sAtop, _ta, _tA, _tDAa, _ve, _eSp, _fES],
-    [() => Attachments, () => Attributes, 0, 0, 0, 0, 4, 0, () => Containers, 0, 4, 0, 2, 4, 0, 0, () => InferenceAccelerators, 0, 0, 0, () => exports.TaskOverride$, 0, 0, 4, 4, 4, 0, 0, 4, 0, 4, () => Tags, 0, 0, 1, () => exports.EphemeralStorage$, () => exports.TaskEphemeralStorage$]
+    [_a, _at, _aZ, _cPN, _cA, _conn, _cAon, _cIA, _conta, _cp, _cAr, _dSe, _eEC, _eSA, _g, _hS, _iAn, _lS, _lT, _me, _ov, _pV, _pF, _pSA, _pSAu, _sA, _sB, _sCtop, _sAt, _sRt, _sAto, _ta, _tA, _tDAa, _ve, _eSp, _fES],
+    [() => Attachments, () => Attributes, 0, 0, 0, 0, 4, 0, () => Containers, 0, 4, 0, 2, 4, 0, 0, () => InferenceAccelerators, 0, 0, 0, [() => exports.TaskOverride$, 0], 0, 0, 4, 4, 4, 0, 0, 4, 0, 4, () => Tags, 0, 0, 1, () => exports.EphemeralStorage$, () => exports.TaskEphemeralStorage$]
 ];
 exports.TaskDefinition$ = [3, n0, _TD,
     0,
-    [_tDAa, _cDo, _fami, _tRA, _eRA, _nM, _rev, _vo, _st, _rAeq, _pCl, _comp, _rPu, _rCe, _cp, _me, _iAn, _pMi, _iM, _pCr, _rAe, _dAe, _rB, _eSp, _eFI],
-    [0, () => ContainerDefinitions, 0, 0, 0, 0, 1, () => VolumeList, 0, () => RequiresAttributes, () => TaskDefinitionPlacementConstraints, 64 | 0, () => exports.RuntimePlatform$, 64 | 0, 0, 0, () => InferenceAccelerators, 0, 0, () => exports.ProxyConfiguration$, 4, 4, 0, () => exports.EphemeralStorage$, 2]
+    [_tDAa, _cD, _f, _tRA, _eRA, _nM, _re, _vo, _st, _rAeq, _pCl, _comp, _rPu, _rCe, _cp, _me, _iAn, _pMi, _iM, _pCr, _rAe, _dAer, _dRAe, _rB, _eSp, _eFI],
+    [0, [() => ContainerDefinitions, 0], 0, 0, 0, 0, 1, () => VolumeList, 0, () => RequiresAttributes, () => TaskDefinitionPlacementConstraints, 64 | 0, () => exports.RuntimePlatform$, 64 | 0, 0, 0, () => InferenceAccelerators, 0, 0, () => exports.ProxyConfiguration$, 4, 4, 4, 0, () => exports.EphemeralStorage$, 2]
 ];
 exports.TaskDefinitionPlacementConstraint$ = [3, n0, _TDPC,
     0,
@@ -9115,11 +10012,11 @@ exports.TaskManagedEBSVolumeTerminationPolicy$ = [3, n0, _TMEBSVTP,
 exports.TaskOverride$ = [3, n0, _TO,
     0,
     [_cO, _cp, _iAO, _eRA, _me, _tRA, _eSp],
-    [() => ContainerOverrides, 0, () => InferenceAcceleratorOverrides, 0, 0, 0, () => exports.EphemeralStorage$]
+    [[() => ContainerOverrides, 0], 0, () => InferenceAcceleratorOverrides, 0, 0, 0, () => exports.EphemeralStorage$]
 ];
 exports.TaskSet$ = [3, n0, _TS,
     0,
-    [_i, _tSA, _sA, _cA, _sB, _eI, _st, _tD, _cDC, _pCe, _rCu, _cAr, _uA, _lT, _cPS, _pV, _pF, _nC, _lB, _sRe, _sc, _sSt, _sSA, _ta, _fES],
+    [_i, _tSA, _sAe, _cA, _sB, _eI, _st, _tD, _cDC, _pCe, _rCu, _cAr, _uA, _lT, _cPS, _pV, _pF, _nC, _lB, _sRe, _sc, _sSt, _sSA, _ta, _fES],
     [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 4, 4, 0, () => CapacityProviderStrategy, 0, 0, () => exports.NetworkConfiguration$, () => LoadBalancers, () => ServiceRegistries, () => exports.Scale$, 0, 4, () => Tags, () => exports.DeploymentEphemeralStorage$]
 ];
 exports.TaskVolumeConfiguration$ = [3, n0, _TVC,
@@ -9189,38 +10086,48 @@ exports.UpdateClusterSettingsResponse$ = [3, n0, _UCSRp,
 ];
 exports.UpdateContainerAgentRequest$ = [3, n0, _UCAR,
     0,
-    [_cI, _cl],
+    [_cIo, _cl],
     [0, 0], 1
 ];
 exports.UpdateContainerAgentResponse$ = [3, n0, _UCARp,
     0,
-    [_cI],
+    [_cIo],
     [() => exports.ContainerInstance$]
 ];
 exports.UpdateContainerInstancesStateRequest$ = [3, n0, _UCISR,
     0,
-    [_cIo, _st, _cl],
+    [_cIon, _st, _cl],
     [64 | 0, 0, 0], 2
 ];
 exports.UpdateContainerInstancesStateResponse$ = [3, n0, _UCISRp,
     0,
-    [_cIo, _fa],
+    [_cIon, _fa],
     [() => ContainerInstances, () => Failures]
+];
+exports.UpdateDaemonRequest$ = [3, n0, _UDR,
+    0,
+    [_dA, _dTDA, _cPAa, _dC, _pTr, _eECSMT, _eEC],
+    [0, 0, 64 | 0, () => exports.DaemonDeploymentConfiguration$, 0, 2, 2], 3
+];
+exports.UpdateDaemonResponse$ = [3, n0, _UDRp,
+    0,
+    [_dA, _st, _cAr, _uA, _dAe],
+    [0, 0, 4, 4, 0]
 ];
 exports.UpdatedExpressGatewayService$ = [3, n0, _UEGS,
     0,
-    [_sA, _cl, _sN, _st, _tCa, _cAr, _uA],
-    [0, 0, 0, () => exports.ExpressGatewayServiceStatus$, () => exports.ExpressGatewayServiceConfiguration$, 4, 4]
+    [_sAe, _cl, _sN, _st, _tCa, _cAr, _uA],
+    [0, 0, 0, () => exports.ExpressGatewayServiceStatus$, [() => exports.ExpressGatewayServiceConfiguration$, 0], 4, 4]
 ];
 exports.UpdateExpressGatewayServiceRequest$ = [3, n0, _UEGSR,
     0,
-    [_sA, _eRA, _hCP, _pC, _tRA, _nC, _cp, _me, _sTc],
-    [0, 0, 0, () => exports.ExpressGatewayContainer$, 0, () => exports.ExpressGatewayServiceNetworkConfiguration$, 0, 0, () => exports.ExpressGatewayScalingTarget$], 1
+    [_sAe, _eRA, _hCP, _pC, _tRA, _nC, _cp, _me, _sTc],
+    [0, 0, 0, [() => exports.ExpressGatewayContainer$, 0], 0, () => exports.ExpressGatewayServiceNetworkConfiguration$, 0, 0, () => exports.ExpressGatewayScalingTarget$], 1
 ];
 exports.UpdateExpressGatewayServiceResponse$ = [3, n0, _UEGSRp,
     0,
     [_ser],
-    [() => exports.UpdatedExpressGatewayService$]
+    [[() => exports.UpdatedExpressGatewayService$, 0]]
 ];
 exports.UpdateManagedInstancesProviderConfiguration$ = [3, n0, _UMIPC,
     0,
@@ -9239,7 +10146,7 @@ exports.UpdateServicePrimaryTaskSetResponse$ = [3, n0, _USPTSRp,
 ];
 exports.UpdateServiceRequest$ = [3, n0, _USR,
     0,
-    [_ser, _cl, _dC, _tD, _cPS, _dCe, _aZR, _nC, _pCl, _pS, _pV, _fND, _hCGPS, _dCep, _eEC, _eECSMT, _lB, _pTr, _sRe, _sCC, _vCo, _vLC],
+    [_ser, _cl, _dCe, _tD, _cPS, _dC, _aZR, _nC, _pCl, _pS, _pV, _fND, _hCGPS, _dCep, _eEC, _eECSMT, _lB, _pTr, _sRe, _sCC, _vCo, _vLC],
     [0, 0, 1, 0, () => CapacityProviderStrategy, () => exports.DeploymentConfiguration$, 0, () => exports.NetworkConfiguration$, () => PlacementConstraints, () => PlacementStrategies, 0, 2, 1, () => exports.DeploymentController$, 2, 2, () => LoadBalancers, 0, () => ServiceRegistries, () => exports.ServiceConnectConfiguration$, () => ServiceVolumeConfigurations, () => VpcLatticeConfigurations], 1
 ];
 exports.UpdateServiceResponse$ = [3, n0, _USRp,
@@ -9279,8 +10186,8 @@ exports.VersionInfo$ = [3, n0, _VI,
 ];
 exports.Volume$ = [3, n0, _V,
     0,
-    [_n, _ho, _dVC, _eVC, _fWFSVC, _cAL],
-    [0, () => exports.HostVolumeProperties$, () => exports.DockerVolumeConfiguration$, () => exports.EFSVolumeConfiguration$, () => exports.FSxWindowsFileServerVolumeConfiguration$, 2]
+    [_n, _ho, _dVC, _eVC, _sVC, _fWFSVC, _cAL],
+    [0, () => exports.HostVolumeProperties$, () => exports.DockerVolumeConfiguration$, () => exports.EFSVolumeConfiguration$, () => exports.S3FilesVolumeConfiguration$, () => exports.FSxWindowsFileServerVolumeConfiguration$, 2]
 ];
 exports.VolumeFrom$ = [3, n0, _VF,
     0,
@@ -9337,7 +10244,8 @@ var ClusterSettings = [1, n0, _CSl,
 ];
 var CompatibilityList = (/* unused pure expression or super */ null && (64 | 0));
 var ContainerDefinitions = [1, n0, _CDon,
-    0, () => exports.ContainerDefinition$
+    0, [() => exports.ContainerDefinition$,
+        0]
 ];
 var ContainerDependencies = [1, n0, _CDont,
     0, () => exports.ContainerDependency$
@@ -9350,7 +10258,8 @@ var ContainerInstances = [1, n0, _CIont,
     0, () => exports.ContainerInstance$
 ];
 var ContainerOverrides = [1, n0, _COo,
-    0, () => exports.ContainerOverride$
+    0, [() => exports.ContainerOverride$,
+        0]
 ];
 var Containers = [1, n0, _Con,
     0, () => exports.Container$
@@ -9361,6 +10270,44 @@ var ContainerStateChanges = [1, n0, _CSCo,
 var CpuManufacturerSet = [1, n0, _CMS,
     0, [0,
         { [_xN]: _it }]
+];
+var DaemonCapacityProviderList = [1, n0, _DCPL,
+    0, () => exports.DaemonCapacityProvider$
+];
+var DaemonContainerDefinitionList = [1, n0, _DCDL,
+    0, [() => exports.DaemonContainerDefinition$,
+        0]
+];
+var DaemonContainerImages = [1, n0, _DCIa,
+    0, () => exports.DaemonContainerImage$
+];
+var DaemonDeploymentCapacityProviderList = [1, n0, _DDCPL,
+    0, () => exports.DaemonDeploymentCapacityProvider$
+];
+var DaemonDeploymentList = [1, n0, _DDL,
+    0, () => exports.DaemonDeployment$
+];
+var DaemonDeploymentRevisionDetailList = [1, n0, _DDRDL,
+    0, () => exports.DaemonDeploymentRevisionDetail$
+];
+var DaemonDeploymentStatusList = (/* unused pure expression or super */ null && (64 | 0));
+var DaemonDeploymentSummaryList = [1, n0, _DDSL,
+    0, () => exports.DaemonDeploymentSummary$
+];
+var DaemonRevisionDetailList = [1, n0, _DRDL,
+    0, () => exports.DaemonRevisionDetail$
+];
+var DaemonRevisions = [1, n0, _DRae,
+    0, () => exports.DaemonRevision$
+];
+var DaemonSummariesList = [1, n0, _DSL,
+    0, () => exports.DaemonSummary$
+];
+var DaemonTaskDefinitionSummaries = [1, n0, _DTDSa,
+    0, () => exports.DaemonTaskDefinitionSummary$
+];
+var DaemonVolumeList = [1, n0, _DVL,
+    0, () => exports.DaemonVolume$
 ];
 var DeploymentLifecycleHookList = [1, n0, _DLHL,
     0, () => exports.DeploymentLifecycleHook$
@@ -9380,14 +10327,15 @@ var EnvironmentFiles = [1, n0, _EFn,
     0, () => exports.EnvironmentFile$
 ];
 var EnvironmentVariables = [1, n0, _EV,
-    0, () => exports.KeyValuePair$
+    8, () => exports.KeyValuePair$
 ];
 var ExcludedInstanceTypeSet = [1, n0, _EITS,
     0, [0,
         { [_xN]: _it }]
 ];
 var ExpressGatewayServiceConfigurations = [1, n0, _EGSCx,
-    0, () => exports.ExpressGatewayServiceConfiguration$
+    0, [() => exports.ExpressGatewayServiceConfiguration$,
+        0]
 ];
 var ExpressGatewayServiceIncludeList = (/* unused pure expression or super */ null && (64 | 0));
 var Failures = [1, n0, _Fa,
@@ -9542,14 +10490,16 @@ var Tags = [1, n0, _Tag,
 ];
 var TaskDefinitionFieldList = (/* unused pure expression or super */ null && (64 | 0));
 var TaskDefinitionList = [1, n0, _TDL,
-    0, () => exports.TaskDefinition$
+    0, [() => exports.TaskDefinition$,
+        0]
 ];
 var TaskDefinitionPlacementConstraints = [1, n0, _TDPCa,
     0, () => exports.TaskDefinitionPlacementConstraint$
 ];
 var TaskFieldList = (/* unused pure expression or super */ null && (64 | 0));
 var Tasks = [1, n0, _Tas,
-    0, () => exports.Task$
+    0, [() => exports.Task$,
+        0]
 ];
 var TaskSetFieldList = (/* unused pure expression or super */ null && (64 | 0));
 var TaskSets = [1, n0, _TSa,
@@ -9583,6 +10533,9 @@ exports.CreateCapacityProvider$ = [9, n0, _CCP,
 exports.CreateCluster$ = [9, n0, _CCr,
     0, () => exports.CreateClusterRequest$, () => exports.CreateClusterResponse$
 ];
+exports.CreateDaemon$ = [9, n0, _CDr,
+    0, () => exports.CreateDaemonRequest$, () => exports.CreateDaemonResponse$
+];
 exports.CreateExpressGatewayService$ = [9, n0, _CEGS,
     0, () => exports.CreateExpressGatewayServiceRequest$, () => exports.CreateExpressGatewayServiceResponse$
 ];
@@ -9598,38 +10551,56 @@ exports.DeleteAccountSetting$ = [9, n0, _DAS,
 exports.DeleteAttributes$ = [9, n0, _DAe,
     0, () => exports.DeleteAttributesRequest$, () => exports.DeleteAttributesResponse$
 ];
-exports.DeleteCapacityProvider$ = [9, n0, _DCP,
+exports.DeleteCapacityProvider$ = [9, n0, _DCPe,
     2, () => exports.DeleteCapacityProviderRequest$, () => exports.DeleteCapacityProviderResponse$
 ];
 exports.DeleteCluster$ = [9, n0, _DCel,
     2, () => exports.DeleteClusterRequest$, () => exports.DeleteClusterResponse$
 ];
+exports.DeleteDaemon$ = [9, n0, _DDe,
+    2, () => exports.DeleteDaemonRequest$, () => exports.DeleteDaemonResponse$
+];
+exports.DeleteDaemonTaskDefinition$ = [9, n0, _DDTD,
+    0, () => exports.DeleteDaemonTaskDefinitionRequest$, () => exports.DeleteDaemonTaskDefinitionResponse$
+];
 exports.DeleteExpressGatewayService$ = [9, n0, _DEGS,
     0, () => exports.DeleteExpressGatewayServiceRequest$, () => exports.DeleteExpressGatewayServiceResponse$
 ];
-exports.DeleteService$ = [9, n0, _DS,
+exports.DeleteService$ = [9, n0, _DSe,
     2, () => exports.DeleteServiceRequest$, () => exports.DeleteServiceResponse$
 ];
-exports.DeleteTaskDefinitions$ = [9, n0, _DTD,
+exports.DeleteTaskDefinitions$ = [9, n0, _DTDe,
     0, () => exports.DeleteTaskDefinitionsRequest$, () => exports.DeleteTaskDefinitionsResponse$
 ];
 exports.DeleteTaskSet$ = [9, n0, _DTS,
     2, () => exports.DeleteTaskSetRequest$, () => exports.DeleteTaskSetResponse$
 ];
-exports.DeregisterContainerInstance$ = [9, n0, _DCI,
+exports.DeregisterContainerInstance$ = [9, n0, _DCIe,
     0, () => exports.DeregisterContainerInstanceRequest$, () => exports.DeregisterContainerInstanceResponse$
 ];
-exports.DeregisterTaskDefinition$ = [9, n0, _DTDe,
+exports.DeregisterTaskDefinition$ = [9, n0, _DTDer,
     0, () => exports.DeregisterTaskDefinitionRequest$, () => exports.DeregisterTaskDefinitionResponse$
 ];
-exports.DescribeCapacityProviders$ = [9, n0, _DCPe,
+exports.DescribeCapacityProviders$ = [9, n0, _DCPes,
     0, () => exports.DescribeCapacityProvidersRequest$, () => exports.DescribeCapacityProvidersResponse$
 ];
 exports.DescribeClusters$ = [9, n0, _DCes,
     0, () => exports.DescribeClustersRequest$, () => exports.DescribeClustersResponse$
 ];
-exports.DescribeContainerInstances$ = [9, n0, _DCIe,
+exports.DescribeContainerInstances$ = [9, n0, _DCIes,
     0, () => exports.DescribeContainerInstancesRequest$, () => exports.DescribeContainerInstancesResponse$
+];
+exports.DescribeDaemon$ = [9, n0, _DDes,
+    0, () => exports.DescribeDaemonRequest$, () => exports.DescribeDaemonResponse$
+];
+exports.DescribeDaemonDeployments$ = [9, n0, _DDD,
+    0, () => exports.DescribeDaemonDeploymentsRequest$, () => exports.DescribeDaemonDeploymentsResponse$
+];
+exports.DescribeDaemonRevisions$ = [9, n0, _DDRescr,
+    0, () => exports.DescribeDaemonRevisionsRequest$, () => exports.DescribeDaemonRevisionsResponse$
+];
+exports.DescribeDaemonTaskDefinition$ = [9, n0, _DDTDe,
+    0, () => exports.DescribeDaemonTaskDefinitionRequest$, () => exports.DescribeDaemonTaskDefinitionResponse$
 ];
 exports.DescribeExpressGatewayService$ = [9, n0, _DEGSe,
     0, () => exports.DescribeExpressGatewayServiceRequest$, () => exports.DescribeExpressGatewayServiceResponse$
@@ -9640,7 +10611,7 @@ exports.DescribeServiceDeployments$ = [9, n0, _DSD,
 exports.DescribeServiceRevisions$ = [9, n0, _DSRescr,
     0, () => exports.DescribeServiceRevisionsRequest$, () => exports.DescribeServiceRevisionsResponse$
 ];
-exports.DescribeServices$ = [9, n0, _DSe,
+exports.DescribeServices$ = [9, n0, _DSes,
     0, () => exports.DescribeServicesRequest$, () => exports.DescribeServicesResponse$
 ];
 exports.DescribeTaskDefinition$ = [9, n0, _DTDes,
@@ -9672,6 +10643,15 @@ exports.ListClusters$ = [9, n0, _LCi,
 ];
 exports.ListContainerInstances$ = [9, n0, _LCI,
     0, () => exports.ListContainerInstancesRequest$, () => exports.ListContainerInstancesResponse$
+];
+exports.ListDaemonDeployments$ = [9, n0, _LDD,
+    0, () => exports.ListDaemonDeploymentsRequest$, () => exports.ListDaemonDeploymentsResponse$
+];
+exports.ListDaemons$ = [9, n0, _LD,
+    0, () => exports.ListDaemonsRequest$, () => exports.ListDaemonsResponse$
+];
+exports.ListDaemonTaskDefinitions$ = [9, n0, _LDTD,
+    0, () => exports.ListDaemonTaskDefinitionsRequest$, () => exports.ListDaemonTaskDefinitionsResponse$
 ];
 exports.ListServiceDeployments$ = [9, n0, _LSD,
     0, () => exports.ListServiceDeploymentsRequest$, () => exports.ListServiceDeploymentsResponse$
@@ -9708,6 +10688,9 @@ exports.PutClusterCapacityProviders$ = [9, n0, _PCCP,
 ];
 exports.RegisterContainerInstance$ = [9, n0, _RCI,
     0, () => exports.RegisterContainerInstanceRequest$, () => exports.RegisterContainerInstanceResponse$
+];
+exports.RegisterDaemonTaskDefinition$ = [9, n0, _RDTD,
+    0, () => exports.RegisterDaemonTaskDefinitionRequest$, () => exports.RegisterDaemonTaskDefinitionResponse$
 ];
 exports.RegisterTaskDefinition$ = [9, n0, _RTD,
     0, () => exports.RegisterTaskDefinitionRequest$, () => exports.RegisterTaskDefinitionResponse$
@@ -9754,6 +10737,9 @@ exports.UpdateContainerAgent$ = [9, n0, _UCA,
 exports.UpdateContainerInstancesState$ = [9, n0, _UCIS,
     0, () => exports.UpdateContainerInstancesStateRequest$, () => exports.UpdateContainerInstancesStateResponse$
 ];
+exports.UpdateDaemon$ = [9, n0, _UD,
+    0, () => exports.UpdateDaemonRequest$, () => exports.UpdateDaemonResponse$
+];
 exports.UpdateExpressGatewayService$ = [9, n0, _UEGSp,
     0, () => exports.UpdateExpressGatewayServiceRequest$, () => exports.UpdateExpressGatewayServiceResponse$
 ];
@@ -9795,6 +10781,22 @@ More information can be found at: https://a.co/c895JFp`);
     }
 };
 
+const longPollMiddleware = () => (next, context) => async (args) => {
+    context.__retryLongPoll = true;
+    return next(args);
+};
+const longPollMiddlewareOptions = {
+    name: "longPollMiddleware",
+    tags: ["RETRY"],
+    step: "initialize",
+    override: true,
+};
+const getLongPollPlugin = (options) => ({
+    applyToStack: (clientStack) => {
+        clientStack.add(longPollMiddleware(), longPollMiddlewareOptions);
+    },
+});
+
 function setCredentialFeature(credentials, feature, value) {
     if (!credentials.$source) {
         credentials.$source = {};
@@ -9824,6 +10826,7 @@ function setTokenFeature(token, feature, value) {
 }
 
 exports.emitWarningIfUnsupportedVersion = emitWarningIfUnsupportedVersion;
+exports.getLongPollPlugin = getLongPollPlugin;
 exports.setCredentialFeature = setCredentialFeature;
 exports.setFeature = setFeature;
 exports.setTokenFeature = setTokenFeature;
@@ -10249,12 +11252,11 @@ class ProtocolLib {
             if (msg) {
                 error.message = msg;
             }
-            error.Error = {
-                ...error.Error,
-                Type: error.Error?.Type,
-                Code: error.Error?.Code,
-                Message: error.Error?.message ?? error.Error?.Message ?? msg,
-            };
+            const errorObj = error.Error ?? {};
+            errorObj.Type = error.Error?.Type;
+            errorObj.Code = error.Error?.Code;
+            errorObj.Message = error.Error?.message ?? error.Error?.Message ?? msg;
+            error.Error = errorObj;
             const reqId = error.$metadata.requestId;
             if (reqId) {
                 error.RequestId = reqId;
@@ -10267,14 +11269,16 @@ class ProtocolLib {
         const queryErrorHeader = response.headers?.["x-amzn-query-error"];
         if (output !== undefined && queryErrorHeader != null) {
             const [Code, Type] = queryErrorHeader.split(";");
-            const entries = Object.entries(output);
+            const keys = Object.keys(output);
             const Error = {
                 Code,
                 Type,
             };
-            Object.assign(output, Error);
-            for (const [k, v] of entries) {
-                Error[k === "message" ? "Message" : k] = v;
+            output.Code = Code;
+            output.Type = Type;
+            for (let i = 0; i < keys.length; i++) {
+                const k = keys[i];
+                Error[k === "message" ? "Message" : k] = output[k];
             }
             delete Error.__type;
             output.Error = Error;
@@ -10413,7 +11417,10 @@ class UnionSerde {
     constructor(from, to) {
         this.from = from;
         this.to = to;
-        this.keys = new Set(Object.keys(this.from).filter((k) => k !== "__type"));
+        const keys = Object.keys(this.from);
+        const set = new Set(keys);
+        set.delete("__type");
+        this.keys = set;
     }
     mark(key) {
         this.keys.delete(key);
@@ -10471,24 +11478,24 @@ const parseJsonErrorBody = async (errorBody, context) => {
     value.message = value.message ?? value.Message;
     return value;
 };
+const findKey = (object, key) => Object.keys(object).find((k) => k.toLowerCase() === key.toLowerCase());
+const sanitizeErrorCode = (rawValue) => {
+    let cleanValue = rawValue;
+    if (typeof cleanValue === "number") {
+        cleanValue = cleanValue.toString();
+    }
+    if (cleanValue.indexOf(",") >= 0) {
+        cleanValue = cleanValue.split(",")[0];
+    }
+    if (cleanValue.indexOf(":") >= 0) {
+        cleanValue = cleanValue.split(":")[0];
+    }
+    if (cleanValue.indexOf("#") >= 0) {
+        cleanValue = cleanValue.split("#")[1];
+    }
+    return cleanValue;
+};
 const loadRestJsonErrorCode = (output, data) => {
-    const findKey = (object, key) => Object.keys(object).find((k) => k.toLowerCase() === key.toLowerCase());
-    const sanitizeErrorCode = (rawValue) => {
-        let cleanValue = rawValue;
-        if (typeof cleanValue === "number") {
-            cleanValue = cleanValue.toString();
-        }
-        if (cleanValue.indexOf(",") >= 0) {
-            cleanValue = cleanValue.split(",")[0];
-        }
-        if (cleanValue.indexOf(":") >= 0) {
-            cleanValue = cleanValue.split(":")[0];
-        }
-        if (cleanValue.indexOf("#") >= 0) {
-            cleanValue = cleanValue.split("#")[1];
-        }
-        return cleanValue;
-    };
     const headerKey = findKey(output.headers, "x-amzn-errortype");
     if (headerKey !== undefined) {
         return sanitizeErrorCode(output.headers[headerKey]);
@@ -10550,7 +11557,8 @@ class JsonShapeDeserializer extends SerdeContextConfig {
                     unionSerde.writeUnknown();
                 }
                 else if (typeof record.__type === "string") {
-                    for (const [k, v] of Object.entries(record)) {
+                    for (const k in record) {
+                        const v = record[k];
                         const t = jsonName ? nameMap[k] ?? k : k;
                         if (!(t in out)) {
                             out[t] = v;
@@ -10570,8 +11578,8 @@ class JsonShapeDeserializer extends SerdeContextConfig {
             if (ns.isMapSchema()) {
                 const mapMember = ns.getValueSchema();
                 const out = {};
-                for (const [_k, _v] of Object.entries(value)) {
-                    out[_k] = this._read(mapMember, _v);
+                for (const _k in value) {
+                    out[_k] = this._read(mapMember, value[_k]);
                 }
                 return out;
             }
@@ -10628,7 +11636,8 @@ class JsonShapeDeserializer extends SerdeContextConfig {
         if (ns.isDocumentSchema()) {
             if (isObject) {
                 const out = Array.isArray(value) ? [] : {};
-                for (const [k, v] of Object.entries(value)) {
+                for (const k in value) {
+                    const v = value[k];
                     if (v instanceof serde.NumericValue) {
                         out[k] = v;
                     }
@@ -10705,12 +11714,6 @@ class JsonShapeSerializer extends SerdeContextConfig {
         this.rootSchema = schema.NormalizedSchema.of(schema$1);
         this.buffer = this._write(this.rootSchema, value);
     }
-    writeDiscriminatedDocument(schema$1, value) {
-        this.write(schema$1, value);
-        if (typeof this.buffer === "object") {
-            this.buffer.__type = schema.NormalizedSchema.of(schema$1).getName(true);
-        }
-    }
     flush() {
         const { rootSchema, useReplacer } = this;
         this.rootSchema = undefined;
@@ -10724,6 +11727,12 @@ class JsonShapeSerializer extends SerdeContextConfig {
         }
         return this.buffer;
     }
+    writeDiscriminatedDocument(schema$1, value) {
+        this.write(schema$1, value);
+        if (typeof this.buffer === "object") {
+            this.buffer.__type = schema.NormalizedSchema.of(schema$1).getName(true);
+        }
+    }
     _write(schema$1, value, container) {
         const isObject = value !== null && typeof value === "object";
         const ns = schema.NormalizedSchema.of(schema$1);
@@ -10736,6 +11745,7 @@ class JsonShapeSerializer extends SerdeContextConfig {
                 if (jsonName) {
                     nameMap = {};
                 }
+                let outCount = 0;
                 for (const [memberName, memberSchema] of ns.structIterator()) {
                     const serializableValue = this._write(memberSchema, record[memberName], ns);
                     if (serializableValue !== undefined) {
@@ -10745,9 +11755,10 @@ class JsonShapeSerializer extends SerdeContextConfig {
                             nameMap[memberName] = targetKey;
                         }
                         out[targetKey] = serializableValue;
+                        outCount++;
                     }
                 }
-                if (ns.isUnionSchema() && Object.keys(out).length === 0) {
+                if (ns.isUnionSchema() && outCount === 0) {
                     const { $unknown } = record;
                     if (Array.isArray($unknown)) {
                         const [k, v] = $unknown;
@@ -10755,7 +11766,8 @@ class JsonShapeSerializer extends SerdeContextConfig {
                     }
                 }
                 else if (typeof record.__type === "string") {
-                    for (const [k, v] of Object.entries(record)) {
+                    for (const k in record) {
+                        const v = record[k];
                         const targetKey = jsonName ? nameMap[k] ?? k : k;
                         if (!(targetKey in out)) {
                             out[targetKey] = this._write(15, v);
@@ -10779,7 +11791,8 @@ class JsonShapeSerializer extends SerdeContextConfig {
                 const mapMember = ns.getValueSchema();
                 const out = {};
                 const sparse = !!ns.getMergedTraits().sparse;
-                for (const [_k, _v] of Object.entries(value)) {
+                for (const _k in value) {
+                    const _v = value[_k];
                     if (sparse || _v != null) {
                         out[_k] = this._write(mapMember, _v);
                     }
@@ -10844,7 +11857,8 @@ class JsonShapeSerializer extends SerdeContextConfig {
         if (ns.isDocumentSchema()) {
             if (isObject) {
                 const out = Array.isArray(value) ? [] : {};
-                for (const [k, v] of Object.entries(value)) {
+                for (const k in value) {
+                    const v = value[k];
                     if (v instanceof serde.NumericValue) {
                         this.useReplacer = true;
                         out[k] = v;
@@ -10913,10 +11927,8 @@ class AwsJsonRpcProtocol extends protocols.RpcProtocol {
         if (!request.path.endsWith("/")) {
             request.path += "/";
         }
-        Object.assign(request.headers, {
-            "content-type": `application/x-amz-json-${this.getJsonRpcVersion()}`,
-            "x-amz-target": `${this.serviceTarget}.${operationSchema.name}`,
-        });
+        request.headers["content-type"] = `application/x-amz-json-${this.getJsonRpcVersion()}`;
+        request.headers["x-amz-target"] = `${this.serviceTarget}.${operationSchema.name}`;
         if (this.awsQueryCompatible) {
             request.headers["x-amzn-query-mode"] = "true";
         }
@@ -10940,9 +11952,10 @@ class AwsJsonRpcProtocol extends protocols.RpcProtocol {
         const ErrorCtor = this.compositeErrorRegistry.getErrorCtor(errorSchema) ?? Error;
         const exception = new ErrorCtor(message);
         const output = {};
+        const errorDeserializer = this.codec.createDeserializer();
         for (const [name, member] of ns.structIterator()) {
             if (dataObject[name] != null) {
-                output[name] = this.codec.createDeserializer().readObject(member, dataObject[name]);
+                output[name] = errorDeserializer.readObject(member, dataObject[name]);
             }
         }
         if (this.awsQueryCompatible) {
@@ -11063,9 +12076,10 @@ class AwsRestJsonProtocol extends protocols.HttpBindingProtocol {
         const exception = new ErrorCtor(message);
         await this.deserializeHttpMessage(errorSchema, context, response, dataObject);
         const output = {};
+        const errorDeserializer = this.codec.createDeserializer();
         for (const [name, member] of ns.structIterator()) {
             const target = member.getMergedTraits().jsonName ?? name;
-            output[name] = this.codec.createDeserializer().readObject(member, dataObject[target]);
+            output[name] = errorDeserializer.readObject(member, dataObject[target]);
         }
         throw this.mixin.decorateServiceException(Object.assign(exception, errorMetadata, {
             $fault: ns.getMergedTraits().error,
@@ -11343,7 +12357,8 @@ class QueryShapeSerializer extends SerdeContextConfig {
                 const memberSchema = ns.getValueSchema();
                 const flat = ns.getMergedTraits().xmlFlattened;
                 let i = 1;
-                for (const [k, v] of Object.entries(value)) {
+                for (const k in value) {
+                    const v = value[k];
                     if (v == null) {
                         continue;
                     }
@@ -11456,9 +12471,7 @@ class AwsQueryProtocol extends protocols.RpcProtocol {
         if (!request.path.endsWith("/")) {
             request.path += "/";
         }
-        Object.assign(request.headers, {
-            "content-type": `application/x-www-form-urlencoded`,
-        });
+        request.headers["content-type"] = "application/x-www-form-urlencoded";
         if (schema.deref(operationSchema.input) === "unit" || !request.body) {
             request.body = "";
         }
@@ -11491,11 +12504,8 @@ class AwsQueryProtocol extends protocols.RpcProtocol {
         if (bytes.byteLength > 0) {
             Object.assign(dataObject, await deserializer.read(ns, bytes, awsQueryResultKey));
         }
-        const output = {
-            $metadata: this.deserializeMetadata(response),
-            ...dataObject,
-        };
-        return output;
+        dataObject.$metadata = this.deserializeMetadata(response);
+        return dataObject;
     }
     useNestedResult() {
         return true;
@@ -11802,7 +12812,8 @@ class XmlShapeSerializer extends SerdeContextConfig {
             entry.addChildNode(valueNode);
         };
         if (flat) {
-            for (const [key, val] of Object.entries(map)) {
+            for (const key in map) {
+                const val = map[key];
                 if (sparse || val != null) {
                     const entry = xmlBuilder.XmlNode.of(mapTraits.xmlName ?? mapMember.getMemberName());
                     addKeyValue(entry, key, val);
@@ -11819,7 +12830,8 @@ class XmlShapeSerializer extends SerdeContextConfig {
                 }
                 container.addChildNode(mapNode);
             }
-            for (const [key, val] of Object.entries(map)) {
+            for (const key in map) {
+                const val = map[key];
                 if (sparse || val != null) {
                     const entry = xmlBuilder.XmlNode.of("entry");
                     addKeyValue(entry, key, val);
@@ -11995,10 +13007,11 @@ class AwsRestXmlProtocol extends protocols.HttpBindingProtocol {
         const exception = new ErrorCtor(message);
         await this.deserializeHttpMessage(errorSchema, context, response, dataObject);
         const output = {};
+        const errorDeserializer = this.codec.createDeserializer();
         for (const [name, member] of ns.structIterator()) {
             const target = member.getMergedTraits().xmlName ?? name;
             const value = dataObject.Error?.[target] ?? dataObject[target];
-            output[name] = this.codec.createDeserializer().readSchema(member, value);
+            output[name] = errorDeserializer.readSchema(member, value);
         }
         throw this.mixin.decorateServiceException(Object.assign(exception, errorMetadata, {
             $fault: ns.getMergedTraits().error,
@@ -13836,8 +14849,8 @@ exports.resolveRegionConfig = resolveRegionConfig;
 
 
 var types = __nccwpck_require__(690);
-var utilMiddleware = __nccwpck_require__(6324);
 var protocolHttp = __nccwpck_require__(2356);
+var utilMiddleware = __nccwpck_require__(6324);
 var protocols = __nccwpck_require__(3422);
 
 const getSmithyContext = (context) => context[types.SMITHY_CONTEXT_KEY] || (context[types.SMITHY_CONTEXT_KEY] = {});
@@ -14039,7 +15052,8 @@ function setFeature(context, feature, value) {
 class DefaultIdentityProviderConfig {
     authSchemes = new Map();
     constructor(config) {
-        for (const [key, value] of Object.entries(config)) {
+        for (const key in config) {
+            const value = config[key];
             if (value !== undefined) {
                 this.authSchemes.set(key, value);
             }
@@ -14933,7 +15947,13 @@ const loadSmithyRpcV2CborErrorCode = (output, data) => {
     if (data["__type"] !== undefined) {
         return sanitizeErrorCode(data["__type"]);
     }
-    const codeKey = Object.keys(data).find((key) => key.toLowerCase() === "code");
+    let codeKey;
+    for (const key in data) {
+        if (key.toLowerCase() === "code") {
+            codeKey = key;
+            break;
+        }
+    }
     if (codeKey && data[codeKey] !== undefined) {
         return sanitizeErrorCode(data[codeKey]);
     }
@@ -14960,8 +15980,8 @@ const buildHttpRpcRequest = async (context, headers, path, resolvedHostname, bod
         contents.hostname = resolvedHostname;
     }
     if (endpoint.headers) {
-        for (const [name, value] of Object.entries(endpoint.headers)) {
-            contents.headers[name] = value;
+        for (const name in endpoint.headers) {
+            contents.headers[name] = endpoint.headers[name];
         }
     }
     if (body !== undefined) {
@@ -15031,7 +16051,7 @@ class CborShapeSerializer extends protocols.SerdeContext {
             const newObject = {};
             if (ns.isMapSchema()) {
                 const sparse = !!ns.getMergedTraits().sparse;
-                for (const key of Object.keys(sourceObject)) {
+                for (const key in sourceObject) {
                     const value = this.serialize(ns.getValueSchema(), sourceObject[key]);
                     if (value != null || sparse) {
                         newObject[key] = value;
@@ -15051,15 +16071,15 @@ class CborShapeSerializer extends protocols.SerdeContext {
                     newObject[k] = v;
                 }
                 else if (typeof sourceObject.__type === "string") {
-                    for (const [k, v] of Object.entries(sourceObject)) {
+                    for (const k in sourceObject) {
                         if (!(k in newObject)) {
-                            newObject[k] = this.serialize(15, v);
+                            newObject[k] = this.serialize(15, sourceObject[k]);
                         }
                     }
                 }
             }
             else if (ns.isDocumentSchema()) {
-                for (const key of Object.keys(sourceObject)) {
+                for (const key in sourceObject) {
                     newObject[key] = this.serialize(ns.getValueSchema(), sourceObject[key]);
                 }
             }
@@ -15132,7 +16152,7 @@ class CborShapeDeserializer extends protocols.SerdeContext {
             const newObject = {};
             if (ns.isMapSchema()) {
                 const targetSchema = ns.getValueSchema();
-                for (const key of Object.keys(value)) {
+                for (const key in value) {
                     const itemValue = this.readValue(targetSchema, value[key]);
                     newObject[key] = itemValue;
                 }
@@ -15141,7 +16161,12 @@ class CborShapeDeserializer extends protocols.SerdeContext {
                 const isUnion = ns.isUnionSchema();
                 let keys;
                 if (isUnion) {
-                    keys = new Set(Object.keys(value).filter((k) => k !== "__type"));
+                    keys = new Set();
+                    for (const k in value) {
+                        if (k !== "__type") {
+                            keys.add(k);
+                        }
+                    }
                 }
                 for (const [key, memberSchema] of ns.structIterator()) {
                     if (isUnion) {
@@ -15151,14 +16176,21 @@ class CborShapeDeserializer extends protocols.SerdeContext {
                         newObject[key] = this.readValue(memberSchema, value[key]);
                     }
                 }
-                if (isUnion && keys?.size === 1 && Object.keys(newObject).length === 0) {
-                    const k = keys.values().next().value;
-                    newObject.$unknown = [k, value[k]];
+                if (isUnion && keys?.size === 1) {
+                    let newObjectEmpty = true;
+                    for (const _ in newObject) {
+                        newObjectEmpty = false;
+                        break;
+                    }
+                    if (newObjectEmpty) {
+                        const k = keys.values().next().value;
+                        newObject.$unknown = [k, value[k]];
+                    }
                 }
                 else if (typeof value.__type === "string") {
-                    for (const [k, v] of Object.entries(value)) {
+                    for (const k in value) {
                         if (!(k in newObject)) {
-                            newObject[k] = v;
+                            newObject[k] = value[k];
                         }
                     }
                 }
@@ -15300,8 +16332,8 @@ const toEndpointV1 = (endpoint) => {
             const v1Endpoint = urlParser.parseUrl(endpoint.url);
             if (endpoint.headers) {
                 v1Endpoint.headers = {};
-                for (const [name, values] of Object.entries(endpoint.headers)) {
-                    v1Endpoint.headers[name.toLowerCase()] = values.join(", ");
+                for (const name in endpoint.headers) {
+                    v1Endpoint.headers[name.toLowerCase()] = endpoint.headers[name].join(", ");
                 }
             }
             return v1Endpoint;
@@ -15394,8 +16426,8 @@ class HttpProtocol extends SerdeContext {
                 request.query[k] = v;
             }
             if (endpoint.headers) {
-                for (const [name, values] of Object.entries(endpoint.headers)) {
-                    request.headers[name] = values.join(", ");
+                for (const name in endpoint.headers) {
+                    request.headers[name] = endpoint.headers[name].join(", ");
                 }
             }
             return request;
@@ -15409,8 +16441,8 @@ class HttpProtocol extends SerdeContext {
                 ...endpoint.query,
             };
             if (endpoint.headers) {
-                for (const [name, value] of Object.entries(endpoint.headers)) {
-                    request.headers[name] = value;
+                for (const name in endpoint.headers) {
+                    request.headers[name] = endpoint.headers[name];
                 }
             }
             return request;
@@ -15425,8 +16457,10 @@ class HttpProtocol extends SerdeContext {
         if (opTraits.endpoint) {
             let hostPrefix = opTraits.endpoint?.[0];
             if (typeof hostPrefix === "string") {
-                const hostLabelInputs = [...inputNs.structIterator()].filter(([, member]) => member.getMergedTraits().hostLabel);
-                for (const [name] of hostLabelInputs) {
+                for (const [name, member] of inputNs.structIterator()) {
+                    if (!member.getMergedTraits().hostLabel) {
+                        continue;
+                    }
                     const replacement = input[name];
                     if (typeof replacement !== "string") {
                         throw new Error(`@smithy/core/schema - ${name} in input must be a string as hostLabel.`);
@@ -15522,7 +16556,9 @@ class HttpBindingProtocol extends HttpProtocol {
                     request.path += path;
                 }
                 const traitSearchParams = new URLSearchParams(search ?? "");
-                Object.assign(query, Object.fromEntries(traitSearchParams));
+                for (const [key, value] of traitSearchParams) {
+                    query[key] = value;
+                }
             }
         }
         for (const [memberName, memberNs] of ns.structIterator()) {
@@ -15572,7 +16608,8 @@ class HttpBindingProtocol extends HttpProtocol {
                 headers[memberTraits.httpHeader.toLowerCase()] = String(serializer.flush());
             }
             else if (typeof memberTraits.httpPrefixHeaders === "string") {
-                for (const [key, val] of Object.entries(inputMemberValue)) {
+                for (const key in inputMemberValue) {
+                    const val = inputMemberValue[key];
                     const amalgam = memberTraits.httpPrefixHeaders + key;
                     serializer.write([memberNs.getValueSchema(), { httpHeader: amalgam }], val);
                     headers[amalgam.toLowerCase()] = serializer.flush();
@@ -15617,8 +16654,9 @@ class HttpBindingProtocol extends HttpProtocol {
         const serializer = this.serializer;
         const traits = ns.getMergedTraits();
         if (traits.httpQueryParams) {
-            for (const [key, val] of Object.entries(data)) {
+            for (const key in data) {
                 if (!(key in query)) {
+                    const val = data[key];
                     const valueSchema = ns.getValueSchema();
                     Object.assign(valueSchema.getMergedTraits(), {
                         ...traits,
@@ -15746,8 +16784,9 @@ class HttpBindingProtocol extends HttpProtocol {
             }
             else if (memberTraits.httpPrefixHeaders !== undefined) {
                 dataObject[memberName] = {};
-                for (const [header, value] of Object.entries(response.headers)) {
+                for (const header in response.headers) {
                     if (header.startsWith(memberTraits.httpPrefixHeaders)) {
+                        const value = response.headers[header];
                         const valueSchema = memberSchema.getValueSchema();
                         valueSchema.getMergedTraits().httpHeader = header;
                         dataObject[memberName][header.slice(memberTraits.httpPrefixHeaders.length)] = await deserializer.read(valueSchema, value);
@@ -16860,7 +17899,12 @@ class TypeRegistry {
         return undefined;
     }
     find(predicate) {
-        return [...this.schemas.values()].find(predicate);
+        for (const schema of this.schemas.values()) {
+            if (predicate(schema)) {
+                return schema;
+            }
+        }
+        return undefined;
     }
     clear() {
         this.schemas.clear();
@@ -17052,9 +18096,12 @@ const expectUnion = (value) => {
         return undefined;
     }
     const asObject = expectObject(value);
-    const setKeys = Object.entries(asObject)
-        .filter(([, v]) => v != null)
-        .map(([k]) => k);
+    const setKeys = [];
+    for (const k in asObject) {
+        if (asObject[k] != null) {
+            setKeys.push(k);
+        }
+    }
     if (setKeys.length === 0) {
         throw new TypeError(`Unions must have exactly one non-null member. None were found.`);
     }
@@ -18030,10 +19077,10 @@ exports.getEndpointUrlConfig = getEndpointUrlConfig;
 "use strict";
 
 
-var getEndpointFromConfig = __nccwpck_require__(6041);
-var urlParser = __nccwpck_require__(4494);
 var core = __nccwpck_require__(402);
 var utilMiddleware = __nccwpck_require__(6324);
+var getEndpointFromConfig = __nccwpck_require__(6041);
+var urlParser = __nccwpck_require__(4494);
 var middlewareSerde = __nccwpck_require__(3255);
 
 const resolveParamsForS3 = async (endpointParams) => {
@@ -18309,6 +19356,17 @@ var uuid = __nccwpck_require__(266);
 var utilMiddleware = __nccwpck_require__(6324);
 var smithyClient = __nccwpck_require__(1411);
 var isStreamingPayload = __nccwpck_require__(9831);
+var serde = __nccwpck_require__(2430);
+
+const asSdkError = (error) => {
+    if (error instanceof Error)
+        return error;
+    if (error instanceof Object)
+        return Object.assign(new Error(), error);
+    if (typeof error === "string")
+        return new Error(error);
+    return new Error(`AWS SDK error wrapper for ${error}`);
+};
 
 const getDefaultRetryQuota = (initialRetryTokens, options) => {
     const MAX_CAPACITY = initialRetryTokens;
@@ -18344,16 +19402,6 @@ const defaultRetryDecider = (error) => {
         return false;
     }
     return serviceErrorClassification.isRetryableByTrait(error) || serviceErrorClassification.isClockSkewError(error) || serviceErrorClassification.isThrottlingError(error) || serviceErrorClassification.isTransientError(error);
-};
-
-const asSdkError = (error) => {
-    if (error instanceof Error)
-        return error;
-    if (error instanceof Object)
-        return Object.assign(new Error(), error);
-    if (typeof error === "string")
-        return new Error(error);
-    return new Error(`AWS SDK error wrapper for ${error}`);
 };
 
 class StandardRetryStrategy {
@@ -18531,12 +19579,60 @@ const getOmitRetryHeadersPlugin = (options) => ({
     },
 });
 
+function parseRetryAfterHeader(response, logger) {
+    if (!protocolHttp.HttpResponse.isInstance(response)) {
+        return;
+    }
+    for (const header of Object.keys(response.headers)) {
+        const h = header.toLowerCase();
+        if (h === "retry-after") {
+            const retryAfter = response.headers[header];
+            let retryAfterSeconds = NaN;
+            if (retryAfter.endsWith("GMT")) {
+                try {
+                    const date = serde.parseRfc7231DateTime(retryAfter);
+                    retryAfterSeconds = (date.getTime() - Date.now()) / 1000;
+                }
+                catch (e) {
+                    logger?.trace?.("Failed to parse retry-after header");
+                    logger?.trace?.(e);
+                }
+            }
+            else if (retryAfter.match(/ GMT, ((\d+)|(\d+\.\d+))$/)) {
+                retryAfterSeconds = Number(retryAfter.match(/ GMT, ([\d.]+)$/)?.[1]);
+            }
+            else if (retryAfter.match(/^((\d+)|(\d+\.\d+))$/)) {
+                retryAfterSeconds = Number(retryAfter);
+            }
+            else if (Date.parse(retryAfter) >= Date.now()) {
+                retryAfterSeconds = (Date.parse(retryAfter) - Date.now()) / 1000;
+            }
+            if (isNaN(retryAfterSeconds)) {
+                return;
+            }
+            return new Date(Date.now() + retryAfterSeconds * 1000);
+        }
+        else if (h === "x-amz-retry-after") {
+            const v = response.headers[header];
+            const backoffMilliseconds = Number(v);
+            if (isNaN(backoffMilliseconds)) {
+                logger?.trace?.(`Failed to parse x-amz-retry-after=${v}`);
+                return;
+            }
+            return new Date(Date.now() + backoffMilliseconds);
+        }
+    }
+}
+function getRetryAfterHint(response, logger) {
+    return parseRetryAfterHeader(response, logger);
+}
+
 const retryMiddleware = (options) => (next, context) => async (args) => {
     let retryStrategy = await options.retryStrategy();
     const maxAttempts = await options.maxAttempts();
     if (isRetryStrategyV2(retryStrategy)) {
         retryStrategy = retryStrategy;
-        let retryToken = await retryStrategy.acquireInitialRetryToken(context["partition_id"]);
+        let retryToken = await retryStrategy.acquireInitialRetryToken((context["partition_id"] ?? "") + (context.__retryLongPoll ? ":longpoll" : ""));
         let lastError = new Error();
         let attempts = 0;
         let totalRetryDelay = 0;
@@ -18557,7 +19653,7 @@ const retryMiddleware = (options) => (next, context) => async (args) => {
                 return { response, output };
             }
             catch (e) {
-                const retryErrorInfo = getRetryErrorInfo(e);
+                const retryErrorInfo = getRetryErrorInfo(e, options.logger);
                 lastError = asSdkError(e);
                 if (isRequest && isStreamingPayload.isStreamingPayload(request)) {
                     (context.logger instanceof smithyClient.NoOpLogger ? console : context.logger)?.warn("An error was encountered in a non-retryable streaming request.");
@@ -18567,6 +19663,9 @@ const retryMiddleware = (options) => (next, context) => async (args) => {
                     retryToken = await retryStrategy.refreshRetryTokenForRetry(retryToken, retryErrorInfo);
                 }
                 catch (refreshError) {
+                    if (typeof refreshError.$backoff === "number") {
+                        await cooldown(refreshError.$backoff);
+                    }
                     if (!lastError.$metadata) {
                         lastError.$metadata = {};
                     }
@@ -18577,26 +19676,28 @@ const retryMiddleware = (options) => (next, context) => async (args) => {
                 attempts = retryToken.getRetryCount();
                 const delay = retryToken.getRetryDelay();
                 totalRetryDelay += delay;
-                await new Promise((resolve) => setTimeout(resolve, delay));
+                await cooldown(delay);
             }
         }
     }
     else {
         retryStrategy = retryStrategy;
-        if (retryStrategy?.mode)
+        if (retryStrategy?.mode) {
             context.userAgent = [...(context.userAgent || []), ["cfg/retry-mode", retryStrategy.mode]];
+        }
         return retryStrategy.retry(next, args);
     }
 };
+const cooldown = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const isRetryStrategyV2 = (retryStrategy) => typeof retryStrategy.acquireInitialRetryToken !== "undefined" &&
     typeof retryStrategy.refreshRetryTokenForRetry !== "undefined" &&
     typeof retryStrategy.recordSuccess !== "undefined";
-const getRetryErrorInfo = (error) => {
+const getRetryErrorInfo = (error, logger) => {
     const errorInfo = {
         error,
         errorType: getRetryErrorType(error),
     };
-    const retryAfterHint = getRetryAfterHint(error.$response);
+    const retryAfterHint = parseRetryAfterHeader(error.$response, logger);
     if (retryAfterHint) {
         errorInfo.retryAfterHint = retryAfterHint;
     }
@@ -18623,19 +19724,6 @@ const getRetryPlugin = (options) => ({
         clientStack.add(retryMiddleware(options), retryMiddlewareOptions);
     },
 });
-const getRetryAfterHint = (response) => {
-    if (!protocolHttp.HttpResponse.isInstance(response))
-        return;
-    const retryAfterHeaderName = Object.keys(response.headers).find((key) => key.toLowerCase() === "retry-after");
-    if (!retryAfterHeaderName)
-        return;
-    const retryAfter = response.headers[retryAfterHeaderName];
-    const retryAfterSeconds = Number(retryAfter);
-    if (!Number.isNaN(retryAfterSeconds))
-        return new Date(retryAfterSeconds * 1000);
-    const retryAfterDate = new Date(retryAfter);
-    return retryAfterDate;
-};
 
 exports.AdaptiveRetryStrategy = AdaptiveRetryStrategy;
 exports.CONFIG_MAX_ATTEMPTS = CONFIG_MAX_ATTEMPTS;
@@ -19580,58 +20668,119 @@ or increase socketAcquisitionWarningTimeout=(millis) in the NodeHttpHandler conf
     }
 }
 
-class NodeHttp2ConnectionPool {
-    sessions = [];
-    constructor(sessions) {
-        this.sessions = sessions ?? [];
+const ids = new Uint16Array(1);
+class ClientHttp2SessionRef {
+    id = ids[0]++;
+    total = 0;
+    max = 0;
+    session;
+    refs = 0;
+    constructor(session) {
+        session.unref();
+        this.session = session;
     }
-    poll() {
-        if (this.sessions.length > 0) {
-            return this.sessions.shift();
+    retain() {
+        if (this.session.destroyed) {
+            throw new Error("@smithy/node-http-handler - cannot acquire reference to destroyed session.");
+        }
+        this.refs += 1;
+        this.total += 1;
+        this.max = Math.max(this.refs, this.max);
+        this.session.ref();
+    }
+    free() {
+        if (this.session.destroyed) {
+            return;
+        }
+        this.refs -= 1;
+        if (this.refs === 0) {
+            this.session.unref();
+        }
+        if (this.refs < 0) {
+            throw new Error("@smithy/node-http-handler - ClientHttp2Session refcount at zero, cannot decrement.");
         }
     }
-    offerLast(session) {
-        this.sessions.push(session);
+    deref() {
+        return this.session;
     }
-    contains(session) {
-        return this.sessions.includes(session);
+    destroy() {
+        this.refs = 0;
+        if (!this.session.destroyed) {
+            this.session.destroy();
+        }
     }
-    remove(session) {
-        this.sessions = this.sessions.filter((s) => s !== session);
+    useCount() {
+        return this.refs;
     }
-    [Symbol.iterator]() {
-        return this.sessions[Symbol.iterator]();
+}
+
+class NodeHttp2ConnectionPool {
+    sessions = [];
+    maxConcurrency = 0;
+    constructor(sessions) {
+        this.sessions = (sessions ?? []).map((session) => new ClientHttp2SessionRef(session));
     }
-    destroy(connection) {
+    poll() {
+        let cleanup = false;
         for (const session of this.sessions) {
-            if (session === connection) {
-                if (!session.destroyed) {
-                    session.destroy();
+            if (session.deref().destroyed) {
+                cleanup = true;
+                continue;
+            }
+            if (!this.maxConcurrency || session.useCount() < this.maxConcurrency) {
+                return session;
+            }
+        }
+        if (cleanup) {
+            for (const session of this.sessions) {
+                if (session.deref().destroyed) {
+                    this.remove(session);
                 }
             }
         }
     }
+    offerLast(ref) {
+        this.sessions.push(ref);
+    }
+    remove(ref) {
+        const ix = this.sessions.indexOf(ref);
+        if (ix > -1) {
+            this.sessions.splice(ix, 1);
+        }
+    }
+    [Symbol.iterator]() {
+        return this.sessions[Symbol.iterator]();
+    }
+    setMaxConcurrency(maxConcurrency) {
+        this.maxConcurrency = maxConcurrency;
+    }
+    destroy(ref) {
+        this.remove(ref);
+        ref.destroy();
+    }
 }
 
 class NodeHttp2ConnectionManager {
+    config;
+    connectionPools = new Map();
     constructor(config) {
         this.config = config;
         if (this.config.maxConcurrency && this.config.maxConcurrency <= 0) {
             throw new RangeError("maxConcurrency must be greater than zero.");
         }
     }
-    config;
-    sessionCache = new Map();
     lease(requestContext, connectionConfiguration) {
         const url = this.getUrlString(requestContext);
-        const existingPool = this.sessionCache.get(url);
-        if (existingPool) {
-            const existingSession = existingPool.poll();
-            if (existingSession && !this.config.disableConcurrency) {
-                return existingSession;
+        const pool = this.getPool(url);
+        if (!this.config.disableConcurrency && !connectionConfiguration.isEventStream) {
+            const available = pool.poll();
+            if (available) {
+                available.retain();
+                return available;
             }
         }
-        const session = http2.connect(url);
+        const ref = new ClientHttp2SessionRef(http2.connect(url));
+        const session = ref.deref();
         if (this.config.maxConcurrency) {
             session.settings({ maxConcurrentStreams: this.config.maxConcurrency }, (err) => {
                 if (err) {
@@ -19642,47 +20791,48 @@ class NodeHttp2ConnectionManager {
                 }
             });
         }
-        session.unref();
         const destroySessionCb = () => {
             session.destroy();
-            this.deleteSession(url, session);
+            this.removeFromPool(url, ref);
         };
         session.on("goaway", destroySessionCb);
         session.on("error", destroySessionCb);
         session.on("frameError", destroySessionCb);
-        session.on("close", () => this.deleteSession(url, session));
+        session.on("close", () => this.removeFromPool(url, ref));
         if (connectionConfiguration.requestTimeout) {
             session.setTimeout(connectionConfiguration.requestTimeout, destroySessionCb);
         }
-        const connectionPool = this.sessionCache.get(url) || new NodeHttp2ConnectionPool();
-        connectionPool.offerLast(session);
-        this.sessionCache.set(url, connectionPool);
-        return session;
+        pool.offerLast(ref);
+        ref.retain();
+        return ref;
     }
-    deleteSession(authority, session) {
-        const existingConnectionPool = this.sessionCache.get(authority);
-        if (!existingConnectionPool) {
-            return;
-        }
-        if (!existingConnectionPool.contains(session)) {
-            return;
-        }
-        existingConnectionPool.remove(session);
-        this.sessionCache.set(authority, existingConnectionPool);
+    release(_requestContext, ref) {
+        ref.free();
     }
-    release(requestContext, session) {
-        const cacheKey = this.getUrlString(requestContext);
-        this.sessionCache.get(cacheKey)?.offerLast(session);
+    createIsolatedSession(requestContext, connectionConfiguration) {
+        const url = this.getUrlString(requestContext);
+        const ref = new ClientHttp2SessionRef(http2.connect(url));
+        const session = ref.deref();
+        session.settings({ maxConcurrentStreams: 1 });
+        const destroySession = () => {
+            session.destroy();
+        };
+        session.on("goaway", destroySession);
+        session.on("error", destroySession);
+        session.on("frameError", destroySession);
+        session.on("close", destroySession);
+        if (connectionConfiguration.requestTimeout) {
+            session.setTimeout(connectionConfiguration.requestTimeout, destroySession);
+        }
+        ref.retain();
+        return ref;
     }
     destroy() {
-        for (const [key, connectionPool] of this.sessionCache) {
-            for (const session of connectionPool) {
-                if (!session.destroyed) {
-                    session.destroy();
-                }
-                connectionPool.remove(session);
+        for (const [url, connectionPool] of this.connectionPools) {
+            for (const session of [...connectionPool]) {
+                session.destroy();
             }
-            this.sessionCache.delete(key);
+            this.connectionPools.delete(url);
         }
     }
     setMaxConcurrentStreams(maxConcurrentStreams) {
@@ -19690,9 +20840,41 @@ class NodeHttp2ConnectionManager {
             throw new RangeError("maxConcurrentStreams must be greater than zero.");
         }
         this.config.maxConcurrency = maxConcurrentStreams;
+        for (const pool of this.connectionPools.values()) {
+            pool.setMaxConcurrency(maxConcurrentStreams);
+        }
     }
     setDisableConcurrentStreams(disableConcurrentStreams) {
         this.config.disableConcurrency = disableConcurrentStreams;
+    }
+    debug() {
+        const pools = {};
+        for (const [url, pool] of this.connectionPools) {
+            const sessions = [];
+            for (const ref of pool) {
+                sessions.push({
+                    id: ref.id,
+                    active: ref.useCount(),
+                    maxConcurrent: ref.max,
+                    totalRequests: ref.total,
+                });
+            }
+            pools[url] = { sessions };
+        }
+        return pools;
+    }
+    removeFromPool(authority, ref) {
+        this.connectionPools.get(authority)?.remove(ref);
+    }
+    getPool(url) {
+        if (!this.connectionPools.has(url)) {
+            const pool = new NodeHttp2ConnectionPool();
+            if (this.config.maxConcurrency) {
+                pool.setMaxConcurrency(this.config.maxConcurrency);
+            }
+            this.connectionPools.set(url, pool);
+        }
+        return this.connectionPools.get(url);
     }
     getUrlString(request) {
         return request.destination.toString();
@@ -19727,15 +20909,17 @@ class NodeHttp2Handler {
     destroy() {
         this.connectionManager.destroy();
     }
-    async handle(request, { abortSignal, requestTimeout } = {}) {
+    async handle(request, { abortSignal, requestTimeout, isEventStream } = {}) {
         if (!this.config) {
             this.config = await this.configProvider;
-            this.connectionManager.setDisableConcurrentStreams(this.config.disableConcurrentStreams || false);
-            if (this.config.maxConcurrentStreams) {
-                this.connectionManager.setMaxConcurrentStreams(this.config.maxConcurrentStreams);
+            const { disableConcurrentStreams, maxConcurrentStreams } = this.config;
+            this.connectionManager.setDisableConcurrentStreams(disableConcurrentStreams ?? false);
+            if (maxConcurrentStreams) {
+                this.connectionManager.setMaxConcurrentStreams(maxConcurrentStreams);
             }
         }
         const { requestTimeout: configRequestTimeout, disableConcurrentStreams } = this.config;
+        const useIsolatedSession = disableConcurrentStreams || isEventStream;
         const effectiveRequestTimeout = requestTimeout ?? configRequestTimeout;
         return new Promise((_resolve, _reject) => {
             let fulfilled = false;
@@ -19763,18 +20947,22 @@ class NodeHttp2Handler {
             }
             const authority = `${protocol}//${auth}${hostname}${port ? `:${port}` : ""}`;
             const requestContext = { destination: new URL(authority) };
-            const session = this.connectionManager.lease(requestContext, {
+            const connectConfig = {
                 requestTimeout: this.config?.sessionTimeout,
-                disableConcurrentStreams: disableConcurrentStreams || false,
-            });
+                isEventStream,
+            };
+            const ref = useIsolatedSession
+                ? this.connectionManager.createIsolatedSession(requestContext, connectConfig)
+                : this.connectionManager.lease(requestContext, connectConfig);
+            const session = ref.deref();
             const rejectWithDestroy = (err) => {
-                if (disableConcurrentStreams) {
-                    this.destroySession(session);
+                if (useIsolatedSession) {
+                    ref.destroy();
                 }
                 fulfilled = true;
                 reject(err);
             };
-            const queryString = querystringBuilder.buildQueryString(query || {});
+            const queryString = querystringBuilder.buildQueryString(query ?? {});
             let path = request.path;
             if (queryString) {
                 path += `?${queryString}`;
@@ -19782,28 +20970,14 @@ class NodeHttp2Handler {
             if (request.fragment) {
                 path += `#${request.fragment}`;
             }
-            const req = session.request({
+            const clientHttp2Stream = session.request({
                 ...request.headers,
                 [http2.constants.HTTP2_HEADER_PATH]: path,
                 [http2.constants.HTTP2_HEADER_METHOD]: method,
             });
-            session.ref();
-            req.on("response", (headers) => {
-                const httpResponse = new protocolHttp.HttpResponse({
-                    statusCode: headers[":status"] || -1,
-                    headers: getTransformedHeaders(headers),
-                    body: req,
-                });
-                fulfilled = true;
-                resolve({ response: httpResponse });
-                if (disableConcurrentStreams) {
-                    session.close();
-                    this.connectionManager.deleteSession(authority, session);
-                }
-            });
             if (effectiveRequestTimeout) {
-                req.setTimeout(effectiveRequestTimeout, () => {
-                    req.close();
+                clientHttp2Stream.setTimeout(effectiveRequestTimeout, () => {
+                    clientHttp2Stream.close();
                     const timeoutError = new Error(`Stream timed out because of no activity for ${effectiveRequestTimeout} ms`);
                     timeoutError.name = "TimeoutError";
                     rejectWithDestroy(timeoutError);
@@ -19811,36 +20985,50 @@ class NodeHttp2Handler {
             }
             if (abortSignal) {
                 const onAbort = () => {
-                    req.close();
+                    clientHttp2Stream.close();
                     const abortError = buildAbortError(abortSignal);
                     rejectWithDestroy(abortError);
                 };
                 if (typeof abortSignal.addEventListener === "function") {
                     const signal = abortSignal;
                     signal.addEventListener("abort", onAbort, { once: true });
-                    req.once("close", () => signal.removeEventListener("abort", onAbort));
+                    clientHttp2Stream.once("close", () => signal.removeEventListener("abort", onAbort));
                 }
                 else {
                     abortSignal.onabort = onAbort;
                 }
             }
-            req.on("frameError", (type, code, id) => {
+            clientHttp2Stream.on("frameError", (type, code, id) => {
                 rejectWithDestroy(new Error(`Frame type id ${type} in stream id ${id} has failed with code ${code}.`));
             });
-            req.on("error", rejectWithDestroy);
-            req.on("aborted", () => {
-                rejectWithDestroy(new Error(`HTTP/2 stream is abnormally aborted in mid-communication with result code ${req.rstCode}.`));
+            clientHttp2Stream.on("error", rejectWithDestroy);
+            clientHttp2Stream.on("aborted", () => {
+                rejectWithDestroy(new Error(`HTTP/2 stream is abnormally aborted in mid-communication with result code ${clientHttp2Stream.rstCode}.`));
             });
-            req.on("close", () => {
-                session.unref();
-                if (disableConcurrentStreams) {
-                    session.destroy();
+            clientHttp2Stream.on("response", (headers) => {
+                const httpResponse = new protocolHttp.HttpResponse({
+                    statusCode: headers[":status"] ?? -1,
+                    headers: getTransformedHeaders(headers),
+                    body: clientHttp2Stream,
+                });
+                fulfilled = true;
+                resolve({ response: httpResponse });
+                if (useIsolatedSession) {
+                    session.close();
+                }
+            });
+            clientHttp2Stream.on("close", () => {
+                if (useIsolatedSession) {
+                    ref.destroy();
+                }
+                else {
+                    this.connectionManager.release(requestContext, ref);
                 }
                 if (!fulfilled) {
                     rejectWithDestroy(new Error("Unexpected error: http2 request did not get a response"));
                 }
             });
-            writeRequestBodyPromise = writeRequestBody(req, request, effectiveRequestTimeout);
+            writeRequestBodyPromise = writeRequestBody(clientHttp2Stream, request, effectiveRequestTimeout);
         });
     }
     updateHttpClientConfig(key, value) {
@@ -19854,11 +21042,6 @@ class NodeHttp2Handler {
     }
     httpHandlerConfigs() {
         return this.config ?? {};
-    }
-    destroySession(session) {
-        if (!session.destroyed) {
-            session.destroy();
-        }
     }
 }
 
@@ -20352,6 +21535,7 @@ const isTransientError = (error, depth = 0) => isRetryableByTrait(error) ||
     NODEJS_NETWORK_ERROR_CODES.includes(error?.code || "") ||
     TRANSIENT_ERROR_STATUS_CODES.includes(error.$metadata?.httpStatusCode || 0) ||
     isBrowserNetworkError(error) ||
+    isNodeJsHttp2TransientError(error) ||
     (error.cause !== undefined && depth <= 10 && isTransientError(error.cause, depth + 1));
 const isServerError = (error) => {
     if (error.$metadata?.httpStatusCode !== undefined) {
@@ -20363,10 +21547,14 @@ const isServerError = (error) => {
     }
     return false;
 };
+function isNodeJsHttp2TransientError(error) {
+    return error.code === "ERR_HTTP2_STREAM_ERROR" && error.message.includes("NGHTTP2_REFUSED_STREAM");
+}
 
 exports.isBrowserNetworkError = isBrowserNetworkError;
 exports.isClockSkewCorrectedError = isClockSkewCorrectedError;
 exports.isClockSkewError = isClockSkewError;
+exports.isNodeJsHttp2TransientError = isNodeJsHttp2TransientError;
 exports.isRetryableByTrait = isRetryableByTrait;
 exports.isServerError = isServerError;
 exports.isThrottlingError = isThrottlingError;
@@ -20872,6 +22060,19 @@ class HeaderFormatter {
         }
     }
 }
+var HEADER_VALUE_TYPE;
+(function (HEADER_VALUE_TYPE) {
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["boolTrue"] = 0] = "boolTrue";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["boolFalse"] = 1] = "boolFalse";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["byte"] = 2] = "byte";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["short"] = 3] = "short";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["integer"] = 4] = "integer";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["long"] = 5] = "long";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["byteArray"] = 6] = "byteArray";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["string"] = 7] = "string";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["timestamp"] = 8] = "timestamp";
+    HEADER_VALUE_TYPE[HEADER_VALUE_TYPE["uuid"] = 9] = "uuid";
+})(HEADER_VALUE_TYPE || (HEADER_VALUE_TYPE = {}));
 const UUID_PATTERN = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
 class Int64 {
     bytes;
@@ -21121,7 +22322,7 @@ class SignatureV4 extends SignatureV4Base {
             return this.signRequest(toSign, options);
         }
     }
-    async signEvent({ headers, payload }, { signingDate = new Date(), priorSignature, signingRegion, signingService }) {
+    async signEvent({ headers, payload }, { signingDate = new Date(), priorSignature, signingRegion, signingService, eventStreamCredentials, }) {
         const region = signingRegion ?? (await this.regionProvider());
         const { shortDate, longDate } = this.formatDate(signingDate);
         const scope = createScope(shortDate, region, signingService ?? this.service);
@@ -21137,9 +22338,14 @@ class SignatureV4 extends SignatureV4Base {
             hashedHeaders,
             hashedPayload,
         ].join("\n");
-        return this.signString(stringToSign, { signingDate, signingRegion: region, signingService });
+        return this.signString(stringToSign, {
+            signingDate,
+            signingRegion: region,
+            signingService,
+            eventStreamCredentials,
+        });
     }
-    async signMessage(signableMessage, { signingDate = new Date(), signingRegion, signingService }) {
+    async signMessage(signableMessage, { signingDate = new Date(), signingRegion, signingService, eventStreamCredentials }) {
         const promise = this.signEvent({
             headers: this.headerFormatter.format(signableMessage.message.headers),
             payload: signableMessage.message.body,
@@ -21148,13 +22354,14 @@ class SignatureV4 extends SignatureV4Base {
             signingRegion,
             signingService,
             priorSignature: signableMessage.priorSignature,
+            eventStreamCredentials,
         });
         return promise.then((signature) => {
             return { message: signableMessage.message, signature };
         });
     }
-    async signString(stringToSign, { signingDate = new Date(), signingRegion, signingService } = {}) {
-        const credentials = await this.credentialProvider();
+    async signString(stringToSign, { signingDate = new Date(), signingRegion, signingService, eventStreamCredentials, } = {}) {
+        const credentials = eventStreamCredentials ?? (await this.credentialProvider());
         this.validateResolvedCredentials(credentials);
         const region = signingRegion ?? (await this.regionProvider());
         const { shortDate } = this.formatDate(signingDate);
@@ -21251,10 +22458,10 @@ exports.signatureV4aContainer = signatureV4aContainer;
 
 
 var middlewareStack = __nccwpck_require__(9208);
-var protocols = __nccwpck_require__(3422);
 var types = __nccwpck_require__(690);
 var schema = __nccwpck_require__(6890);
 var serde = __nccwpck_require__(2430);
+var protocols = __nccwpck_require__(3422);
 
 class Client {
     config;
@@ -21366,7 +22573,14 @@ class Command {
             ...additionalContext,
         };
         const { requestHandler } = configuration;
-        return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
+        let requestOptions = options ?? {};
+        if (smithyContext.eventStream) {
+            requestOptions = {
+                isEventStream: true,
+                ...requestOptions,
+            };
+        }
+        return stack.resolve((request) => requestHandler.handle(request.request, requestOptions), handlerExecutionContext);
     }
 }
 class ClassBuilder {
@@ -22337,6 +23551,22 @@ exports.resolveDefaultsModeConfig = resolveDefaultsModeConfig;
 
 var types = __nccwpck_require__(690);
 
+class BinaryDecisionDiagram {
+    nodes;
+    root;
+    conditions;
+    results;
+    constructor(bdd, root, conditions, results) {
+        this.nodes = bdd;
+        this.root = root;
+        this.conditions = conditions;
+        this.results = results;
+    }
+    static from(bdd, root, conditions, results) {
+        return new BinaryDecisionDiagram(bdd, root, conditions, results);
+    }
+}
+
 class EndpointCache {
     capacity;
     data = new Map();
@@ -22388,24 +23618,12 @@ class EndpointCache {
     }
 }
 
-const IP_V4_REGEX = new RegExp(`^(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}$`);
-const isIpAddress = (value) => IP_V4_REGEX.test(value) || (value.startsWith("[") && value.endsWith("]"));
-
-const VALID_HOST_LABEL_REGEX = new RegExp(`^(?!.*-$)(?!-)[a-zA-Z0-9-]{1,63}$`);
-const isValidHostLabel = (value, allowSubDomains = false) => {
-    if (!allowSubDomains) {
-        return VALID_HOST_LABEL_REGEX.test(value);
+class EndpointError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "EndpointError";
     }
-    const labels = value.split(".");
-    for (const label of labels) {
-        if (!isValidHostLabel(label)) {
-            return false;
-        }
-    }
-    return true;
-};
-
-const customEndpointFunctions = {};
+}
 
 const debugId = "endpoints";
 
@@ -22422,14 +23640,18 @@ function toDebugString(input) {
     return JSON.stringify(input, null, 2);
 }
 
-class EndpointError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = "EndpointError";
-    }
-}
+const customEndpointFunctions = {};
 
 const booleanEquals = (value1, value2) => value1 === value2;
+
+function coalesce(...args) {
+    for (const arg of args) {
+        if (arg != null) {
+            return arg;
+        }
+    }
+    return undefined;
+}
 
 const getAttrPathList = (path) => {
     const parts = path.split(".");
@@ -22461,14 +23683,36 @@ const getAttr = (value, path) => getAttrPathList(path).reduce((acc, index) => {
         throw new EndpointError(`Index '${index}' in '${path}' not found in '${JSON.stringify(value)}'`);
     }
     else if (Array.isArray(acc)) {
-        return acc[parseInt(index)];
+        const i = parseInt(index);
+        return acc[i < 0 ? acc.length + i : i];
     }
     return acc[index];
 }, value);
 
 const isSet = (value) => value != null;
 
+const VALID_HOST_LABEL_REGEX = new RegExp(`^(?!.*-$)(?!-)[a-zA-Z0-9-]{1,63}$`);
+const isValidHostLabel = (value, allowSubDomains = false) => {
+    if (!allowSubDomains) {
+        return VALID_HOST_LABEL_REGEX.test(value);
+    }
+    const labels = value.split(".");
+    for (const label of labels) {
+        if (!isValidHostLabel(label)) {
+            return false;
+        }
+    }
+    return true;
+};
+
+function ite(condition, trueValue, falseValue) {
+    return condition ? trueValue : falseValue;
+}
+
 const not = (value) => !value;
+
+const IP_V4_REGEX = new RegExp(`^(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}$`);
+const isIpAddress = (value) => IP_V4_REGEX.test(value) || (value.startsWith("[") && value.endsWith("]"));
 
 const DEFAULT_PORTS = {
     [types.EndpointURLScheme.HTTP]: 80,
@@ -22520,10 +23764,24 @@ const parseURL = (value) => {
     };
 };
 
+function split(value, delimiter, limit) {
+    if (limit === 1) {
+        return [value];
+    }
+    if (value === "") {
+        return [""];
+    }
+    const parts = value.split(delimiter);
+    if (limit === 0) {
+        return parts;
+    }
+    return parts.slice(0, limit - 1).concat(parts.slice(1).join(delimiter));
+}
+
 const stringEquals = (value1, value2) => value1 === value2;
 
 const substring = (input, start, stop, reverse) => {
-    if (start >= stop || input.length < stop || /[^\u0000-\u007f]/.test(input)) {
+    if (input == null || start >= stop || input.length < stop || /[^\u0000-\u007f]/.test(input)) {
         return null;
     }
     if (!reverse) {
@@ -22536,11 +23794,14 @@ const uriEncode = (value) => encodeURIComponent(value).replace(/[!*'()]/g, (c) =
 
 const endpointFunctions = {
     booleanEquals,
+    coalesce,
     getAttr,
     isSet,
     isValidHostLabel,
+    ite,
     not,
     parseURL,
+    split,
     stringEquals,
     substring,
     uriEncode,
@@ -22548,10 +23809,7 @@ const endpointFunctions = {
 
 const evaluateTemplate = (template, options) => {
     const evaluatedTemplateArr = [];
-    const templateContext = {
-        ...options.endpointParams,
-        ...options.referenceRecord,
-    };
+    const { referenceRecord, endpointParams } = options;
     let currentIndex = 0;
     while (currentIndex < template.length) {
         const openingBraceIndex = template.indexOf("{", currentIndex);
@@ -22572,10 +23830,10 @@ const evaluateTemplate = (template, options) => {
         const parameterName = template.substring(openingBraceIndex + 1, closingBraceIndex);
         if (parameterName.includes("#")) {
             const [refName, attrName] = parameterName.split("#");
-            evaluatedTemplateArr.push(getAttr(templateContext[refName], attrName));
+            evaluatedTemplateArr.push(getAttr((referenceRecord[refName] ?? endpointParams[refName]), attrName));
         }
         else {
-            evaluatedTemplateArr.push(templateContext[parameterName]);
+            evaluatedTemplateArr.push((referenceRecord[parameterName] ?? endpointParams[parameterName]));
         }
         currentIndex = closingBraceIndex + 1;
     }
@@ -22583,11 +23841,7 @@ const evaluateTemplate = (template, options) => {
 };
 
 const getReferenceValue = ({ ref }, options) => {
-    const referenceRecord = {
-        ...options.endpointParams,
-        ...options.referenceRecord,
-    };
-    return referenceRecord[ref];
+    return options.referenceRecord[ref] ?? options.endpointParams[ref];
 };
 
 const evaluateExpression = (obj, keyName, options) => {
@@ -22603,66 +23857,64 @@ const evaluateExpression = (obj, keyName, options) => {
     throw new EndpointError(`'${keyName}': ${String(obj)} is not a string, function or reference.`);
 };
 const callFunction = ({ fn, argv }, options) => {
-    const evaluatedArgs = argv.map((arg) => ["boolean", "number"].includes(typeof arg) ? arg : group$2.evaluateExpression(arg, "arg", options));
-    const fnSegments = fn.split(".");
-    if (fnSegments[0] in customEndpointFunctions && fnSegments[1] != null) {
-        return customEndpointFunctions[fnSegments[0]][fnSegments[1]](...evaluatedArgs);
+    const evaluatedArgs = Array(argv.length);
+    for (let i = 0; i < evaluatedArgs.length; ++i) {
+        const arg = argv[i];
+        if (typeof arg === "boolean" || typeof arg === "number") {
+            evaluatedArgs[i] = arg;
+        }
+        else {
+            evaluatedArgs[i] = group$2.evaluateExpression(arg, "arg", options);
+        }
     }
-    return endpointFunctions[fn](...evaluatedArgs);
+    const namespaceSeparatorIndex = fn.indexOf(".");
+    if (namespaceSeparatorIndex !== -1) {
+        const namespaceFunctions = customEndpointFunctions[fn.slice(0, namespaceSeparatorIndex)];
+        const customFunction = namespaceFunctions?.[fn.slice(namespaceSeparatorIndex + 1)];
+        if (typeof customFunction === "function") {
+            return customFunction(...evaluatedArgs);
+        }
+    }
+    const callable = endpointFunctions[fn];
+    if (typeof callable === "function") {
+        return callable(...evaluatedArgs);
+    }
+    throw new Error(`function ${fn} not loaded in endpointFunctions.`);
 };
 const group$2 = {
     evaluateExpression,
     callFunction,
 };
 
-const evaluateCondition = ({ assign, ...fnArgs }, options) => {
+const evaluateCondition = (condition, options) => {
+    const { assign } = condition;
     if (assign && assign in options.referenceRecord) {
         throw new EndpointError(`'${assign}' is already defined in Reference Record.`);
     }
-    const value = callFunction(fnArgs, options);
-    options.logger?.debug?.(`${debugId} evaluateCondition: ${toDebugString(fnArgs)} = ${toDebugString(value)}`);
-    return {
-        result: value === "" ? true : !!value,
-        ...(assign != null && { toAssign: { name: assign, value } }),
-    };
-};
-
-const evaluateConditions = (conditions = [], options) => {
-    const conditionsReferenceRecord = {};
-    for (const condition of conditions) {
-        const { result, toAssign } = evaluateCondition(condition, {
-            ...options,
-            referenceRecord: {
-                ...options.referenceRecord,
-                ...conditionsReferenceRecord,
-            },
-        });
-        if (!result) {
-            return { result };
-        }
-        if (toAssign) {
-            conditionsReferenceRecord[toAssign.name] = toAssign.value;
-            options.logger?.debug?.(`${debugId} assign: ${toAssign.name} := ${toDebugString(toAssign.value)}`);
-        }
+    const value = callFunction(condition, options);
+    options.logger?.debug?.(`${debugId} evaluateCondition: ${toDebugString(condition)} = ${toDebugString(value)}`);
+    const result = value === "" ? true : !!value;
+    if (assign != null) {
+        return { result, toAssign: { name: assign, value } };
     }
-    return { result: true, referenceRecord: conditionsReferenceRecord };
+    return { result };
 };
 
-const getEndpointHeaders = (headers, options) => Object.entries(headers).reduce((acc, [headerKey, headerVal]) => ({
-    ...acc,
-    [headerKey]: headerVal.map((headerValEntry) => {
+const getEndpointHeaders = (headers, options) => Object.entries(headers ?? {}).reduce((acc, [headerKey, headerVal]) => {
+    acc[headerKey] = headerVal.map((headerValEntry) => {
         const processedExpr = evaluateExpression(headerValEntry, "Header value entry", options);
         if (typeof processedExpr !== "string") {
             throw new EndpointError(`Header '${headerKey}' value '${processedExpr}' is not a string`);
         }
         return processedExpr;
-    }),
-}), {});
+    });
+    return acc;
+}, {});
 
-const getEndpointProperties = (properties, options) => Object.entries(properties).reduce((acc, [propertyKey, propertyVal]) => ({
-    ...acc,
-    [propertyKey]: group$1.getEndpointProperty(propertyVal, options),
-}), {});
+const getEndpointProperties = (properties, options) => Object.entries(properties).reduce((acc, [propertyKey, propertyVal]) => {
+    acc[propertyKey] = group$1.getEndpointProperty(propertyVal, options);
+    return acc;
+}, {});
 const getEndpointProperty = (property, options) => {
     if (Array.isArray(property)) {
         return property.map((propertyEntry) => getEndpointProperty(propertyEntry, options));
@@ -22700,27 +23952,90 @@ const getEndpointUrl = (endpointUrl, options) => {
     throw new EndpointError(`Endpoint URL must be a string, got ${typeof expression}`);
 };
 
+const RESULT = 100_000_000;
+const decideEndpoint = (bdd, options) => {
+    const { nodes, root, results, conditions } = bdd;
+    let ref = root;
+    const referenceRecord = {};
+    const closure = {
+        referenceRecord,
+        endpointParams: options.endpointParams,
+        logger: options.logger,
+    };
+    while (ref !== 1 && ref !== -1 && ref < RESULT) {
+        const node_i = 3 * (Math.abs(ref) - 1);
+        const [condition_i, highRef, lowRef] = [nodes[node_i], nodes[node_i + 1], nodes[node_i + 2]];
+        const [fn, argv, assign] = conditions[condition_i];
+        const evaluation = evaluateCondition({ fn, assign, argv }, closure);
+        if (evaluation.toAssign) {
+            const { name, value } = evaluation.toAssign;
+            referenceRecord[name] = value;
+        }
+        ref = ref >= 0 === evaluation.result ? highRef : lowRef;
+    }
+    if (ref >= RESULT) {
+        const result = results[ref - RESULT];
+        if (result[0] === -1) {
+            const [, errorExpression] = result;
+            throw new EndpointError(evaluateExpression(errorExpression, "Error", closure));
+        }
+        const [url, properties, headers] = result;
+        return {
+            url: getEndpointUrl(url, closure),
+            properties: getEndpointProperties(properties, closure),
+            headers: getEndpointHeaders(headers ?? {}, closure),
+        };
+    }
+    throw new EndpointError(`No matching endpoint.`);
+};
+
+const evaluateConditions = (conditions = [], options) => {
+    const conditionsReferenceRecord = {};
+    const conditionOptions = {
+        ...options,
+        referenceRecord: { ...options.referenceRecord },
+    };
+    let didAssign = false;
+    for (const condition of conditions) {
+        const { result, toAssign } = evaluateCondition(condition, conditionOptions);
+        if (!result) {
+            return { result };
+        }
+        if (toAssign) {
+            didAssign = true;
+            conditionsReferenceRecord[toAssign.name] = toAssign.value;
+            conditionOptions.referenceRecord[toAssign.name] = toAssign.value;
+            options.logger?.debug?.(`${debugId} assign: ${toAssign.name} := ${toDebugString(toAssign.value)}`);
+        }
+    }
+    if (didAssign) {
+        return { result: true, referenceRecord: conditionsReferenceRecord };
+    }
+    return { result: true };
+};
+
 const evaluateEndpointRule = (endpointRule, options) => {
     const { conditions, endpoint } = endpointRule;
     const { result, referenceRecord } = evaluateConditions(conditions, options);
     if (!result) {
         return;
     }
-    const endpointRuleOptions = {
-        ...options,
-        referenceRecord: { ...options.referenceRecord, ...referenceRecord },
-    };
+    const endpointRuleOptions = referenceRecord
+        ? {
+            ...options,
+            referenceRecord: { ...options.referenceRecord, ...referenceRecord },
+        }
+        : options;
     const { url, properties, headers } = endpoint;
     options.logger?.debug?.(`${debugId} Resolving endpoint from template: ${toDebugString(endpoint)}`);
-    return {
-        ...(headers != undefined && {
-            headers: getEndpointHeaders(headers, endpointRuleOptions),
-        }),
-        ...(properties != undefined && {
-            properties: getEndpointProperties(properties, endpointRuleOptions),
-        }),
-        url: getEndpointUrl(url, endpointRuleOptions),
-    };
+    const endpointToReturn = { url: getEndpointUrl(url, endpointRuleOptions) };
+    if (headers != null) {
+        endpointToReturn.headers = getEndpointHeaders(headers, endpointRuleOptions);
+    }
+    if (properties != null) {
+        endpointToReturn.properties = getEndpointProperties(properties, endpointRuleOptions);
+    }
+    return endpointToReturn;
 };
 
 const evaluateErrorRule = (errorRule, options) => {
@@ -22729,10 +24044,13 @@ const evaluateErrorRule = (errorRule, options) => {
     if (!result) {
         return;
     }
-    throw new EndpointError(evaluateExpression(error, "Error", {
-        ...options,
-        referenceRecord: { ...options.referenceRecord, ...referenceRecord },
-    }));
+    const errorRuleOptions = referenceRecord
+        ? {
+            ...options,
+            referenceRecord: { ...options.referenceRecord, ...referenceRecord },
+        }
+        : options;
+    throw new EndpointError(evaluateExpression(error, "Error", errorRuleOptions));
 };
 
 const evaluateRules = (rules, options) => {
@@ -22764,10 +24082,10 @@ const evaluateTreeRule = (treeRule, options) => {
     if (!result) {
         return;
     }
-    return group.evaluateRules(rules, {
-        ...options,
-        referenceRecord: { ...options.referenceRecord, ...referenceRecord },
-    });
+    const treeRuleOptions = referenceRecord
+        ? { ...options, referenceRecord: { ...options.referenceRecord, ...referenceRecord } }
+        : options;
+    return group.evaluateRules(rules, treeRuleOptions);
 };
 const group = {
     evaluateRules,
@@ -22778,20 +24096,15 @@ const resolveEndpoint = (ruleSetObject, options) => {
     const { endpointParams, logger } = options;
     const { parameters, rules } = ruleSetObject;
     options.logger?.debug?.(`${debugId} Initial EndpointParams: ${toDebugString(endpointParams)}`);
-    const paramsWithDefault = Object.entries(parameters)
-        .filter(([, v]) => v.default != null)
-        .map(([k, v]) => [k, v.default]);
-    if (paramsWithDefault.length > 0) {
-        for (const [paramKey, paramDefaultValue] of paramsWithDefault) {
-            endpointParams[paramKey] = endpointParams[paramKey] ?? paramDefaultValue;
+    for (const paramKey in parameters) {
+        const parameter = parameters[paramKey];
+        const endpointParam = endpointParams[paramKey];
+        if (endpointParam == null && parameter.default != null) {
+            endpointParams[paramKey] = parameter.default;
+            continue;
         }
-    }
-    const requiredParams = Object.entries(parameters)
-        .filter(([, v]) => v.required)
-        .map(([k]) => k);
-    for (const requiredParam of requiredParams) {
-        if (endpointParams[requiredParam] == null) {
-            throw new EndpointError(`Missing required parameter: '${requiredParam}'`);
+        if (parameter.required && endpointParam == null) {
+            throw new EndpointError(`Missing required parameter: '${paramKey}'`);
         }
     }
     const endpoint = evaluateRules(rules, { endpointParams, logger, referenceRecord: {} });
@@ -22799,9 +24112,11 @@ const resolveEndpoint = (ruleSetObject, options) => {
     return endpoint;
 };
 
+exports.BinaryDecisionDiagram = BinaryDecisionDiagram;
 exports.EndpointCache = EndpointCache;
 exports.EndpointError = EndpointError;
 exports.customEndpointFunctions = customEndpointFunctions;
+exports.decideEndpoint = decideEndpoint;
 exports.isIpAddress = isIpAddress;
 exports.isValidHostLabel = isValidHostLabel;
 exports.resolveEndpoint = resolveEndpoint;
@@ -22901,8 +24216,8 @@ class DefaultRateLimiter {
     minFillRate;
     scaleConstant;
     smooth;
-    currentCapacity = 0;
     enabled = false;
+    availableTokens = 0;
     lastMaxRate = 0;
     measuredTxRate = 0;
     requestCount = 0;
@@ -22918,43 +24233,20 @@ class DefaultRateLimiter {
         this.minFillRate = options?.minFillRate ?? 0.5;
         this.scaleConstant = options?.scaleConstant ?? 0.4;
         this.smooth = options?.smooth ?? 0.8;
-        const currentTimeInSeconds = this.getCurrentTimeInSeconds();
-        this.lastThrottleTime = currentTimeInSeconds;
+        this.lastThrottleTime = this.getCurrentTimeInSeconds();
         this.lastTxRateBucket = Math.floor(this.getCurrentTimeInSeconds());
         this.fillRate = this.minFillRate;
         this.maxCapacity = this.minCapacity;
     }
-    getCurrentTimeInSeconds() {
-        return Date.now() / 1000;
-    }
     async getSendToken() {
         return this.acquireTokenBucket(1);
-    }
-    async acquireTokenBucket(amount) {
-        if (!this.enabled) {
-            return;
-        }
-        this.refillTokenBucket();
-        if (amount > this.currentCapacity) {
-            const delay = ((amount - this.currentCapacity) / this.fillRate) * 1000;
-            await new Promise((resolve) => DefaultRateLimiter.setTimeoutFn(resolve, delay));
-        }
-        this.currentCapacity = this.currentCapacity - amount;
-    }
-    refillTokenBucket() {
-        const timestamp = this.getCurrentTimeInSeconds();
-        if (!this.lastTimestamp) {
-            this.lastTimestamp = timestamp;
-            return;
-        }
-        const fillAmount = (timestamp - this.lastTimestamp) * this.fillRate;
-        this.currentCapacity = Math.min(this.maxCapacity, this.currentCapacity + fillAmount);
-        this.lastTimestamp = timestamp;
     }
     updateClientSendingRate(response) {
         let calculatedRate;
         this.updateMeasuredRate();
-        if (serviceErrorClassification.isThrottlingError(response)) {
+        const retryErrorInfo = response;
+        const isThrottling = retryErrorInfo?.errorType === "THROTTLING" || serviceErrorClassification.isThrottlingError(retryErrorInfo?.error ?? response);
+        if (isThrottling) {
             const rateToUse = !this.enabled ? this.measuredTxRate : Math.min(this.measuredTxRate, this.fillRate);
             this.lastMaxRate = rateToUse;
             this.calculateTimeWindow();
@@ -22968,6 +24260,30 @@ class DefaultRateLimiter {
         }
         const newRate = Math.min(calculatedRate, 2 * this.measuredTxRate);
         this.updateTokenBucketRate(newRate);
+    }
+    getCurrentTimeInSeconds() {
+        return Date.now() / 1000;
+    }
+    async acquireTokenBucket(amount) {
+        if (!this.enabled) {
+            return;
+        }
+        this.refillTokenBucket();
+        if (amount > this.availableTokens) {
+            const delay = ((amount - this.availableTokens) / this.fillRate) * 1000;
+            await new Promise((resolve) => DefaultRateLimiter.setTimeoutFn(resolve, delay));
+        }
+        this.availableTokens = this.availableTokens - amount;
+    }
+    refillTokenBucket() {
+        const timestamp = this.getCurrentTimeInSeconds();
+        if (!this.lastTimestamp) {
+            this.lastTimestamp = timestamp;
+            return;
+        }
+        const fillAmount = (timestamp - this.lastTimestamp) * this.fillRate;
+        this.availableTokens = Math.min(this.maxCapacity, this.availableTokens + fillAmount);
+        this.lastTimestamp = timestamp;
     }
     calculateTimeWindow() {
         this.timeWindow = this.getPrecise(Math.pow((this.lastMaxRate * (1 - this.beta)) / this.scaleConstant, 1 / 3));
@@ -22985,7 +24301,7 @@ class DefaultRateLimiter {
         this.refillTokenBucket();
         this.fillRate = Math.max(newRate, this.minFillRate);
         this.maxCapacity = Math.max(newRate, this.minCapacity);
-        this.currentCapacity = Math.min(this.currentCapacity, this.maxCapacity);
+        this.availableTokens = Math.min(this.availableTokens, this.maxCapacity);
     }
     updateMeasuredRate() {
         const t = this.getCurrentTimeInSeconds();
@@ -23013,68 +24329,112 @@ const NO_RETRY_INCREMENT = 1;
 const INVOCATION_ID_HEADER = "amz-sdk-invocation-id";
 const REQUEST_HEADER = "amz-sdk-request";
 
-const getDefaultRetryBackoffStrategy = () => {
-    let delayBase = DEFAULT_RETRY_DELAY_BASE;
-    const computeNextBackoffDelay = (attempts) => {
-        return Math.floor(Math.min(MAXIMUM_RETRY_DELAY, Math.random() * 2 ** attempts * delayBase));
-    };
-    const setDelayBase = (delay) => {
-        delayBase = delay;
-    };
-    return {
-        computeNextBackoffDelay,
-        setDelayBase,
-    };
-};
+class Retry {
+    static v2026 = typeof process !== "undefined" && process.env?.SMITHY_NEW_RETRIES_2026 === "true";
+    static delay() {
+        return Retry.v2026 ? 50 : 100;
+    }
+    static throttlingDelay() {
+        return Retry.v2026 ? 1_000 : 500;
+    }
+    static cost() {
+        return Retry.v2026 ? 14 : 5;
+    }
+    static throttlingCost() {
+        return Retry.v2026 ? 5 : 10;
+    }
+    static modifiedCostType() {
+        return Retry.v2026 ? "THROTTLING" : "TRANSIENT";
+    }
+}
 
-const createDefaultRetryToken = ({ retryDelay, retryCount, retryCost, }) => {
-    const getRetryCount = () => retryCount;
-    const getRetryDelay = () => Math.min(MAXIMUM_RETRY_DELAY, retryDelay);
-    const getRetryCost = () => retryCost;
-    return {
-        getRetryCount,
-        getRetryDelay,
-        getRetryCost,
-    };
-};
+class DefaultRetryBackoffStrategy {
+    x = Retry.delay();
+    computeNextBackoffDelay(i) {
+        const b = Math.random();
+        const r = 2;
+        const t_i = b * Math.min(this.x * r ** i, MAXIMUM_RETRY_DELAY);
+        return Math.floor(t_i);
+    }
+    setDelayBase(delay) {
+        this.x = delay;
+    }
+}
+
+class DefaultRetryToken {
+    delay;
+    count;
+    cost;
+    longPoll;
+    constructor(delay, count, cost, longPoll) {
+        this.delay = delay;
+        this.count = count;
+        this.cost = cost;
+        this.longPoll = longPoll;
+    }
+    getRetryCount() {
+        return this.count;
+    }
+    getRetryDelay() {
+        return Math.min(MAXIMUM_RETRY_DELAY, this.delay);
+    }
+    getRetryCost() {
+        return this.cost;
+    }
+    isLongPoll() {
+        return this.longPoll;
+    }
+}
 
 class StandardRetryStrategy {
-    maxAttempts;
     mode = exports.RETRY_MODES.STANDARD;
     capacity = INITIAL_RETRY_TOKENS;
-    retryBackoffStrategy = getDefaultRetryBackoffStrategy();
+    retryBackoffStrategy;
     maxAttemptsProvider;
-    constructor(maxAttempts) {
-        this.maxAttempts = maxAttempts;
-        this.maxAttemptsProvider = typeof maxAttempts === "function" ? maxAttempts : async () => maxAttempts;
+    baseDelay;
+    constructor(arg1) {
+        if (typeof arg1 === "number") {
+            this.maxAttemptsProvider = async () => arg1;
+        }
+        else if (typeof arg1 === "function") {
+            this.maxAttemptsProvider = arg1;
+        }
+        else if (arg1 && typeof arg1 === "object") {
+            this.maxAttemptsProvider = async () => arg1.maxAttempts;
+            this.baseDelay = arg1.baseDelay;
+            this.retryBackoffStrategy = arg1.backoff;
+        }
+        this.maxAttemptsProvider ??= async () => DEFAULT_MAX_ATTEMPTS;
+        this.baseDelay ??= Retry.delay();
+        this.retryBackoffStrategy ??= new DefaultRetryBackoffStrategy();
     }
     async acquireInitialRetryToken(retryTokenScope) {
-        return createDefaultRetryToken({
-            retryDelay: DEFAULT_RETRY_DELAY_BASE,
-            retryCount: 0,
-        });
+        return new DefaultRetryToken(Retry.delay(), 0, undefined, Retry.v2026 && retryTokenScope.includes(":longpoll"));
     }
     async refreshRetryTokenForRetry(token, errorInfo) {
         const maxAttempts = await this.getMaxAttempts();
-        if (this.shouldRetry(token, errorInfo, maxAttempts)) {
+        const shouldRetry = this.shouldRetry(token, errorInfo, maxAttempts);
+        if (shouldRetry || token.isLongPoll?.()) {
             const errorType = errorInfo.errorType;
-            this.retryBackoffStrategy.setDelayBase(errorType === "THROTTLING" ? THROTTLING_RETRY_DELAY_BASE : DEFAULT_RETRY_DELAY_BASE);
+            this.retryBackoffStrategy.setDelayBase(errorType === "THROTTLING" ? Retry.throttlingDelay() : this.baseDelay);
             const delayFromErrorType = this.retryBackoffStrategy.computeNextBackoffDelay(token.getRetryCount());
-            const retryDelay = errorInfo.retryAfterHint
-                ? Math.max(errorInfo.retryAfterHint.getTime() - Date.now() || 0, delayFromErrorType)
-                : delayFromErrorType;
-            const capacityCost = this.getCapacityCost(errorType);
-            this.capacity -= capacityCost;
-            return createDefaultRetryToken({
-                retryDelay,
-                retryCount: token.getRetryCount() + 1,
-                retryCost: capacityCost,
-            });
+            let retryDelay = delayFromErrorType;
+            if (errorInfo.retryAfterHint instanceof Date) {
+                retryDelay = Math.max(delayFromErrorType, Math.min(errorInfo.retryAfterHint.getTime() - Date.now(), delayFromErrorType + 5_000));
+            }
+            if (!shouldRetry) {
+                throw Object.assign(new Error("No retry token available"), { $backoff: Retry.v2026 ? retryDelay : 0 });
+            }
+            else {
+                const capacityCost = this.getCapacityCost(errorType);
+                this.capacity -= capacityCost;
+                return new DefaultRetryToken(retryDelay, token.getRetryCount() + 1, capacityCost, token.isLongPoll?.() ?? false);
+            }
         }
         throw new Error("No retry token available");
     }
     recordSuccess(token) {
-        this.capacity = Math.max(INITIAL_RETRY_TOKENS, this.capacity + (token.getRetryCost() ?? NO_RETRY_INCREMENT));
+        this.capacity = Math.min(INITIAL_RETRY_TOKENS, this.capacity + (token.getRetryCost() ?? NO_RETRY_INCREMENT));
     }
     getCapacity() {
         return this.capacity;
@@ -23095,23 +24455,29 @@ class StandardRetryStrategy {
             this.isRetryableError(errorInfo.errorType));
     }
     getCapacityCost(errorType) {
-        return errorType === "TRANSIENT" ? TIMEOUT_RETRY_COST : RETRY_COST;
+        return errorType === Retry.modifiedCostType() ? Retry.throttlingCost() : Retry.cost();
     }
     isRetryableError(errorType) {
         return errorType === "THROTTLING" || errorType === "TRANSIENT";
     }
+    async maxAttempts() {
+        return this.maxAttemptsProvider();
+    }
 }
 
 class AdaptiveRetryStrategy {
-    maxAttemptsProvider;
+    mode = exports.RETRY_MODES.ADAPTIVE;
     rateLimiter;
     standardRetryStrategy;
-    mode = exports.RETRY_MODES.ADAPTIVE;
     constructor(maxAttemptsProvider, options) {
-        this.maxAttemptsProvider = maxAttemptsProvider;
         const { rateLimiter } = options ?? {};
         this.rateLimiter = rateLimiter ?? new DefaultRateLimiter();
-        this.standardRetryStrategy = new StandardRetryStrategy(maxAttemptsProvider);
+        this.standardRetryStrategy = options
+            ? new StandardRetryStrategy({
+                maxAttempts: typeof maxAttemptsProvider === "number" ? maxAttemptsProvider : 3,
+                ...options,
+            })
+            : new StandardRetryStrategy(maxAttemptsProvider);
     }
     async acquireInitialRetryToken(retryTokenScope) {
         await this.rateLimiter.getSendToken();
@@ -23125,11 +24491,14 @@ class AdaptiveRetryStrategy {
         this.rateLimiter.updateClientSendingRate({});
         this.standardRetryStrategy.recordSuccess(token);
     }
+    async maxAttemptsProvider() {
+        return this.standardRetryStrategy.maxAttempts();
+    }
 }
 
 class ConfiguredRetryStrategy extends StandardRetryStrategy {
     computeNextBackoffDelay;
-    constructor(maxAttempts, computeNextBackoffDelay = DEFAULT_RETRY_DELAY_BASE) {
+    constructor(maxAttempts, computeNextBackoffDelay = Retry.delay()) {
         super(typeof maxAttempts === "function" ? maxAttempts : async () => maxAttempts);
         if (typeof computeNextBackoffDelay === "number") {
             this.computeNextBackoffDelay = () => computeNextBackoffDelay;
@@ -23157,6 +24526,7 @@ exports.MAXIMUM_RETRY_DELAY = MAXIMUM_RETRY_DELAY;
 exports.NO_RETRY_INCREMENT = NO_RETRY_INCREMENT;
 exports.REQUEST_HEADER = REQUEST_HEADER;
 exports.RETRY_COST = RETRY_COST;
+exports.Retry = Retry;
 exports.StandardRetryStrategy = StandardRetryStrategy;
 exports.THROTTLING_RETRY_DELAY_BASE = THROTTLING_RETRY_DELAY_BASE;
 exports.TIMEOUT_RETRY_COST = TIMEOUT_RETRY_COST;
@@ -52968,7 +54338,7 @@ module.exports = require("util");
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/client-ecs","description":"AWS SDK for JavaScript Ecs Client for Node.js, Browser and React Native","version":"3.1020.0","scripts":{"build":"concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline client-ecs","build:es":"tsc -p tsconfig.es.json","build:include:deps":"yarn g:turbo run build -F=\\"$npm_package_name\\"","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"premove dist-cjs dist-es dist-types tsconfig.cjs.tsbuildinfo tsconfig.es.tsbuildinfo tsconfig.types.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo ecs","test:e2e":"yarn g:vitest run -c vitest.config.e2e.mts --mode development","test:e2e:watch":"yarn g:vitest watch -c vitest.config.e2e.mts","test:index":"tsc --noEmit ./test/index-types.ts && node ./test/index-objects.spec.mjs"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"^3.973.26","@aws-sdk/credential-provider-node":"^3.972.28","@aws-sdk/middleware-host-header":"^3.972.8","@aws-sdk/middleware-logger":"^3.972.8","@aws-sdk/middleware-recursion-detection":"^3.972.9","@aws-sdk/middleware-user-agent":"^3.972.27","@aws-sdk/region-config-resolver":"^3.972.10","@aws-sdk/types":"^3.973.6","@aws-sdk/util-endpoints":"^3.996.5","@aws-sdk/util-user-agent-browser":"^3.972.8","@aws-sdk/util-user-agent-node":"^3.973.13","@smithy/config-resolver":"^4.4.13","@smithy/core":"^3.23.13","@smithy/fetch-http-handler":"^5.3.15","@smithy/hash-node":"^4.2.12","@smithy/invalid-dependency":"^4.2.12","@smithy/middleware-content-length":"^4.2.12","@smithy/middleware-endpoint":"^4.4.28","@smithy/middleware-retry":"^4.4.45","@smithy/middleware-serde":"^4.2.16","@smithy/middleware-stack":"^4.2.12","@smithy/node-config-provider":"^4.3.12","@smithy/node-http-handler":"^4.5.1","@smithy/protocol-http":"^5.3.12","@smithy/smithy-client":"^4.12.8","@smithy/types":"^4.13.1","@smithy/url-parser":"^4.2.12","@smithy/util-base64":"^4.3.2","@smithy/util-body-length-browser":"^4.2.2","@smithy/util-body-length-node":"^4.2.3","@smithy/util-defaults-mode-browser":"^4.3.44","@smithy/util-defaults-mode-node":"^4.2.48","@smithy/util-endpoints":"^3.3.3","@smithy/util-middleware":"^4.2.12","@smithy/util-retry":"^4.2.12","@smithy/util-utf8":"^4.2.2","@smithy/util-waiter":"^4.2.14","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node20":"20.1.8","@types/node":"^20.14.8","concurrently":"7.0.0","downlevel-dts":"0.10.1","premove":"4.0.0","typescript":"~5.8.3"},"engines":{"node":">=20.0.0"},"typesVersions":{"<4.5":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-ecs","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-ecs"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/client-ecs","description":"AWS SDK for JavaScript Ecs Client for Node.js, Browser and React Native","version":"3.1033.0","scripts":{"build":"concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline client-ecs","build:es":"tsc -p tsconfig.es.json","build:include:deps":"yarn g:turbo run build -F=\\"$npm_package_name\\"","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"premove dist-cjs dist-es dist-types tsconfig.cjs.tsbuildinfo tsconfig.es.tsbuildinfo tsconfig.types.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo ecs","test:e2e":"yarn g:vitest run -c vitest.config.e2e.mts --mode development","test:e2e:watch":"yarn g:vitest watch -c vitest.config.e2e.mts","test:index":"tsc --noEmit ./test/index-types.ts && node ./test/index-objects.spec.mjs"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"^3.974.2","@aws-sdk/credential-provider-node":"^3.972.33","@aws-sdk/middleware-host-header":"^3.972.10","@aws-sdk/middleware-logger":"^3.972.10","@aws-sdk/middleware-recursion-detection":"^3.972.11","@aws-sdk/middleware-user-agent":"^3.972.32","@aws-sdk/region-config-resolver":"^3.972.12","@aws-sdk/types":"^3.973.8","@aws-sdk/util-endpoints":"^3.996.7","@aws-sdk/util-user-agent-browser":"^3.972.10","@aws-sdk/util-user-agent-node":"^3.973.18","@smithy/config-resolver":"^4.4.16","@smithy/core":"^3.23.15","@smithy/fetch-http-handler":"^5.3.17","@smithy/hash-node":"^4.2.14","@smithy/invalid-dependency":"^4.2.14","@smithy/middleware-content-length":"^4.2.14","@smithy/middleware-endpoint":"^4.4.30","@smithy/middleware-retry":"^4.5.3","@smithy/middleware-serde":"^4.2.18","@smithy/middleware-stack":"^4.2.14","@smithy/node-config-provider":"^4.3.14","@smithy/node-http-handler":"^4.5.3","@smithy/protocol-http":"^5.3.14","@smithy/smithy-client":"^4.12.11","@smithy/types":"^4.14.1","@smithy/url-parser":"^4.2.14","@smithy/util-base64":"^4.3.2","@smithy/util-body-length-browser":"^4.2.2","@smithy/util-body-length-node":"^4.2.3","@smithy/util-defaults-mode-browser":"^4.3.47","@smithy/util-defaults-mode-node":"^4.2.52","@smithy/util-endpoints":"^3.4.1","@smithy/util-middleware":"^4.2.14","@smithy/util-retry":"^4.3.2","@smithy/util-utf8":"^4.2.2","@smithy/util-waiter":"^4.2.16","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node20":"20.1.8","@types/node":"^20.14.8","concurrently":"7.0.0","downlevel-dts":"0.10.1","premove":"4.0.0","typescript":"~5.8.3"},"engines":{"node":">=20.0.0"},"typesVersions":{"<4.5":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-ecs","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-ecs"}}');
 
 /***/ })
 
