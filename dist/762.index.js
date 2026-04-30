@@ -66,6 +66,103 @@ exports.resolveHttpAuthSchemeConfig = resolveHttpAuthSchemeConfig;
 
 /***/ }),
 
+/***/ 4776:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.bdd = void 0;
+const util_endpoints_1 = __webpack_require__(9674);
+const m = "ref";
+const a = -1, b = true, c = "isSet", d = "PartitionResult", e = "booleanEquals", f = "getAttr", g = "stringEquals", h = { [m]: "Endpoint" }, i = { [m]: d }, j = { fn: f, argv: [i, "name"] }, k = {}, l = [{ [m]: "Region" }];
+const _data = {
+    conditions: [
+        [c, [h]],
+        [c, l],
+        ["aws.partition", l, d],
+        [e, [{ [m]: "UseFIPS" }, b]],
+        [e, [{ [m]: "UseDualStack" }, b]],
+        [e, [{ fn: f, argv: [i, "supportsDualStack"] }, b]],
+        [e, [{ fn: f, argv: [i, "supportsFIPS"] }, b]],
+        [g, [j, "aws"]],
+        [g, [j, "aws-cn"]],
+        [g, [j, "aws-us-gov"]],
+    ],
+    results: [
+        [a],
+        [a, "Invalid Configuration: FIPS and custom endpoint are not supported"],
+        [a, "Invalid Configuration: Dualstack and custom endpoint are not supported"],
+        [h, k],
+        ["https://{Region}.signin.aws.amazon.com", k],
+        ["https://{Region}.signin.amazonaws.cn", k],
+        ["https://{Region}.signin.amazonaws-us-gov.com", k],
+        ["https://signin-fips.{Region}.{PartitionResult#dualStackDnsSuffix}", k],
+        [a, "FIPS and DualStack are enabled, but this partition does not support one or both"],
+        ["https://signin-fips.{Region}.{PartitionResult#dnsSuffix}", k],
+        [a, "FIPS is enabled but this partition does not support FIPS"],
+        ["https://signin.{Region}.{PartitionResult#dualStackDnsSuffix}", k],
+        [a, "DualStack is enabled but this partition does not support DualStack"],
+        ["https://signin.{Region}.{PartitionResult#dnsSuffix}", k],
+        [a, "Invalid Configuration: Missing Region"],
+    ],
+};
+const root = 2;
+const r = 100_000_000;
+const nodes = new Int32Array([
+    -1,
+    1,
+    -1,
+    0,
+    15,
+    3,
+    1,
+    4,
+    r + 14,
+    2,
+    5,
+    r + 14,
+    3,
+    11,
+    6,
+    4,
+    10,
+    7,
+    7,
+    r + 4,
+    8,
+    8,
+    r + 5,
+    9,
+    9,
+    r + 6,
+    r + 13,
+    5,
+    r + 11,
+    r + 12,
+    4,
+    13,
+    12,
+    6,
+    r + 9,
+    r + 10,
+    5,
+    14,
+    r + 8,
+    6,
+    r + 7,
+    r + 8,
+    3,
+    r + 1,
+    16,
+    4,
+    r + 2,
+    r + 3,
+]);
+exports.bdd = util_endpoints_1.BinaryDecisionDiagram.from(nodes, root, _data.conditions, _data.results);
+
+
+/***/ }),
+
 /***/ 2547:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -74,159 +171,19 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.defaultEndpointResolver = void 0;
 const util_endpoints_1 = __webpack_require__(3068);
 const util_endpoints_2 = __webpack_require__(9674);
-const ruleset_1 = __webpack_require__(6904);
+const bdd_1 = __webpack_require__(4776);
 const cache = new util_endpoints_2.EndpointCache({
     size: 50,
     params: ["Endpoint", "Region", "UseDualStack", "UseFIPS"],
 });
 const defaultEndpointResolver = (endpointParams, context = {}) => {
-    return cache.get(endpointParams, () => (0, util_endpoints_2.resolveEndpoint)(ruleset_1.ruleSet, {
+    return cache.get(endpointParams, () => (0, util_endpoints_2.decideEndpoint)(bdd_1.bdd, {
         endpointParams: endpointParams,
         logger: context.logger,
     }));
 };
 exports.defaultEndpointResolver = defaultEndpointResolver;
 util_endpoints_2.customEndpointFunctions.aws = util_endpoints_1.awsEndpointFunctions;
-
-
-/***/ }),
-
-/***/ 6904:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ruleSet = void 0;
-const u = "required", v = "fn", w = "argv", x = "ref";
-const a = true, b = "isSet", c = "booleanEquals", d = "error", e = "endpoint", f = "tree", g = "PartitionResult", h = "stringEquals", i = { [u]: true, default: false, type: "boolean" }, j = { [u]: false, type: "string" }, k = { [x]: "Endpoint" }, l = { [v]: c, [w]: [{ [x]: "UseFIPS" }, true] }, m = { [v]: c, [w]: [{ [x]: "UseDualStack" }, true] }, n = {}, o = { [v]: "getAttr", [w]: [{ [x]: g }, "name"] }, p = { [v]: c, [w]: [{ [x]: "UseFIPS" }, false] }, q = { [v]: c, [w]: [{ [x]: "UseDualStack" }, false] }, r = { [v]: "getAttr", [w]: [{ [x]: g }, "supportsFIPS"] }, s = { [v]: c, [w]: [true, { [v]: "getAttr", [w]: [{ [x]: g }, "supportsDualStack"] }] }, t = [{ [x]: "Region" }];
-const _data = {
-    version: "1.0",
-    parameters: { UseDualStack: i, UseFIPS: i, Endpoint: j, Region: j },
-    rules: [
-        {
-            conditions: [{ [v]: b, [w]: [k] }],
-            rules: [
-                { conditions: [l], error: "Invalid Configuration: FIPS and custom endpoint are not supported", type: d },
-                {
-                    rules: [
-                        {
-                            conditions: [m],
-                            error: "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                            type: d,
-                        },
-                        { endpoint: { url: k, properties: n, headers: n }, type: e },
-                    ],
-                    type: f,
-                },
-            ],
-            type: f,
-        },
-        {
-            rules: [
-                {
-                    conditions: [{ [v]: b, [w]: t }],
-                    rules: [
-                        {
-                            conditions: [{ [v]: "aws.partition", [w]: t, assign: g }],
-                            rules: [
-                                {
-                                    conditions: [{ [v]: h, [w]: [o, "aws"] }, p, q],
-                                    endpoint: { url: "https://{Region}.signin.aws.amazon.com", properties: n, headers: n },
-                                    type: e,
-                                },
-                                {
-                                    conditions: [{ [v]: h, [w]: [o, "aws-cn"] }, p, q],
-                                    endpoint: { url: "https://{Region}.signin.amazonaws.cn", properties: n, headers: n },
-                                    type: e,
-                                },
-                                {
-                                    conditions: [{ [v]: h, [w]: [o, "aws-us-gov"] }, p, q],
-                                    endpoint: { url: "https://{Region}.signin.amazonaws-us-gov.com", properties: n, headers: n },
-                                    type: e,
-                                },
-                                {
-                                    conditions: [l, m],
-                                    rules: [
-                                        {
-                                            conditions: [{ [v]: c, [w]: [a, r] }, s],
-                                            rules: [
-                                                {
-                                                    endpoint: {
-                                                        url: "https://signin-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                        properties: n,
-                                                        headers: n,
-                                                    },
-                                                    type: e,
-                                                },
-                                            ],
-                                            type: f,
-                                        },
-                                        {
-                                            error: "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                            type: d,
-                                        },
-                                    ],
-                                    type: f,
-                                },
-                                {
-                                    conditions: [l, q],
-                                    rules: [
-                                        {
-                                            conditions: [{ [v]: c, [w]: [r, a] }],
-                                            rules: [
-                                                {
-                                                    endpoint: {
-                                                        url: "https://signin-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                        properties: n,
-                                                        headers: n,
-                                                    },
-                                                    type: e,
-                                                },
-                                            ],
-                                            type: f,
-                                        },
-                                        { error: "FIPS is enabled but this partition does not support FIPS", type: d },
-                                    ],
-                                    type: f,
-                                },
-                                {
-                                    conditions: [p, m],
-                                    rules: [
-                                        {
-                                            conditions: [s],
-                                            rules: [
-                                                {
-                                                    endpoint: {
-                                                        url: "https://signin.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                        properties: n,
-                                                        headers: n,
-                                                    },
-                                                    type: e,
-                                                },
-                                            ],
-                                            type: f,
-                                        },
-                                        { error: "DualStack is enabled but this partition does not support DualStack", type: d },
-                                    ],
-                                    type: f,
-                                },
-                                {
-                                    endpoint: { url: "https://signin.{Region}.{PartitionResult#dnsSuffix}", properties: n, headers: n },
-                                    type: e,
-                                },
-                            ],
-                            type: f,
-                        },
-                    ],
-                    type: f,
-                },
-                { error: "Invalid Configuration: Missing Region", type: d },
-            ],
-            type: f,
-        },
-    ],
-};
-exports.ruleSet = _data;
 
 
 /***/ }),
@@ -750,7 +707,7 @@ exports.CreateOAuth2Token$ = [
 /***/ 9955:
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/nested-clients","version":"3.996.17","description":"Nested clients for AWS SDK packages.","main":"./dist-cjs/index.js","module":"./dist-es/index.js","types":"./dist-types/index.d.ts","scripts":{"build":"yarn lint && concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline nested-clients","build:es":"tsc -p tsconfig.es.json","build:include:deps":"yarn g:turbo run build -F=\\"$npm_package_name\\"","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"premove dist-cjs dist-es dist-types tsconfig.cjs.tsbuildinfo tsconfig.es.tsbuildinfo tsconfig.types.tsbuildinfo","lint":"node ../../scripts/validation/submodules-linter.js --pkg nested-clients","test":"yarn g:vitest run","test:watch":"yarn g:vitest watch"},"engines":{"node":">=20.0.0"},"sideEffects":false,"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"^3.973.26","@aws-sdk/middleware-host-header":"^3.972.8","@aws-sdk/middleware-logger":"^3.972.8","@aws-sdk/middleware-recursion-detection":"^3.972.9","@aws-sdk/middleware-user-agent":"^3.972.27","@aws-sdk/region-config-resolver":"^3.972.10","@aws-sdk/types":"^3.973.6","@aws-sdk/util-endpoints":"^3.996.5","@aws-sdk/util-user-agent-browser":"^3.972.8","@aws-sdk/util-user-agent-node":"^3.973.13","@smithy/config-resolver":"^4.4.13","@smithy/core":"^3.23.13","@smithy/fetch-http-handler":"^5.3.15","@smithy/hash-node":"^4.2.12","@smithy/invalid-dependency":"^4.2.12","@smithy/middleware-content-length":"^4.2.12","@smithy/middleware-endpoint":"^4.4.28","@smithy/middleware-retry":"^4.4.45","@smithy/middleware-serde":"^4.2.16","@smithy/middleware-stack":"^4.2.12","@smithy/node-config-provider":"^4.3.12","@smithy/node-http-handler":"^4.5.1","@smithy/protocol-http":"^5.3.12","@smithy/smithy-client":"^4.12.8","@smithy/types":"^4.13.1","@smithy/url-parser":"^4.2.12","@smithy/util-base64":"^4.3.2","@smithy/util-body-length-browser":"^4.2.2","@smithy/util-body-length-node":"^4.2.3","@smithy/util-defaults-mode-browser":"^4.3.44","@smithy/util-defaults-mode-node":"^4.2.48","@smithy/util-endpoints":"^3.3.3","@smithy/util-middleware":"^4.2.12","@smithy/util-retry":"^4.2.12","@smithy/util-utf8":"^4.2.2","tslib":"^2.6.2"},"devDependencies":{"concurrently":"7.0.0","downlevel-dts":"0.10.1","premove":"4.0.0","typescript":"~5.8.3"},"typesVersions":{"<4.5":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["./cognito-identity.d.ts","./cognito-identity.js","./signin.d.ts","./signin.js","./sso-oidc.d.ts","./sso-oidc.js","./sso.d.ts","./sso.js","./sts.d.ts","./sts.js","dist-*/**"],"browser":{"./dist-es/submodules/cognito-identity/runtimeConfig":"./dist-es/submodules/cognito-identity/runtimeConfig.browser","./dist-es/submodules/signin/runtimeConfig":"./dist-es/submodules/signin/runtimeConfig.browser","./dist-es/submodules/sso-oidc/runtimeConfig":"./dist-es/submodules/sso-oidc/runtimeConfig.browser","./dist-es/submodules/sso/runtimeConfig":"./dist-es/submodules/sso/runtimeConfig.browser","./dist-es/submodules/sts/runtimeConfig":"./dist-es/submodules/sts/runtimeConfig.browser"},"react-native":{},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/packages/nested-clients","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"packages/nested-clients"},"exports":{"./package.json":"./package.json","./sso-oidc":{"types":"./dist-types/submodules/sso-oidc/index.d.ts","module":"./dist-es/submodules/sso-oidc/index.js","node":"./dist-cjs/submodules/sso-oidc/index.js","import":"./dist-es/submodules/sso-oidc/index.js","require":"./dist-cjs/submodules/sso-oidc/index.js"},"./sts":{"types":"./dist-types/submodules/sts/index.d.ts","module":"./dist-es/submodules/sts/index.js","node":"./dist-cjs/submodules/sts/index.js","import":"./dist-es/submodules/sts/index.js","require":"./dist-cjs/submodules/sts/index.js"},"./signin":{"types":"./dist-types/submodules/signin/index.d.ts","module":"./dist-es/submodules/signin/index.js","node":"./dist-cjs/submodules/signin/index.js","import":"./dist-es/submodules/signin/index.js","require":"./dist-cjs/submodules/signin/index.js"},"./cognito-identity":{"types":"./dist-types/submodules/cognito-identity/index.d.ts","module":"./dist-es/submodules/cognito-identity/index.js","node":"./dist-cjs/submodules/cognito-identity/index.js","import":"./dist-es/submodules/cognito-identity/index.js","require":"./dist-cjs/submodules/cognito-identity/index.js"},"./sso":{"types":"./dist-types/submodules/sso/index.d.ts","module":"./dist-es/submodules/sso/index.js","node":"./dist-cjs/submodules/sso/index.js","import":"./dist-es/submodules/sso/index.js","require":"./dist-cjs/submodules/sso/index.js"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/nested-clients","version":"3.997.0","description":"Nested clients for AWS SDK packages.","main":"./dist-cjs/index.js","module":"./dist-es/index.js","types":"./dist-types/index.d.ts","scripts":{"build":"yarn lint && concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline nested-clients","build:es":"tsc -p tsconfig.es.json","build:include:deps":"yarn g:turbo run build -F=\\"$npm_package_name\\"","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"premove dist-cjs dist-es dist-types tsconfig.cjs.tsbuildinfo tsconfig.es.tsbuildinfo tsconfig.types.tsbuildinfo","lint":"node ../../scripts/validation/submodules-linter.js --pkg nested-clients","test":"yarn g:vitest run","test:watch":"yarn g:vitest watch"},"engines":{"node":">=20.0.0"},"sideEffects":false,"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"^3.974.2","@aws-sdk/middleware-host-header":"^3.972.10","@aws-sdk/middleware-logger":"^3.972.10","@aws-sdk/middleware-recursion-detection":"^3.972.11","@aws-sdk/middleware-user-agent":"^3.972.32","@aws-sdk/region-config-resolver":"^3.972.12","@aws-sdk/signature-v4-multi-region":"^3.996.19","@aws-sdk/types":"^3.973.8","@aws-sdk/util-endpoints":"^3.996.7","@aws-sdk/util-user-agent-browser":"^3.972.10","@aws-sdk/util-user-agent-node":"^3.973.18","@smithy/config-resolver":"^4.4.16","@smithy/core":"^3.23.15","@smithy/fetch-http-handler":"^5.3.17","@smithy/hash-node":"^4.2.14","@smithy/invalid-dependency":"^4.2.14","@smithy/middleware-content-length":"^4.2.14","@smithy/middleware-endpoint":"^4.4.30","@smithy/middleware-retry":"^4.5.3","@smithy/middleware-serde":"^4.2.18","@smithy/middleware-stack":"^4.2.14","@smithy/node-config-provider":"^4.3.14","@smithy/node-http-handler":"^4.5.3","@smithy/protocol-http":"^5.3.14","@smithy/smithy-client":"^4.12.11","@smithy/types":"^4.14.1","@smithy/url-parser":"^4.2.14","@smithy/util-base64":"^4.3.2","@smithy/util-body-length-browser":"^4.2.2","@smithy/util-body-length-node":"^4.2.3","@smithy/util-defaults-mode-browser":"^4.3.47","@smithy/util-defaults-mode-node":"^4.2.52","@smithy/util-endpoints":"^3.4.1","@smithy/util-middleware":"^4.2.14","@smithy/util-retry":"^4.3.2","@smithy/util-utf8":"^4.2.2","tslib":"^2.6.2"},"devDependencies":{"concurrently":"7.0.0","downlevel-dts":"0.10.1","premove":"4.0.0","typescript":"~5.8.3"},"typesVersions":{"<4.5":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["./cognito-identity.d.ts","./cognito-identity.js","./signin.d.ts","./signin.js","./sso-oidc.d.ts","./sso-oidc.js","./sso.d.ts","./sso.js","./sts.d.ts","./sts.js","dist-*/**"],"browser":{"./dist-es/submodules/cognito-identity/runtimeConfig":"./dist-es/submodules/cognito-identity/runtimeConfig.browser","./dist-es/submodules/signin/runtimeConfig":"./dist-es/submodules/signin/runtimeConfig.browser","./dist-es/submodules/sso-oidc/runtimeConfig":"./dist-es/submodules/sso-oidc/runtimeConfig.browser","./dist-es/submodules/sso/runtimeConfig":"./dist-es/submodules/sso/runtimeConfig.browser","./dist-es/submodules/sts/runtimeConfig":"./dist-es/submodules/sts/runtimeConfig.browser"},"react-native":{},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/packages/nested-clients","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"packages/nested-clients"},"exports":{"./package.json":"./package.json","./sso-oidc":{"types":"./dist-types/submodules/sso-oidc/index.d.ts","module":"./dist-es/submodules/sso-oidc/index.js","node":"./dist-cjs/submodules/sso-oidc/index.js","import":"./dist-es/submodules/sso-oidc/index.js","require":"./dist-cjs/submodules/sso-oidc/index.js"},"./sts":{"types":"./dist-types/submodules/sts/index.d.ts","module":"./dist-es/submodules/sts/index.js","node":"./dist-cjs/submodules/sts/index.js","import":"./dist-es/submodules/sts/index.js","require":"./dist-cjs/submodules/sts/index.js"},"./signin":{"types":"./dist-types/submodules/signin/index.d.ts","module":"./dist-es/submodules/signin/index.js","node":"./dist-cjs/submodules/signin/index.js","import":"./dist-es/submodules/signin/index.js","require":"./dist-cjs/submodules/signin/index.js"},"./cognito-identity":{"types":"./dist-types/submodules/cognito-identity/index.d.ts","module":"./dist-es/submodules/cognito-identity/index.js","node":"./dist-cjs/submodules/cognito-identity/index.js","import":"./dist-es/submodules/cognito-identity/index.js","require":"./dist-cjs/submodules/cognito-identity/index.js"},"./sso":{"types":"./dist-types/submodules/sso/index.d.ts","module":"./dist-es/submodules/sso/index.js","node":"./dist-cjs/submodules/sso/index.js","import":"./dist-es/submodules/sso/index.js","require":"./dist-cjs/submodules/sso/index.js"}}}');
 
 /***/ })
 
