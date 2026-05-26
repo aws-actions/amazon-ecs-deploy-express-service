@@ -99,5 +99,5 @@ outputs:
     description: 'The endpoint URL of the service (from the Application Load Balancer)'
 
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
