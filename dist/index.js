@@ -4115,8 +4115,9 @@ function copyFile(srcFile, destFile, force) {
 
 const { awsEndpointFunctions, emitWarningIfUnsupportedVersion: emitWarningIfUnsupportedVersion$1, createDefaultUserAgentProvider, NODE_APP_ID_CONFIG_OPTIONS, getAwsRegionExtensionConfiguration, resolveAwsRegionExtensionConfiguration, resolveUserAgentConfig, resolveHostHeaderConfig, getUserAgentPlugin, getHostHeaderPlugin, getLoggerPlugin, getRecursionDetectionPlugin } = __nccwpck_require__(5152);
 const { getHttpAuthSchemeEndpointRuleSetPlugin, DefaultIdentityProviderConfig, getHttpSigningPlugin, createPaginator } = __nccwpck_require__(402);
-const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, Command, createWaiter, checkExceptions, WaiterState, createAggregatedClient } = __nccwpck_require__(2658);
-exports.$Command = Command;
+const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, makeBuilder, createWaiter, checkExceptions, WaiterState, createAggregatedClient } = __nccwpck_require__(2658);
+const { Command: $Command } = __nccwpck_require__(2658);
+exports.$Command = $Command;
 exports.__Client = Client;
 const { resolveDefaultsModeConfig, loadConfig, NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, NODE_REGION_CONFIG_OPTIONS, NODE_REGION_CONFIG_FILE_OPTIONS, resolveRegionConfig } = __nccwpck_require__(7291);
 const { BinaryDecisionDiagram, EndpointCache, decideEndpoint, customEndpointFunctions, resolveEndpointConfig, getEndpointPlugin } = __nccwpck_require__(2085);
@@ -4125,9 +4126,10 @@ const { DEFAULT_RETRY_MODE, NODE_RETRY_MODE_CONFIG_OPTIONS, NODE_MAX_ATTEMPT_CON
 const { TypeRegistry, getSchemaSerdePlugin } = __nccwpck_require__(6890);
 const { resolveAwsSdkSigV4Config, AwsSdkSigV4Signer, NODE_AUTH_SCHEME_PREFERENCE_OPTIONS } = __nccwpck_require__(7523);
 const { defaultProvider } = __nccwpck_require__(5861);
-const { toUtf8, fromUtf8, toBase64, fromBase64, Hash, calculateBodyLength } = __nccwpck_require__(2430);
+const { toUtf8, fromUtf8, toBase64, fromBase64, calculateBodyLength } = __nccwpck_require__(2430);
 const { streamCollector, NodeHttpHandler } = __nccwpck_require__(1279);
 const { AwsJson1_1Protocol } = __nccwpck_require__(7288);
+const { Sha256 } = __nccwpck_require__(9542);
 
 const defaultECSHttpAuthSchemeParametersProvider = async (config, context, input) => {
     return {
@@ -4182,7 +4184,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.1075.0";
+var version = "3.1079.0";
 var packageInfo = {
 	version: version};
 
@@ -8233,6 +8235,7 @@ const getRuntimeConfig$1 = (config) => {
             serviceTarget: "AmazonEC2ContainerServiceV20141113",
         },
         serviceId: config?.serviceId ?? "ECS",
+        sha256: config?.sha256 ?? Sha256,
         urlParser: config?.urlParser ?? parseUrl,
         utf8Decoder: config?.utf8Decoder ?? fromUtf8,
         utf8Encoder: config?.utf8Encoder ?? toUtf8,
@@ -8266,7 +8269,6 @@ const getRuntimeConfig = (config) => {
                 ...NODE_RETRY_MODE_CONFIG_OPTIONS,
                 default: async () => (await defaultConfigProvider()).retryMode || DEFAULT_RETRY_MODE,
             }, config),
-        sha256: config?.sha256 ?? Hash.bind(null, "sha256"),
         streamCollector: config?.streamCollector ?? streamCollector,
         useDualstackEndpoint: config?.useDualstackEndpoint ?? loadConfig(NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
         useFipsEndpoint: config?.useFipsEndpoint ?? loadConfig(NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
@@ -8354,928 +8356,239 @@ class ECSClient extends Client {
     }
 }
 
-class ContinueServiceDeploymentCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ContinueServiceDeployment", {})
-    .n("ECSClient", "ContinueServiceDeploymentCommand")
-    .sc(ContinueServiceDeployment$)
-    .build() {
-}
-
-class CreateCapacityProviderCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "CreateCapacityProvider", {})
-    .n("ECSClient", "CreateCapacityProviderCommand")
-    .sc(CreateCapacityProvider$)
-    .build() {
-}
-
-class CreateClusterCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "CreateCluster", {})
-    .n("ECSClient", "CreateClusterCommand")
-    .sc(CreateCluster$)
-    .build() {
-}
-
-class CreateDaemonCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "CreateDaemon", {})
-    .n("ECSClient", "CreateDaemonCommand")
-    .sc(CreateDaemon$)
-    .build() {
-}
-
-class CreateExpressGatewayServiceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "CreateExpressGatewayService", {})
-    .n("ECSClient", "CreateExpressGatewayServiceCommand")
-    .sc(CreateExpressGatewayService$)
-    .build() {
-}
-
-class CreateServiceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "CreateService", {})
-    .n("ECSClient", "CreateServiceCommand")
-    .sc(CreateService$)
-    .build() {
-}
-
-class CreateTaskSetCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "CreateTaskSet", {})
-    .n("ECSClient", "CreateTaskSetCommand")
-    .sc(CreateTaskSet$)
-    .build() {
-}
-
-class DeleteAccountSettingCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteAccountSetting", {})
-    .n("ECSClient", "DeleteAccountSettingCommand")
-    .sc(DeleteAccountSetting$)
-    .build() {
-}
-
-class DeleteAttributesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteAttributes", {})
-    .n("ECSClient", "DeleteAttributesCommand")
-    .sc(DeleteAttributes$)
-    .build() {
-}
-
-class DeleteCapacityProviderCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteCapacityProvider", {})
-    .n("ECSClient", "DeleteCapacityProviderCommand")
-    .sc(DeleteCapacityProvider$)
-    .build() {
-}
-
-class DeleteClusterCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteCluster", {})
-    .n("ECSClient", "DeleteClusterCommand")
-    .sc(DeleteCluster$)
-    .build() {
-}
-
-class DeleteDaemonCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteDaemon", {})
-    .n("ECSClient", "DeleteDaemonCommand")
-    .sc(DeleteDaemon$)
-    .build() {
-}
-
-class DeleteDaemonTaskDefinitionCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteDaemonTaskDefinition", {})
-    .n("ECSClient", "DeleteDaemonTaskDefinitionCommand")
-    .sc(DeleteDaemonTaskDefinition$)
-    .build() {
-}
-
-class DeleteExpressGatewayServiceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteExpressGatewayService", {})
-    .n("ECSClient", "DeleteExpressGatewayServiceCommand")
-    .sc(DeleteExpressGatewayService$)
-    .build() {
-}
-
-class DeleteServiceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteService", {})
-    .n("ECSClient", "DeleteServiceCommand")
-    .sc(DeleteService$)
-    .build() {
-}
-
-class DeleteTaskDefinitionsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteTaskDefinitions", {})
-    .n("ECSClient", "DeleteTaskDefinitionsCommand")
-    .sc(DeleteTaskDefinitions$)
-    .build() {
-}
-
-class DeleteTaskSetCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeleteTaskSet", {})
-    .n("ECSClient", "DeleteTaskSetCommand")
-    .sc(DeleteTaskSet$)
-    .build() {
-}
-
-class DeregisterContainerInstanceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeregisterContainerInstance", {})
-    .n("ECSClient", "DeregisterContainerInstanceCommand")
-    .sc(DeregisterContainerInstance$)
-    .build() {
-}
-
-class DeregisterTaskDefinitionCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DeregisterTaskDefinition", {})
-    .n("ECSClient", "DeregisterTaskDefinitionCommand")
-    .sc(DeregisterTaskDefinition$)
-    .build() {
-}
-
-class DescribeCapacityProvidersCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeCapacityProviders", {})
-    .n("ECSClient", "DescribeCapacityProvidersCommand")
-    .sc(DescribeCapacityProviders$)
-    .build() {
-}
-
-class DescribeClustersCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeClusters", {})
-    .n("ECSClient", "DescribeClustersCommand")
-    .sc(DescribeClusters$)
-    .build() {
-}
-
-class DescribeContainerInstancesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeContainerInstances", {})
-    .n("ECSClient", "DescribeContainerInstancesCommand")
-    .sc(DescribeContainerInstances$)
-    .build() {
-}
-
-class DescribeDaemonCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeDaemon", {})
-    .n("ECSClient", "DescribeDaemonCommand")
-    .sc(DescribeDaemon$)
-    .build() {
-}
-
-class DescribeDaemonDeploymentsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeDaemonDeployments", {})
-    .n("ECSClient", "DescribeDaemonDeploymentsCommand")
-    .sc(DescribeDaemonDeployments$)
-    .build() {
-}
-
-class DescribeDaemonRevisionsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeDaemonRevisions", {})
-    .n("ECSClient", "DescribeDaemonRevisionsCommand")
-    .sc(DescribeDaemonRevisions$)
-    .build() {
-}
-
-class DescribeDaemonTaskDefinitionCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeDaemonTaskDefinition", {})
-    .n("ECSClient", "DescribeDaemonTaskDefinitionCommand")
-    .sc(DescribeDaemonTaskDefinition$)
-    .build() {
-}
-
-class DescribeExpressGatewayServiceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeExpressGatewayService", {})
-    .n("ECSClient", "DescribeExpressGatewayServiceCommand")
-    .sc(DescribeExpressGatewayService$)
-    .build() {
-}
-
-class DescribeServiceDeploymentsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeServiceDeployments", {})
-    .n("ECSClient", "DescribeServiceDeploymentsCommand")
-    .sc(DescribeServiceDeployments$)
-    .build() {
-}
-
-class DescribeServiceRevisionsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeServiceRevisions", {})
-    .n("ECSClient", "DescribeServiceRevisionsCommand")
-    .sc(DescribeServiceRevisions$)
-    .build() {
-}
-
-class DescribeServicesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeServices", {})
-    .n("ECSClient", "DescribeServicesCommand")
-    .sc(DescribeServices$)
-    .build() {
-}
-
-class DescribeTaskDefinitionCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeTaskDefinition", {})
-    .n("ECSClient", "DescribeTaskDefinitionCommand")
-    .sc(DescribeTaskDefinition$)
-    .build() {
-}
-
-class DescribeTasksCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeTasks", {})
-    .n("ECSClient", "DescribeTasksCommand")
-    .sc(DescribeTasks$)
-    .build() {
-}
-
-class DescribeTaskSetsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DescribeTaskSets", {})
-    .n("ECSClient", "DescribeTaskSetsCommand")
-    .sc(DescribeTaskSets$)
-    .build() {
-}
-
-class DiscoverPollEndpointCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "DiscoverPollEndpoint", {})
-    .n("ECSClient", "DiscoverPollEndpointCommand")
-    .sc(DiscoverPollEndpoint$)
-    .build() {
-}
-
-class ExecuteCommandCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ExecuteCommand", {})
-    .n("ECSClient", "ExecuteCommandCommand")
-    .sc(ExecuteCommand$)
-    .build() {
-}
-
-class GetTaskProtectionCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "GetTaskProtection", {})
-    .n("ECSClient", "GetTaskProtectionCommand")
-    .sc(GetTaskProtection$)
-    .build() {
-}
-
-class ListAccountSettingsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListAccountSettings", {})
-    .n("ECSClient", "ListAccountSettingsCommand")
-    .sc(ListAccountSettings$)
-    .build() {
-}
-
-class ListAttributesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListAttributes", {})
-    .n("ECSClient", "ListAttributesCommand")
-    .sc(ListAttributes$)
-    .build() {
-}
-
-class ListClustersCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListClusters", {})
-    .n("ECSClient", "ListClustersCommand")
-    .sc(ListClusters$)
-    .build() {
-}
-
-class ListContainerInstancesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListContainerInstances", {})
-    .n("ECSClient", "ListContainerInstancesCommand")
-    .sc(ListContainerInstances$)
-    .build() {
-}
-
-class ListDaemonDeploymentsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListDaemonDeployments", {})
-    .n("ECSClient", "ListDaemonDeploymentsCommand")
-    .sc(ListDaemonDeployments$)
-    .build() {
-}
-
-class ListDaemonsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListDaemons", {})
-    .n("ECSClient", "ListDaemonsCommand")
-    .sc(ListDaemons$)
-    .build() {
-}
-
-class ListDaemonTaskDefinitionsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListDaemonTaskDefinitions", {})
-    .n("ECSClient", "ListDaemonTaskDefinitionsCommand")
-    .sc(ListDaemonTaskDefinitions$)
-    .build() {
-}
-
-class ListServiceDeploymentsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListServiceDeployments", {})
-    .n("ECSClient", "ListServiceDeploymentsCommand")
-    .sc(ListServiceDeployments$)
-    .build() {
-}
-
-class ListServicesByNamespaceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListServicesByNamespace", {})
-    .n("ECSClient", "ListServicesByNamespaceCommand")
-    .sc(ListServicesByNamespace$)
-    .build() {
-}
-
-class ListServicesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListServices", {})
-    .n("ECSClient", "ListServicesCommand")
-    .sc(ListServices$)
-    .build() {
-}
-
-class ListTagsForResourceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListTagsForResource", {})
-    .n("ECSClient", "ListTagsForResourceCommand")
-    .sc(ListTagsForResource$)
-    .build() {
-}
-
-class ListTaskDefinitionFamiliesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListTaskDefinitionFamilies", {})
-    .n("ECSClient", "ListTaskDefinitionFamiliesCommand")
-    .sc(ListTaskDefinitionFamilies$)
-    .build() {
-}
-
-class ListTaskDefinitionsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListTaskDefinitions", {})
-    .n("ECSClient", "ListTaskDefinitionsCommand")
-    .sc(ListTaskDefinitions$)
-    .build() {
-}
-
-class ListTasksCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "ListTasks", {})
-    .n("ECSClient", "ListTasksCommand")
-    .sc(ListTasks$)
-    .build() {
-}
-
-class PutAccountSettingCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "PutAccountSetting", {})
-    .n("ECSClient", "PutAccountSettingCommand")
-    .sc(PutAccountSetting$)
-    .build() {
-}
-
-class PutAccountSettingDefaultCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "PutAccountSettingDefault", {})
-    .n("ECSClient", "PutAccountSettingDefaultCommand")
-    .sc(PutAccountSettingDefault$)
-    .build() {
-}
-
-class PutAttributesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "PutAttributes", {})
-    .n("ECSClient", "PutAttributesCommand")
-    .sc(PutAttributes$)
-    .build() {
-}
-
-class PutClusterCapacityProvidersCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "PutClusterCapacityProviders", {})
-    .n("ECSClient", "PutClusterCapacityProvidersCommand")
-    .sc(PutClusterCapacityProviders$)
-    .build() {
-}
-
-class RegisterContainerInstanceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "RegisterContainerInstance", {})
-    .n("ECSClient", "RegisterContainerInstanceCommand")
-    .sc(RegisterContainerInstance$)
-    .build() {
-}
-
-class RegisterDaemonTaskDefinitionCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "RegisterDaemonTaskDefinition", {})
-    .n("ECSClient", "RegisterDaemonTaskDefinitionCommand")
-    .sc(RegisterDaemonTaskDefinition$)
-    .build() {
-}
-
-class RegisterTaskDefinitionCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "RegisterTaskDefinition", {})
-    .n("ECSClient", "RegisterTaskDefinitionCommand")
-    .sc(RegisterTaskDefinition$)
-    .build() {
-}
-
-class RunTaskCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "RunTask", {})
-    .n("ECSClient", "RunTaskCommand")
-    .sc(RunTask$)
-    .build() {
-}
-
-class StartTaskCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "StartTask", {})
-    .n("ECSClient", "StartTaskCommand")
-    .sc(StartTask$)
-    .build() {
-}
-
-class StopServiceDeploymentCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "StopServiceDeployment", {})
-    .n("ECSClient", "StopServiceDeploymentCommand")
-    .sc(StopServiceDeployment$)
-    .build() {
-}
-
-class StopTaskCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "StopTask", {})
-    .n("ECSClient", "StopTaskCommand")
-    .sc(StopTask$)
-    .build() {
-}
-
-class SubmitAttachmentStateChangesCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "SubmitAttachmentStateChanges", {})
-    .n("ECSClient", "SubmitAttachmentStateChangesCommand")
-    .sc(SubmitAttachmentStateChanges$)
-    .build() {
-}
-
-class SubmitContainerStateChangeCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "SubmitContainerStateChange", {})
-    .n("ECSClient", "SubmitContainerStateChangeCommand")
-    .sc(SubmitContainerStateChange$)
-    .build() {
-}
-
-class SubmitTaskStateChangeCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "SubmitTaskStateChange", {})
-    .n("ECSClient", "SubmitTaskStateChangeCommand")
-    .sc(SubmitTaskStateChange$)
-    .build() {
-}
-
-class TagResourceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "TagResource", {})
-    .n("ECSClient", "TagResourceCommand")
-    .sc(TagResource$)
-    .build() {
-}
-
-class UntagResourceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UntagResource", {})
-    .n("ECSClient", "UntagResourceCommand")
-    .sc(UntagResource$)
-    .build() {
-}
-
-class UpdateCapacityProviderCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateCapacityProvider", {})
-    .n("ECSClient", "UpdateCapacityProviderCommand")
-    .sc(UpdateCapacityProvider$)
-    .build() {
-}
-
-class UpdateClusterCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateCluster", {})
-    .n("ECSClient", "UpdateClusterCommand")
-    .sc(UpdateCluster$)
-    .build() {
-}
-
-class UpdateClusterSettingsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateClusterSettings", {})
-    .n("ECSClient", "UpdateClusterSettingsCommand")
-    .sc(UpdateClusterSettings$)
-    .build() {
-}
-
-class UpdateContainerAgentCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateContainerAgent", {})
-    .n("ECSClient", "UpdateContainerAgentCommand")
-    .sc(UpdateContainerAgent$)
-    .build() {
-}
-
-class UpdateContainerInstancesStateCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateContainerInstancesState", {})
-    .n("ECSClient", "UpdateContainerInstancesStateCommand")
-    .sc(UpdateContainerInstancesState$)
-    .build() {
-}
-
-class UpdateDaemonCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateDaemon", {})
-    .n("ECSClient", "UpdateDaemonCommand")
-    .sc(UpdateDaemon$)
-    .build() {
-}
-
-class UpdateExpressGatewayServiceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateExpressGatewayService", {})
-    .n("ECSClient", "UpdateExpressGatewayServiceCommand")
-    .sc(UpdateExpressGatewayService$)
-    .build() {
-}
-
-class UpdateServiceCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateService", {})
-    .n("ECSClient", "UpdateServiceCommand")
-    .sc(UpdateService$)
-    .build() {
-}
-
-class UpdateServicePrimaryTaskSetCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateServicePrimaryTaskSet", {})
-    .n("ECSClient", "UpdateServicePrimaryTaskSetCommand")
-    .sc(UpdateServicePrimaryTaskSet$)
-    .build() {
-}
-
-class UpdateTaskProtectionCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateTaskProtection", {})
-    .n("ECSClient", "UpdateTaskProtectionCommand")
-    .sc(UpdateTaskProtection$)
-    .build() {
-}
-
-class UpdateTaskSetCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AmazonEC2ContainerServiceV20141113", "UpdateTaskSet", {})
-    .n("ECSClient", "UpdateTaskSetCommand")
-    .sc(UpdateTaskSet$)
-    .build() {
+const command = makeBuilder(commonParams, "AmazonEC2ContainerServiceV20141113", "ECSClient", getEndpointPlugin);
+const _ep0 = {};
+const _mw0 = (Command, cs, config, o) => [];
+
+class ContinueServiceDeploymentCommand extends command(_ep0, _mw0, "ContinueServiceDeployment", ContinueServiceDeployment$) {
+}
+
+class CreateCapacityProviderCommand extends command(_ep0, _mw0, "CreateCapacityProvider", CreateCapacityProvider$) {
+}
+
+class CreateClusterCommand extends command(_ep0, _mw0, "CreateCluster", CreateCluster$) {
+}
+
+class CreateDaemonCommand extends command(_ep0, _mw0, "CreateDaemon", CreateDaemon$) {
+}
+
+class CreateExpressGatewayServiceCommand extends command(_ep0, _mw0, "CreateExpressGatewayService", CreateExpressGatewayService$) {
+}
+
+class CreateServiceCommand extends command(_ep0, _mw0, "CreateService", CreateService$) {
+}
+
+class CreateTaskSetCommand extends command(_ep0, _mw0, "CreateTaskSet", CreateTaskSet$) {
+}
+
+class DeleteAccountSettingCommand extends command(_ep0, _mw0, "DeleteAccountSetting", DeleteAccountSetting$) {
+}
+
+class DeleteAttributesCommand extends command(_ep0, _mw0, "DeleteAttributes", DeleteAttributes$) {
+}
+
+class DeleteCapacityProviderCommand extends command(_ep0, _mw0, "DeleteCapacityProvider", DeleteCapacityProvider$) {
+}
+
+class DeleteClusterCommand extends command(_ep0, _mw0, "DeleteCluster", DeleteCluster$) {
+}
+
+class DeleteDaemonCommand extends command(_ep0, _mw0, "DeleteDaemon", DeleteDaemon$) {
+}
+
+class DeleteDaemonTaskDefinitionCommand extends command(_ep0, _mw0, "DeleteDaemonTaskDefinition", DeleteDaemonTaskDefinition$) {
+}
+
+class DeleteExpressGatewayServiceCommand extends command(_ep0, _mw0, "DeleteExpressGatewayService", DeleteExpressGatewayService$) {
+}
+
+class DeleteServiceCommand extends command(_ep0, _mw0, "DeleteService", DeleteService$) {
+}
+
+class DeleteTaskDefinitionsCommand extends command(_ep0, _mw0, "DeleteTaskDefinitions", DeleteTaskDefinitions$) {
+}
+
+class DeleteTaskSetCommand extends command(_ep0, _mw0, "DeleteTaskSet", DeleteTaskSet$) {
+}
+
+class DeregisterContainerInstanceCommand extends command(_ep0, _mw0, "DeregisterContainerInstance", DeregisterContainerInstance$) {
+}
+
+class DeregisterTaskDefinitionCommand extends command(_ep0, _mw0, "DeregisterTaskDefinition", DeregisterTaskDefinition$) {
+}
+
+class DescribeCapacityProvidersCommand extends command(_ep0, _mw0, "DescribeCapacityProviders", DescribeCapacityProviders$) {
+}
+
+class DescribeClustersCommand extends command(_ep0, _mw0, "DescribeClusters", DescribeClusters$) {
+}
+
+class DescribeContainerInstancesCommand extends command(_ep0, _mw0, "DescribeContainerInstances", DescribeContainerInstances$) {
+}
+
+class DescribeDaemonCommand extends command(_ep0, _mw0, "DescribeDaemon", DescribeDaemon$) {
+}
+
+class DescribeDaemonDeploymentsCommand extends command(_ep0, _mw0, "DescribeDaemonDeployments", DescribeDaemonDeployments$) {
+}
+
+class DescribeDaemonRevisionsCommand extends command(_ep0, _mw0, "DescribeDaemonRevisions", DescribeDaemonRevisions$) {
+}
+
+class DescribeDaemonTaskDefinitionCommand extends command(_ep0, _mw0, "DescribeDaemonTaskDefinition", DescribeDaemonTaskDefinition$) {
+}
+
+class DescribeExpressGatewayServiceCommand extends command(_ep0, _mw0, "DescribeExpressGatewayService", DescribeExpressGatewayService$) {
+}
+
+class DescribeServiceDeploymentsCommand extends command(_ep0, _mw0, "DescribeServiceDeployments", DescribeServiceDeployments$) {
+}
+
+class DescribeServiceRevisionsCommand extends command(_ep0, _mw0, "DescribeServiceRevisions", DescribeServiceRevisions$) {
+}
+
+class DescribeServicesCommand extends command(_ep0, _mw0, "DescribeServices", DescribeServices$) {
+}
+
+class DescribeTaskDefinitionCommand extends command(_ep0, _mw0, "DescribeTaskDefinition", DescribeTaskDefinition$) {
+}
+
+class DescribeTasksCommand extends command(_ep0, _mw0, "DescribeTasks", DescribeTasks$) {
+}
+
+class DescribeTaskSetsCommand extends command(_ep0, _mw0, "DescribeTaskSets", DescribeTaskSets$) {
+}
+
+class DiscoverPollEndpointCommand extends command(_ep0, _mw0, "DiscoverPollEndpoint", DiscoverPollEndpoint$) {
+}
+
+class ExecuteCommandCommand extends command(_ep0, _mw0, "ExecuteCommand", ExecuteCommand$) {
+}
+
+class GetTaskProtectionCommand extends command(_ep0, _mw0, "GetTaskProtection", GetTaskProtection$) {
+}
+
+class ListAccountSettingsCommand extends command(_ep0, _mw0, "ListAccountSettings", ListAccountSettings$) {
+}
+
+class ListAttributesCommand extends command(_ep0, _mw0, "ListAttributes", ListAttributes$) {
+}
+
+class ListClustersCommand extends command(_ep0, _mw0, "ListClusters", ListClusters$) {
+}
+
+class ListContainerInstancesCommand extends command(_ep0, _mw0, "ListContainerInstances", ListContainerInstances$) {
+}
+
+class ListDaemonDeploymentsCommand extends command(_ep0, _mw0, "ListDaemonDeployments", ListDaemonDeployments$) {
+}
+
+class ListDaemonsCommand extends command(_ep0, _mw0, "ListDaemons", ListDaemons$) {
+}
+
+class ListDaemonTaskDefinitionsCommand extends command(_ep0, _mw0, "ListDaemonTaskDefinitions", ListDaemonTaskDefinitions$) {
+}
+
+class ListServiceDeploymentsCommand extends command(_ep0, _mw0, "ListServiceDeployments", ListServiceDeployments$) {
+}
+
+class ListServicesByNamespaceCommand extends command(_ep0, _mw0, "ListServicesByNamespace", ListServicesByNamespace$) {
+}
+
+class ListServicesCommand extends command(_ep0, _mw0, "ListServices", ListServices$) {
+}
+
+class ListTagsForResourceCommand extends command(_ep0, _mw0, "ListTagsForResource", ListTagsForResource$) {
+}
+
+class ListTaskDefinitionFamiliesCommand extends command(_ep0, _mw0, "ListTaskDefinitionFamilies", ListTaskDefinitionFamilies$) {
+}
+
+class ListTaskDefinitionsCommand extends command(_ep0, _mw0, "ListTaskDefinitions", ListTaskDefinitions$) {
+}
+
+class ListTasksCommand extends command(_ep0, _mw0, "ListTasks", ListTasks$) {
+}
+
+class PutAccountSettingCommand extends command(_ep0, _mw0, "PutAccountSetting", PutAccountSetting$) {
+}
+
+class PutAccountSettingDefaultCommand extends command(_ep0, _mw0, "PutAccountSettingDefault", PutAccountSettingDefault$) {
+}
+
+class PutAttributesCommand extends command(_ep0, _mw0, "PutAttributes", PutAttributes$) {
+}
+
+class PutClusterCapacityProvidersCommand extends command(_ep0, _mw0, "PutClusterCapacityProviders", PutClusterCapacityProviders$) {
+}
+
+class RegisterContainerInstanceCommand extends command(_ep0, _mw0, "RegisterContainerInstance", RegisterContainerInstance$) {
+}
+
+class RegisterDaemonTaskDefinitionCommand extends command(_ep0, _mw0, "RegisterDaemonTaskDefinition", RegisterDaemonTaskDefinition$) {
+}
+
+class RegisterTaskDefinitionCommand extends command(_ep0, _mw0, "RegisterTaskDefinition", RegisterTaskDefinition$) {
+}
+
+class RunTaskCommand extends command(_ep0, _mw0, "RunTask", RunTask$) {
+}
+
+class StartTaskCommand extends command(_ep0, _mw0, "StartTask", StartTask$) {
+}
+
+class StopServiceDeploymentCommand extends command(_ep0, _mw0, "StopServiceDeployment", StopServiceDeployment$) {
+}
+
+class StopTaskCommand extends command(_ep0, _mw0, "StopTask", StopTask$) {
+}
+
+class SubmitAttachmentStateChangesCommand extends command(_ep0, _mw0, "SubmitAttachmentStateChanges", SubmitAttachmentStateChanges$) {
+}
+
+class SubmitContainerStateChangeCommand extends command(_ep0, _mw0, "SubmitContainerStateChange", SubmitContainerStateChange$) {
+}
+
+class SubmitTaskStateChangeCommand extends command(_ep0, _mw0, "SubmitTaskStateChange", SubmitTaskStateChange$) {
+}
+
+class TagResourceCommand extends command(_ep0, _mw0, "TagResource", TagResource$) {
+}
+
+class UntagResourceCommand extends command(_ep0, _mw0, "UntagResource", UntagResource$) {
+}
+
+class UpdateCapacityProviderCommand extends command(_ep0, _mw0, "UpdateCapacityProvider", UpdateCapacityProvider$) {
+}
+
+class UpdateClusterCommand extends command(_ep0, _mw0, "UpdateCluster", UpdateCluster$) {
+}
+
+class UpdateClusterSettingsCommand extends command(_ep0, _mw0, "UpdateClusterSettings", UpdateClusterSettings$) {
+}
+
+class UpdateContainerAgentCommand extends command(_ep0, _mw0, "UpdateContainerAgent", UpdateContainerAgent$) {
+}
+
+class UpdateContainerInstancesStateCommand extends command(_ep0, _mw0, "UpdateContainerInstancesState", UpdateContainerInstancesState$) {
+}
+
+class UpdateDaemonCommand extends command(_ep0, _mw0, "UpdateDaemon", UpdateDaemon$) {
+}
+
+class UpdateExpressGatewayServiceCommand extends command(_ep0, _mw0, "UpdateExpressGatewayService", UpdateExpressGatewayService$) {
+}
+
+class UpdateServiceCommand extends command(_ep0, _mw0, "UpdateService", UpdateService$) {
+}
+
+class UpdateServicePrimaryTaskSetCommand extends command(_ep0, _mw0, "UpdateServicePrimaryTaskSet", UpdateServicePrimaryTaskSet$) {
+}
+
+class UpdateTaskProtectionCommand extends command(_ep0, _mw0, "UpdateTaskProtection", UpdateTaskProtection$) {
+}
+
+class UpdateTaskSetCommand extends command(_ep0, _mw0, "UpdateTaskSet", UpdateTaskSet$) {
 }
 
 const paginateListAccountSettings = createPaginator(ECSClient, ListAccountSettingsCommand, "nextToken", "nextToken", "maxResults");
@@ -15768,8 +15081,9 @@ exports.fromWebToken = fromWebToken;
 
 const { awsEndpointFunctions, emitWarningIfUnsupportedVersion: emitWarningIfUnsupportedVersion$1, createDefaultUserAgentProvider, NODE_APP_ID_CONFIG_OPTIONS, getAwsRegionExtensionConfiguration, resolveAwsRegionExtensionConfiguration, resolveUserAgentConfig, resolveHostHeaderConfig, getUserAgentPlugin, getHostHeaderPlugin, getLoggerPlugin, getRecursionDetectionPlugin } = __nccwpck_require__(5152);
 const { NoAuthSigner, getHttpAuthSchemeEndpointRuleSetPlugin, DefaultIdentityProviderConfig, getHttpSigningPlugin } = __nccwpck_require__(402);
-const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, Command, createAggregatedClient } = __nccwpck_require__(2658);
-exports.$Command = Command;
+const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, makeBuilder, createAggregatedClient } = __nccwpck_require__(2658);
+const { Command: $Command } = __nccwpck_require__(2658);
+exports.$Command = $Command;
 exports.__Client = Client;
 const { resolveDefaultsModeConfig, loadConfig, NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, NODE_REGION_CONFIG_OPTIONS, NODE_REGION_CONFIG_FILE_OPTIONS, resolveRegionConfig } = __nccwpck_require__(7291);
 const { BinaryDecisionDiagram, EndpointCache, decideEndpoint, customEndpointFunctions, resolveEndpointConfig, getEndpointPlugin } = __nccwpck_require__(2085);
@@ -15777,9 +15091,10 @@ const { parseUrl, getHttpHandlerExtensionConfiguration, resolveHttpHandlerRuntim
 const { DEFAULT_RETRY_MODE, NODE_RETRY_MODE_CONFIG_OPTIONS, NODE_MAX_ATTEMPT_CONFIG_OPTIONS, resolveRetryConfig, getRetryPlugin } = __nccwpck_require__(3609);
 const { TypeRegistry, getSchemaSerdePlugin } = __nccwpck_require__(6890);
 const { resolveAwsSdkSigV4Config, AwsSdkSigV4Signer, NODE_AUTH_SCHEME_PREFERENCE_OPTIONS } = __nccwpck_require__(7523);
-const { toUtf8, fromUtf8, toBase64, fromBase64, Hash, calculateBodyLength } = __nccwpck_require__(2430);
+const { toUtf8, fromUtf8, toBase64, fromBase64, calculateBodyLength } = __nccwpck_require__(2430);
 const { streamCollector, NodeHttpHandler } = __nccwpck_require__(1279);
 const { AwsRestJsonProtocol } = __nccwpck_require__(7288);
+const { Sha256 } = __nccwpck_require__(9542);
 
 const defaultSigninHttpAuthSchemeParametersProvider = async (config, context, input) => {
     return {
@@ -15843,7 +15158,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.23";
+var version = "3.997.27";
 var packageInfo = {
 	version: version};
 
@@ -16140,6 +15455,7 @@ const getRuntimeConfig$1 = (config) => {
             serviceTarget: "Signin",
         },
         serviceId: config?.serviceId ?? "Signin",
+        sha256: config?.sha256 ?? Sha256,
         urlParser: config?.urlParser ?? parseUrl,
         utf8Decoder: config?.utf8Decoder ?? fromUtf8,
         utf8Encoder: config?.utf8Encoder ?? toUtf8,
@@ -16172,7 +15488,6 @@ const getRuntimeConfig = (config) => {
                 ...NODE_RETRY_MODE_CONFIG_OPTIONS,
                 default: async () => (await defaultConfigProvider()).retryMode || DEFAULT_RETRY_MODE,
             }, config),
-        sha256: config?.sha256 ?? Hash.bind(null, "sha256"),
         streamCollector: config?.streamCollector ?? streamCollector,
         useDualstackEndpoint: config?.useDualstackEndpoint ?? loadConfig(NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
         useFipsEndpoint: config?.useFipsEndpoint ?? loadConfig(NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
@@ -16260,19 +15575,13 @@ class SigninClient extends Client {
     }
 }
 
-class CreateOAuth2TokenCommand extends Command
-    .classBuilder()
-    .ep({
-    ...commonParams,
+const command = makeBuilder(commonParams, "Signin", "SigninClient", getEndpointPlugin);
+const _ep0 = {
     IsControlPlane: { type: "staticContextParams", value: false },
-})
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("Signin", "CreateOAuth2Token", {})
-    .n("SigninClient", "CreateOAuth2TokenCommand")
-    .sc(CreateOAuth2Token$)
-    .build() {
+};
+const _mw0 = (Command, cs, config, o) => [];
+
+class CreateOAuth2TokenCommand extends command(_ep0, _mw0, "CreateOAuth2Token", CreateOAuth2Token$) {
 }
 
 const commands = {
@@ -16324,8 +15633,9 @@ exports.errorTypeRegistries = errorTypeRegistries;
 
 const { awsEndpointFunctions, emitWarningIfUnsupportedVersion: emitWarningIfUnsupportedVersion$1, createDefaultUserAgentProvider, NODE_APP_ID_CONFIG_OPTIONS, getAwsRegionExtensionConfiguration, resolveAwsRegionExtensionConfiguration, resolveUserAgentConfig, resolveHostHeaderConfig, getUserAgentPlugin, getHostHeaderPlugin, getLoggerPlugin, getRecursionDetectionPlugin } = __nccwpck_require__(5152);
 const { NoAuthSigner, getHttpAuthSchemeEndpointRuleSetPlugin, DefaultIdentityProviderConfig, getHttpSigningPlugin } = __nccwpck_require__(402);
-const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, Command, createAggregatedClient } = __nccwpck_require__(2658);
-exports.$Command = Command;
+const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, makeBuilder, createAggregatedClient } = __nccwpck_require__(2658);
+const { Command: $Command } = __nccwpck_require__(2658);
+exports.$Command = $Command;
 exports.__Client = Client;
 const { resolveDefaultsModeConfig, loadConfig, NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, NODE_REGION_CONFIG_OPTIONS, NODE_REGION_CONFIG_FILE_OPTIONS, resolveRegionConfig } = __nccwpck_require__(7291);
 const { BinaryDecisionDiagram, EndpointCache, decideEndpoint, customEndpointFunctions, resolveEndpointConfig, getEndpointPlugin } = __nccwpck_require__(2085);
@@ -16333,9 +15643,10 @@ const { parseUrl, getHttpHandlerExtensionConfiguration, resolveHttpHandlerRuntim
 const { DEFAULT_RETRY_MODE, NODE_RETRY_MODE_CONFIG_OPTIONS, NODE_MAX_ATTEMPT_CONFIG_OPTIONS, resolveRetryConfig, getRetryPlugin } = __nccwpck_require__(3609);
 const { TypeRegistry, getSchemaSerdePlugin } = __nccwpck_require__(6890);
 const { resolveAwsSdkSigV4Config, AwsSdkSigV4Signer, NODE_AUTH_SCHEME_PREFERENCE_OPTIONS } = __nccwpck_require__(7523);
-const { toUtf8, fromUtf8, toBase64, fromBase64, Hash, calculateBodyLength } = __nccwpck_require__(2430);
+const { toUtf8, fromUtf8, toBase64, fromBase64, calculateBodyLength } = __nccwpck_require__(2430);
 const { streamCollector, NodeHttpHandler } = __nccwpck_require__(1279);
 const { AwsRestJsonProtocol } = __nccwpck_require__(7288);
+const { Sha256 } = __nccwpck_require__(9542);
 
 const defaultSSOOIDCHttpAuthSchemeParametersProvider = async (config, context, input) => {
     return {
@@ -16399,7 +15710,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.23";
+var version = "3.997.27";
 var packageInfo = {
 	version: version};
 
@@ -16816,6 +16127,7 @@ const getRuntimeConfig$1 = (config) => {
             serviceTarget: "AWSSSOOIDCService",
         },
         serviceId: config?.serviceId ?? "SSO OIDC",
+        sha256: config?.sha256 ?? Sha256,
         urlParser: config?.urlParser ?? parseUrl,
         utf8Decoder: config?.utf8Decoder ?? fromUtf8,
         utf8Encoder: config?.utf8Encoder ?? toUtf8,
@@ -16848,7 +16160,6 @@ const getRuntimeConfig = (config) => {
                 ...NODE_RETRY_MODE_CONFIG_OPTIONS,
                 default: async () => (await defaultConfigProvider()).retryMode || DEFAULT_RETRY_MODE,
             }, config),
-        sha256: config?.sha256 ?? Hash.bind(null, "sha256"),
         streamCollector: config?.streamCollector ?? streamCollector,
         useDualstackEndpoint: config?.useDualstackEndpoint ?? loadConfig(NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
         useFipsEndpoint: config?.useFipsEndpoint ?? loadConfig(NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
@@ -16936,16 +16247,11 @@ class SSOOIDCClient extends Client {
     }
 }
 
-class CreateTokenCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AWSSSOOIDCService", "CreateToken", {})
-    .n("SSOOIDCClient", "CreateTokenCommand")
-    .sc(CreateToken$)
-    .build() {
+const command = makeBuilder(commonParams, "AWSSSOOIDCService", "SSOOIDCClient", getEndpointPlugin);
+const _ep0 = {};
+const _mw0 = (Command, cs, config, o) => [];
+
+class CreateTokenCommand extends command(_ep0, _mw0, "CreateToken", CreateToken$) {
 }
 
 const commands = {
@@ -17007,8 +16313,9 @@ exports.errorTypeRegistries = errorTypeRegistries;
 
 const { awsEndpointFunctions, emitWarningIfUnsupportedVersion: emitWarningIfUnsupportedVersion$1, createDefaultUserAgentProvider, NODE_APP_ID_CONFIG_OPTIONS, getAwsRegionExtensionConfiguration, resolveAwsRegionExtensionConfiguration, resolveUserAgentConfig, resolveHostHeaderConfig, getUserAgentPlugin, getHostHeaderPlugin, getLoggerPlugin, getRecursionDetectionPlugin } = __nccwpck_require__(5152);
 const { NoAuthSigner, getHttpAuthSchemeEndpointRuleSetPlugin, DefaultIdentityProviderConfig, getHttpSigningPlugin } = __nccwpck_require__(402);
-const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, Command, createAggregatedClient } = __nccwpck_require__(2658);
-exports.$Command = Command;
+const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, makeBuilder, createAggregatedClient } = __nccwpck_require__(2658);
+const { Command: $Command } = __nccwpck_require__(2658);
+exports.$Command = $Command;
 exports.__Client = Client;
 const { resolveDefaultsModeConfig, loadConfig, NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, NODE_REGION_CONFIG_OPTIONS, NODE_REGION_CONFIG_FILE_OPTIONS, resolveRegionConfig } = __nccwpck_require__(7291);
 const { BinaryDecisionDiagram, EndpointCache, decideEndpoint, customEndpointFunctions, resolveEndpointConfig, getEndpointPlugin } = __nccwpck_require__(2085);
@@ -17016,9 +16323,10 @@ const { parseUrl, getHttpHandlerExtensionConfiguration, resolveHttpHandlerRuntim
 const { DEFAULT_RETRY_MODE, NODE_RETRY_MODE_CONFIG_OPTIONS, NODE_MAX_ATTEMPT_CONFIG_OPTIONS, resolveRetryConfig, getRetryPlugin } = __nccwpck_require__(3609);
 const { TypeRegistry, getSchemaSerdePlugin } = __nccwpck_require__(6890);
 const { resolveAwsSdkSigV4Config, AwsSdkSigV4Signer, NODE_AUTH_SCHEME_PREFERENCE_OPTIONS } = __nccwpck_require__(7523);
-const { toUtf8, fromUtf8, toBase64, fromBase64, Hash, calculateBodyLength } = __nccwpck_require__(2430);
+const { toUtf8, fromUtf8, toBase64, fromBase64, calculateBodyLength } = __nccwpck_require__(2430);
 const { streamCollector, NodeHttpHandler } = __nccwpck_require__(1279);
 const { AwsRestJsonProtocol } = __nccwpck_require__(7288);
+const { Sha256 } = __nccwpck_require__(9542);
 
 const defaultSSOHttpAuthSchemeParametersProvider = async (config, context, input) => {
     return {
@@ -17082,7 +16390,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.23";
+var version = "3.997.27";
 var packageInfo = {
 	version: version};
 
@@ -17318,6 +16626,7 @@ const getRuntimeConfig$1 = (config) => {
             serviceTarget: "SWBPortalService",
         },
         serviceId: config?.serviceId ?? "SSO",
+        sha256: config?.sha256 ?? Sha256,
         urlParser: config?.urlParser ?? parseUrl,
         utf8Decoder: config?.utf8Decoder ?? fromUtf8,
         utf8Encoder: config?.utf8Encoder ?? toUtf8,
@@ -17350,7 +16659,6 @@ const getRuntimeConfig = (config) => {
                 ...NODE_RETRY_MODE_CONFIG_OPTIONS,
                 default: async () => (await defaultConfigProvider()).retryMode || DEFAULT_RETRY_MODE,
             }, config),
-        sha256: config?.sha256 ?? Hash.bind(null, "sha256"),
         streamCollector: config?.streamCollector ?? streamCollector,
         useDualstackEndpoint: config?.useDualstackEndpoint ?? loadConfig(NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
         useFipsEndpoint: config?.useFipsEndpoint ?? loadConfig(NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
@@ -17438,16 +16746,11 @@ class SSOClient extends Client {
     }
 }
 
-class GetRoleCredentialsCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("SWBPortalService", "GetRoleCredentials", {})
-    .n("SSOClient", "GetRoleCredentialsCommand")
-    .sc(GetRoleCredentials$)
-    .build() {
+const command = makeBuilder(commonParams, "SWBPortalService", "SSOClient", getEndpointPlugin);
+const _ep0 = {};
+const _mw0 = (Command, cs, config, o) => [];
+
+class GetRoleCredentialsCommand extends command(_ep0, _mw0, "GetRoleCredentials", GetRoleCredentials$) {
 }
 
 const commands = {
@@ -17484,8 +16787,9 @@ exports.errorTypeRegistries = errorTypeRegistries;
 
 const { awsEndpointFunctions, emitWarningIfUnsupportedVersion: emitWarningIfUnsupportedVersion$1, createDefaultUserAgentProvider, NODE_APP_ID_CONFIG_OPTIONS, getAwsRegionExtensionConfiguration, resolveAwsRegionExtensionConfiguration, resolveUserAgentConfig, resolveHostHeaderConfig, getUserAgentPlugin, getHostHeaderPlugin, getLoggerPlugin, getRecursionDetectionPlugin, setCredentialFeature, stsRegionDefaultResolver } = __nccwpck_require__(5152);
 const { NoAuthSigner, getHttpAuthSchemeEndpointRuleSetPlugin, DefaultIdentityProviderConfig, getHttpSigningPlugin } = __nccwpck_require__(402);
-const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, Command, createAggregatedClient } = __nccwpck_require__(2658);
-exports.$Command = Command;
+const { normalizeProvider, getSmithyContext, ServiceException, NoOpLogger, emitWarningIfUnsupportedVersion, loadConfigsForDefaultMode, getDefaultExtensionConfiguration, resolveDefaultRuntimeConfig, Client, makeBuilder, createAggregatedClient } = __nccwpck_require__(2658);
+const { Command: $Command } = __nccwpck_require__(2658);
+exports.$Command = $Command;
 exports.__Client = Client;
 const { resolveDefaultsModeConfig, loadConfig, NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS, NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, NODE_REGION_CONFIG_OPTIONS, NODE_REGION_CONFIG_FILE_OPTIONS, resolveRegionConfig } = __nccwpck_require__(7291);
 const { BinaryDecisionDiagram, EndpointCache, decideEndpoint, customEndpointFunctions, resolveParams, resolveEndpointConfig, getEndpointPlugin } = __nccwpck_require__(2085);
@@ -17494,9 +16798,10 @@ const { DEFAULT_RETRY_MODE, NODE_RETRY_MODE_CONFIG_OPTIONS, NODE_MAX_ATTEMPT_CON
 const { TypeRegistry, getSchemaSerdePlugin } = __nccwpck_require__(6890);
 const { resolveAwsSdkSigV4Config, resolveAwsSdkSigV4AConfig, AwsSdkSigV4Signer, AwsSdkSigV4ASigner, NODE_SIGV4A_CONFIG_OPTIONS, NODE_AUTH_SCHEME_PREFERENCE_OPTIONS } = __nccwpck_require__(7523);
 const { SignatureV4MultiRegion } = __nccwpck_require__(5785);
-const { toUtf8, fromUtf8, toBase64, fromBase64, Hash, calculateBodyLength } = __nccwpck_require__(2430);
+const { toUtf8, fromUtf8, toBase64, fromBase64, calculateBodyLength } = __nccwpck_require__(2430);
 const { streamCollector, NodeHttpHandler } = __nccwpck_require__(1279);
 const { AwsQueryProtocol } = __nccwpck_require__(7288);
+const { Sha256 } = __nccwpck_require__(9542);
 
 const q = "ref";
 const a = -1, b = true, c = "isSet", d = "PartitionResult", e = "booleanEquals", f = "stringEquals", g = "getAttr", h = "us-east-1", i = "sigv4", j = "sts", k = "https://sts.{Region}.{PartitionResult#dnsSuffix}", l = { [q]: "Endpoint" }, m = { [q]: "Region" }, n = { [q]: d }, o = {}, p = [m];
@@ -17740,7 +17045,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.23";
+var version = "3.997.27";
 var packageInfo = {
 	version: version};
 
@@ -18045,6 +17350,7 @@ const getRuntimeConfig$1 = (config) => {
             serviceTarget: "AWSSecurityTokenServiceV20110615",
         },
         serviceId: config?.serviceId ?? "STS",
+        sha256: config?.sha256 ?? Sha256,
         signerConstructor: config?.signerConstructor ?? SignatureV4MultiRegion,
         urlParser: config?.urlParser ?? parseUrl,
         utf8Decoder: config?.utf8Decoder ?? fromUtf8,
@@ -18095,7 +17401,6 @@ const getRuntimeConfig = (config) => {
                 ...NODE_RETRY_MODE_CONFIG_OPTIONS,
                 default: async () => (await defaultConfigProvider()).retryMode || DEFAULT_RETRY_MODE,
             }, config),
-        sha256: config?.sha256 ?? Hash.bind(null, "sha256"),
         sigv4aSigningRegionSet: config?.sigv4aSigningRegionSet ?? loadConfig(NODE_SIGV4A_CONFIG_OPTIONS, loaderConfig),
         streamCollector: config?.streamCollector ?? streamCollector,
         useDualstackEndpoint: config?.useDualstackEndpoint ?? loadConfig(NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS, loaderConfig),
@@ -18185,28 +17490,14 @@ class STSClient extends Client {
     }
 }
 
-class AssumeRoleCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AWSSecurityTokenServiceV20110615", "AssumeRole", {})
-    .n("STSClient", "AssumeRoleCommand")
-    .sc(AssumeRole$)
-    .build() {
+const command = makeBuilder(commonParams, "AWSSecurityTokenServiceV20110615", "STSClient", getEndpointPlugin);
+const _ep0 = {};
+const _mw0 = (Command, cs, config, o) => [];
+
+class AssumeRoleCommand extends command(_ep0, _mw0, "AssumeRole", AssumeRole$) {
 }
 
-class AssumeRoleWithWebIdentityCommand extends Command
-    .classBuilder()
-    .ep(commonParams)
-    .m(function (Command, cs, config, o) {
-    return [getEndpointPlugin(config, Command.getEndpointParameterInstructions())];
-})
-    .s("AWSSecurityTokenServiceV20110615", "AssumeRoleWithWebIdentity", {})
-    .n("STSClient", "AssumeRoleWithWebIdentityCommand")
-    .sc(AssumeRoleWithWebIdentity$)
-    .build() {
+class AssumeRoleWithWebIdentityCommand extends command(_ep0, _mw0, "AssumeRoleWithWebIdentity", AssumeRoleWithWebIdentity$) {
 }
 
 const commands = {
@@ -19078,6 +18369,9 @@ const PROTECTED_KEYS = {
     REQUEST_ID: Symbol.for("_AWS_LAMBDA_REQUEST_ID"),
     X_RAY_TRACE_ID: Symbol.for("_AWS_LAMBDA_X_RAY_TRACE_ID"),
     TENANT_ID: Symbol.for("_AWS_LAMBDA_TENANT_ID"),
+    TRACEPARENT: Symbol.for("_AWS_LAMBDA_TRACEPARENT"),
+    TRACESTATE: Symbol.for("_AWS_LAMBDA_TRACESTATE"),
+    BAGGAGE: Symbol.for("_AWS_LAMBDA_BAGGAGE"),
 };
 const NO_GLOBAL_AWS_LAMBDA = ["true", "1"].includes(process.env?.AWS_LAMBDA_NODEJS_NO_GLOBAL_AWSLAMBDA ?? "");
 if (!NO_GLOBAL_AWS_LAMBDA) {
@@ -19096,6 +18390,15 @@ class InvokeStoreBase {
     }
     getTenantId() {
         return this.get(PROTECTED_KEYS.TENANT_ID);
+    }
+    getTraceparent() {
+        return this.get(PROTECTED_KEYS.TRACEPARENT);
+    }
+    getTracestate() {
+        return this.get(PROTECTED_KEYS.TRACESTATE);
+    }
+    getBaggage() {
+        return this.get(PROTECTED_KEYS.BAGGAGE);
     }
 }
 class InvokeStoreSingle extends InvokeStoreBase {
@@ -22485,6 +21788,23 @@ const _json = (obj) => {
     return obj;
 };
 
+function makeBuilder(common, service, name, ep) {
+    return function makeCommand(added, plugins, op, $, smithyContext = {}) {
+        const epMerged = Object.assign({}, common, added);
+        return Command.classBuilder()
+            .ep(epMerged)
+            .m(function (CommandCtor, clientStack, config, options) {
+            const list = plugins.call(this, CommandCtor, clientStack, config, options);
+            list.unshift(ep(config, CommandCtor.getEndpointParameterInstructions()));
+            return list;
+        })
+            .s(service, op, smithyContext)
+            .n(name, op.charAt(0).toUpperCase() + op.slice(1) + "Command")
+            .sc($)
+            .build();
+    };
+}
+
 exports.Client = Client;
 exports.Command = Command;
 exports.NoOpLogger = NoOpLogger;
@@ -22509,6 +21829,7 @@ exports.invalidFunction = invalidFunction;
 exports.invalidProvider = invalidProvider;
 exports.isSerializableHeaderValue = isSerializableHeaderValue;
 exports.loadConfigsForDefaultMode = loadConfigsForDefaultMode;
+exports.makeBuilder = makeBuilder;
 exports.map = map;
 exports.resolveChecksumRuntimeConfig = resolveChecksumRuntimeConfig;
 exports.resolveDefaultRuntimeConfig = resolveDefaultRuntimeConfig;
@@ -27695,7 +27016,7 @@ const { createHmac, createHash, getRandomValues } = __nccwpck_require__(7598);
 const { ReadStream, lstatSync, fstatSync } = __nccwpck_require__(3024);
 const { HttpResponse } = __nccwpck_require__(4534);
 const { toEndpointV1 } = __nccwpck_require__(2085);
-const { Duplex, Readable, Writable, PassThrough } = __nccwpck_require__(7075);
+const { Readable, Writable, PassThrough } = __nccwpck_require__(7075);
 
 const isArrayBuffer = (arg) => (typeof ArrayBuffer === "function" && arg instanceof ArrayBuffer) ||
     Object.prototype.toString.call(arg) === "[object ArrayBuffer]";
@@ -28680,62 +28001,66 @@ function castSourceData(toCast, encoding) {
     return fromArrayBuffer(toCast);
 }
 
-let ChecksumStream$1 = class ChecksumStream extends Duplex {
+let ChecksumStream$1 = class ChecksumStream extends Readable {
     expectedChecksum;
     checksumSourceLocation;
     checksum;
     source;
     base64Encoder;
-    pendingCallback = null;
     constructor({ expectedChecksum, checksum, source, checksumSourceLocation, base64Encoder, }) {
         super();
-        if (typeof source.pipe === "function") {
-            this.source = source;
-        }
-        else {
+        if (typeof source.pipe !== "function") {
             throw new Error(`@smithy/util-stream: unsupported source type ${source?.constructor?.name ?? source} in ChecksumStream.`);
         }
+        this.source = source;
         this.base64Encoder = base64Encoder ?? toBase64$1;
         this.expectedChecksum = expectedChecksum;
         this.checksum = checksum;
         this.checksumSourceLocation = checksumSourceLocation;
-        this.source.pipe(this);
+        this.source.on("data", this.onSourceData);
+        this.source.on("end", this.onSourceEnd);
+        this.source.on("error", this.onSourceError);
+        this.source.pause();
     }
-    _read(size) {
-        if (this.pendingCallback) {
-            const callback = this.pendingCallback;
-            this.pendingCallback = null;
-            callback();
+    onSourceData = (chunk) => {
+        if (this.destroyed) {
+            return;
         }
-    }
-    _write(chunk, encoding, callback) {
         try {
             this.checksum.update(chunk);
-            const canPushMore = this.push(chunk);
-            if (!canPushMore) {
-                this.pendingCallback = callback;
-                return;
-            }
         }
         catch (e) {
-            return callback(e);
+            this.destroy(e);
+            return;
         }
-        return callback();
-    }
-    async _final(callback) {
+        if (!this.push(chunk)) {
+            this.source.pause();
+        }
+    };
+    onSourceEnd = async () => {
+        if (this.destroyed) {
+            return;
+        }
         try {
             const digest = await this.checksum.digest();
             const received = this.base64Encoder(digest);
             if (this.expectedChecksum !== received) {
-                return callback(new Error(`Checksum mismatch: expected "${this.expectedChecksum}" but received "${received}"` +
+                this.destroy(new Error(`Checksum mismatch: expected "${this.expectedChecksum}" but received "${received}"` +
                     ` in response header "${this.checksumSourceLocation}".`));
+                return;
             }
         }
         catch (e) {
-            return callback(e);
+            this.destroy(e);
+            return;
         }
         this.push(null);
-        return callback();
+    };
+    onSourceError = (error) => {
+        this.destroy(error);
+    };
+    _read(size) {
+        this.source.resume();
     }
     _destroy(error, callback) {
         this.source?.destroy();
