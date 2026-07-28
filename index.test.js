@@ -1,6 +1,10 @@
 const run = require('./index');
 const core = require('@actions/core');
-const { ECSClient } = require('@aws-sdk/client-ecs');
+const {
+  ECSClient,
+  CreateExpressGatewayServiceCommand,
+  UpdateExpressGatewayServiceCommand
+} = require('@aws-sdk/client-ecs');
 
 jest.mock('@actions/core');
 jest.mock('@aws-sdk/client-ecs');
@@ -132,6 +136,167 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       expect(core.setFailed).not.toHaveBeenCalled();
       expect(core.info).toHaveBeenCalledWith('Amazon ECS Deploy Express Service action started');
+    });
+  });
+
+  describe('Task definition mode', () => {
+    test('creates service with task definition ARN and no image or execution role', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'task-definition-arn') return 'arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:7';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(core.info).toHaveBeenCalledWith('Service created successfully');
+      expect(core.info).toHaveBeenCalledWith(`Constructed service ARN: ${serviceArn}`);
+
+      const createInput = CreateExpressGatewayServiceCommand.mock.calls[0][0];
+      expect(createInput.taskDefinitionArn).toBe('arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:7');
+      expect(createInput.infrastructureRoleArn).toBe('arn:aws:iam::123456789012:role/ecsInfrastructureRole');
+      expect(createInput.executionRoleArn).toBeUndefined();
+      expect(createInput.primaryContainer).toBeUndefined();
+    });
+
+    test('updates existing service with task definition ARN', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'task-definition-arn') return 'arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:8';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'existing-service';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/existing-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+
+      mockSend
+        .mockResolvedValueOnce({ services: [{ serviceName: 'existing-service', status: 'ACTIVE' }] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(core.info).toHaveBeenCalledWith('Service updated successfully');
+
+      const updateInput = UpdateExpressGatewayServiceCommand.mock.calls[0][0];
+      expect(updateInput.serviceArn).toBe(serviceArn);
+      expect(updateInput.taskDefinitionArn).toBe('arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:8');
+      expect(updateInput.primaryContainer).toBeUndefined();
+    });
+
+    test('allows service-level inputs alongside task definition ARN', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'task-definition-arn') return 'arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:7';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'health-check-path') return '/health';
+        if (name === 'min-task-count') return '2';
+        if (name === 'max-task-count') return '10';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.setFailed).not.toHaveBeenCalled();
+
+      const createInput = CreateExpressGatewayServiceCommand.mock.calls[0][0];
+      expect(createInput.healthCheckPath).toBe('/health');
+      expect(createInput.scalingTarget).toEqual({ minTaskCount: 2, maxTaskCount: 10 });
+    });
+
+    test('fails when task-definition-arn is combined with disallowed inputs', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'task-definition-arn') return 'arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:7';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'cpu') return '512';
+        return '';
+      });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('cannot be used with task-definition-arn'));
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('image'));
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('cpu'));
+      expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    test('fails when task-definition-arn is combined with container configuration inputs', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'task-definition-arn') return 'arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:7';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'environment-variables') return '[{"name":"ENV","value":"prod"}]';
+        return '';
+      });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('environment-variables'));
+      expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    test('still fails when image is missing and no task-definition-arn is provided', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith('Input required and not supplied: image');
+    });
+
+    test('parses account ID from infrastructure-role-arn in task definition mode', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'task-definition-arn') return 'arn:aws:ecs:us-east-1:999999999999:task-definition/my-app:7';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::999999999999:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:999999999999:service/default/test-service';
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+
+      await run();
+
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(core.info).toHaveBeenCalledWith(`Constructed service ARN: ${serviceArn}`);
     });
   });
 

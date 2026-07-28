@@ -9,14 +9,17 @@ inputs:
     description: 'The name of the ECS Express service. Used for both creating new services and updating existing ones.'
     required: true
   image:
-    description: 'The container image URI to deploy (e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest)'
-    required: true
+    description: 'The container image URI to deploy (e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest). Required unless task-definition-arn is provided.'
+    required: false
   execution-role-arn:
-    description: 'The ARN of the task execution role that grants the ECS agent permission to pull container images and publish logs'
-    required: true
+    description: 'The ARN of the task execution role that grants the ECS agent permission to pull container images and publish logs. Required unless task-definition-arn is provided.'
+    required: false
   infrastructure-role-arn:
     description: 'The ARN of the infrastructure role that grants ECS permission to create and manage AWS resources (ALB, target groups, etc.)'
     required: true
+  task-definition-arn:
+    description: 'The ARN of a task definition to use for the service (taskDefinitionArn), instead of having Express Mode manage one. Allows full control over the task, such as adding sidecar containers. The task definition must be FARGATE-compatible and have a container named "Main" with a single TCP port mapping that includes a container port and port name. Cannot be combined with image, execution-role-arn, task-role-arn, cpu, memory, or the container configuration inputs — define those in the task definition instead.'
+    required: false
   
   # Service identification
   cluster:

@@ -128,9 +128,17 @@ See [IAM Permissions](#iam-permissions) for detailed policy requirements.
 | Input | Description |
 |-------|-------------|
 | `service-name` | The name of the ECS Express service. Used for both creating new services and updating existing ones. |
-| `image` | The container image URI to deploy (e.g., `123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest`) |
-| `execution-role-arn` | The ARN of the task execution role that grants the ECS agent permission to pull container images and publish logs |
+| `image` | The container image URI to deploy (e.g., `123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest`). Required unless `task-definition-arn` is provided. |
+| `execution-role-arn` | The ARN of the task execution role that grants the ECS agent permission to pull container images and publish logs. Required unless `task-definition-arn` is provided. |
 | `infrastructure-role-arn` | The ARN of the infrastructure role that grants ECS permission to create and manage AWS resources (ALB, target groups, etc.) |
+
+### Task Definition
+
+| Input | Description | Default |
+|-------|-------------|---------|
+| `task-definition-arn` | The ARN of a task definition to use for the service, instead of having Express Mode manage one. Allows full control over the task, such as adding sidecar containers. See [Deploy with Your Own Task Definition](#deploy-with-your-own-task-definition). | - |
+
+When `task-definition-arn` is provided, the task definition supplies the container and task-level settings, so the following inputs cannot be used: `image`, `execution-role-arn`, `task-role-arn`, `cpu`, `memory`, `container-port`, `environment-variables`, `secrets`, `command`, `log-group`, `log-stream-prefix`, and `repository-credentials`. Define these in the task definition instead. The task definition must be `FARGATE`-compatible and have a container named `Main` with a single TCP port mapping that includes a container port and port name.
 
 ### Service Identification
 
@@ -316,6 +324,37 @@ Express Mode Services are setup with preset defaults
     max-task-count: 10
     auto-scaling-metric: AVERAGE_CPU
     auto-scaling-target-value: 70
+```
+
+### Deploy with Your Own Task Definition
+
+Instead of letting Express Mode manage the task definition, you can register your own and pass its ARN. This gives you full control over the task configuration, such as adding sidecar containers. The task definition must be `FARGATE`-compatible and have a container named `Main` with a single TCP port mapping that includes a container port and port name.
+
+To deploy a new image in this mode, register a new task definition revision first (e.g., with `aws-actions/amazon-ecs-render-task-definition` and `aws ecs register-task-definition`), then pass the new revision ARN to this action.
+
+```yaml
+- name: Render task definition with new image
+  id: render
+  uses: aws-actions/amazon-ecs-render-task-definition@v1
+  with:
+    task-definition: task-definition.json
+    container-name: Main
+    image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
+
+- name: Register task definition
+  id: register
+  run: |
+    arn=$(aws ecs register-task-definition \
+      --cli-input-json file://${{ steps.render.outputs.task-definition }} \
+      --query 'taskDefinition.taskDefinitionArn' --output text)
+    echo "arn=$arn" >> "$GITHUB_OUTPUT"
+
+- name: Deploy with task definition
+  uses: aws-actions/amazon-ecs-deploy-express-service@v1
+  with:
+    service-name: my-app
+    task-definition-arn: ${{ steps.register.outputs.arn }}
+    infrastructure-role-arn: arn:aws:iam::123456789012:role/ecsInfrastructureRole
 ```
 
 ## Best Practices
