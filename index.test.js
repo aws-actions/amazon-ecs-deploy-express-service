@@ -779,7 +779,11 @@ describe('Amazon ECS Deploy Express Service', () => {
       expect(core.info).toHaveBeenCalledWith(expect.stringContaining('Found 2 deployment(s)'));
     });
 
-    test('fails when deployment enters FAILED state', async () => {
+    test.each([
+      'ROLLBACK_FAILED',
+      'ROLLBACK_SUCCESSFUL',
+      'STOPPED'
+    ])('fails when deployment enters %s state', async (terminalStatus) => {
       core.getInput.mockImplementation((name) => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
         if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
@@ -808,13 +812,13 @@ describe('Amazon ECS Deploy Express Service', () => {
         .mockResolvedValueOnce({
           serviceDeployments: [{
             serviceDeploymentArn: deploymentArn,
-            status: 'FAILED'
+            status: terminalStatus
           }]
         });
 
       await run();
 
-      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('FAILED'));
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining(terminalStatus));
     });
 
     test('fails when service enters INACTIVE state', async () => {

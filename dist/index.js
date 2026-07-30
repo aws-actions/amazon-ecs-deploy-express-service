@@ -19,6 +19,16 @@ const {
   UntagResourceCommand
 } = __nccwpck_require__(212);
 
+// Service deployment statuses that mean the deployment will not succeed. A rollback
+// (whether it succeeds or fails) means the new revision never became healthy, so both
+// ROLLBACK_* terminal states are failures. Note ServiceDeploymentStatus has no 'FAILED'
+// value, so the previous check for it never matched.
+const TERMINAL_FAILURE_STATUSES = new Set([
+  'ROLLBACK_SUCCESSFUL',
+  'ROLLBACK_FAILED',
+  'STOPPED'
+]);
+
 /**
  * Parse tags from JSON format input
  * Expected format: [{"key":"Environment","value":"Production"}]
@@ -605,7 +615,9 @@ async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
         
         // Check for failure states
         if (statusCode === 'INACTIVE' || statusCode === 'DRAINING') {
-          throw new Error(`Service entered ${statusCode} state`);
+          const failure = new Error(`Service entered ${statusCode} state`);
+          failure.isTerminalFailure = true;
+          throw failure;
         }
         
         // Check if service is ACTIVE
@@ -660,12 +672,17 @@ async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
               const deploymentStatus = deployment.status;
               
               core.info(`Deployment ${deploymentArn} status: ${deploymentStatus}. Will re-poll in ${pollIntervalSeconds} seconds...`);
-              
-              // Check for deployment failure
-              if (deploymentStatus === 'FAILED' || deploymentStatus === 'STOPPED') {
-                throw new Error(`Deployment ${deploymentArn} ${deploymentStatus}`);
+
+              // Check for terminal failure states. A rollback (successful or failed) means
+              // the new revision did not become healthy, so both are deployment failures.
+              // ServiceDeploymentStatus has no 'FAILED' value; the real terminal failures
+              // are ROLLBACK_SUCCESSFUL, ROLLBACK_FAILED, and STOPPED.
+              if (TERMINAL_FAILURE_STATUSES.has(deploymentStatus)) {
+                const failure = new Error(`Deployment ${deploymentArn} ${deploymentStatus}`);
+                failure.isTerminalFailure = true;
+                throw failure;
               }
-              
+
               // Deployment is complete when status is SUCCESSFUL
               if (deploymentStatus === 'SUCCESSFUL') {
                 core.info('Deployment completed successfully');
@@ -688,8 +705,8 @@ async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
         }
       }
     } catch (error) {
-      // Only warn on transient errors, throw on actual failures
-      if (error.message.includes('entered') || error.message.includes('FAILED') || error.message.includes('STOPPED')) {
+      // Re-throw terminal failures; only warn and keep polling on transient errors
+      if (error.isTerminalFailure) {
         throw error;
       }
       core.warning(`Error checking status: ${error.message}`);
