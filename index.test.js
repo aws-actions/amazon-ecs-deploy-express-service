@@ -821,6 +821,47 @@ describe('Amazon ECS Deploy Express Service', () => {
       expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining(terminalStatus));
     });
 
+    test('includes ECS failure diagnostics in a terminal deployment error', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        return '';
+      });
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentArn = 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123';
+
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn } })
+        .mockResolvedValueOnce({
+          service: {
+            serviceArn,
+            status: { statusCode: 'ACTIVE' },
+            cluster: 'default'
+          }
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{ serviceDeploymentArn: deploymentArn }]
+        })
+        .mockResolvedValueOnce({
+          serviceDeployments: [{
+            serviceDeploymentArn: deploymentArn,
+            status: 'ROLLBACK_SUCCESSFUL',
+            statusReason: 'The deployment circuit breaker detected unhealthy tasks',
+            rollback: { reason: 'The deployment circuit breaker initiated a rollback' }
+          }]
+        });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(
+        `Deployment ${deploymentArn} ROLLBACK_SUCCESSFUL: Status reason: The deployment circuit breaker detected unhealthy tasks; Rollback reason: The deployment circuit breaker initiated a rollback`
+      );
+    });
+
     test('fails when service enters INACTIVE state', async () => {
       core.getInput.mockImplementation((name) => {
         if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';

@@ -678,7 +678,13 @@ async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
               // ServiceDeploymentStatus has no 'FAILED' value; the real terminal failures
               // are ROLLBACK_SUCCESSFUL, ROLLBACK_FAILED, and STOPPED.
               if (TERMINAL_FAILURE_STATUSES.has(deploymentStatus)) {
-                const failure = new Error(`Deployment ${deploymentArn} ${deploymentStatus}`);
+                const diagnostics = [
+                  deployment.statusReason && `Status reason: ${deployment.statusReason}`,
+                  deployment.rollback?.reason && `Rollback reason: ${deployment.rollback.reason}`
+                ].filter(Boolean);
+                const failure = new Error(
+                  `Deployment ${deploymentArn} ${deploymentStatus}${diagnostics.length > 0 ? `: ${diagnostics.join('; ')}` : ''}`
+                );
                 failure.isTerminalFailure = true;
                 throw failure;
               }
