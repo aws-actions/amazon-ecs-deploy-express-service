@@ -137,6 +137,21 @@ describe('Amazon ECS Deploy Express Service', () => {
       expect(core.setFailed).not.toHaveBeenCalled();
       expect(core.info).toHaveBeenCalledWith('Amazon ECS Deploy Express Service action started');
     });
+
+    test('rejects an invalid deployment wait', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'wait-for-minutes') return '0';
+        return '';
+      });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith('wait-for-minutes must be an integer between 1 and 360');
+    });
   });
 
   describe('Task definition mode', () => {
@@ -737,6 +752,53 @@ describe('Amazon ECS Deploy Express Service', () => {
 
       expect(core.info).toHaveBeenCalledWith(expect.stringContaining('Deployment completed successfully'));
       
+      jest.useRealTimers();
+    });
+
+    test('fails when deployment monitoring times out', async () => {
+      core.getInput.mockImplementation((name) => {
+        if (name === 'image') return '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest';
+        if (name === 'execution-role-arn') return 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole';
+        if (name === 'infrastructure-role-arn') return 'arn:aws:iam::123456789012:role/ecsInfrastructureRole';
+        if (name === 'service-name') return 'test-service';
+        if (name === 'wait-for-minutes') return '2';
+        return '';
+      });
+
+      jest.useFakeTimers();
+
+      const serviceArn = 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service';
+      const deploymentArn = 'arn:aws:ecs:us-east-1:123456789012:service-deployment/default/test-service/abc123';
+      const activeService = {
+        service: {
+          serviceArn,
+          status: { statusCode: 'ACTIVE' },
+          cluster: 'default'
+        }
+      };
+      const inProgressDeployment = {
+        serviceDeployments: [{ serviceDeploymentArn: deploymentArn, status: 'IN_PROGRESS' }]
+      };
+      const responses = [
+        { services: [] },
+        { service: { serviceArn } },
+        activeService,
+        { serviceDeployments: [{ serviceDeploymentArn: deploymentArn }] },
+        inProgressDeployment
+      ];
+      for (let poll = 0; poll < 60; poll += 1) {
+        responses.push(activeService, inProgressDeployment);
+      }
+      mockSend.mockImplementation(() => Promise.resolve(responses.shift()));
+
+      const runPromise = run();
+      await jest.advanceTimersByTimeAsync(15 * 9 * 1000);
+      await runPromise;
+
+      expect(core.setFailed).toHaveBeenCalledWith(
+        `Deployment did not reach a terminal state within 2 minutes: ${deploymentArn}`
+      );
+
       jest.useRealTimers();
     });
 
