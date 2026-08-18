@@ -224,6 +224,11 @@ async function run() {
     
     // Read optional inputs for service identification
     const clusterName = core.getInput('cluster', { required: false }) || 'default';
+    const waitForMinutesInput = core.getInput('wait-for-minutes', { required: false }) || '15';
+    const waitForMinutes = Number(waitForMinutesInput);
+    if (!Number.isInteger(waitForMinutes) || waitForMinutes < 1 || waitForMinutes > 360) {
+      throw new Error('wait-for-minutes must be an integer between 1 and 360');
+    }
     
     // Read optional container configuration inputs
     const containerPort = core.getInput('container-port', { required: false });
@@ -561,7 +566,7 @@ async function run() {
     }
     
     // Wait for deployment to complete
-    await waitForServiceStable(ecs, finalServiceArn, deploymentStartTime);
+    await waitForServiceStable(ecs, finalServiceArn, deploymentStartTime, waitForMinutes);
     
   } catch (error) {
     core.setFailed(error.message);
@@ -579,10 +584,10 @@ async function run() {
  * @param {ECSClient} ecs - The ECS client
  * @param {string} serviceArn - The service ARN
  * @param {Date} deploymentStartTime - Timestamp when the deployment was initiated
+ * @param {number} maxWaitMinutes - Maximum deployment wait time in minutes
  */
-async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
+async function waitForServiceStable(ecs, serviceArn, deploymentStartTime, maxWaitMinutes) {
   core.info('Waiting for service deployment to complete...');
-  const maxWaitMinutes = 15;
   const pollIntervalSeconds = 15;
   const maxWaitMs = maxWaitMinutes * 60 * 1000;
   const startTime = Date.now();
@@ -593,8 +598,9 @@ async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
   while (true) {
     // Check timeout
     if (Date.now() - startTime > maxWaitMs) {
-      core.warning(`Deployment is taking longer than ${maxWaitMinutes} minutes. The deployment will continue in the background.`);
-      break;
+      throw new Error(
+        `Deployment did not reach a terminal state within ${maxWaitMinutes} minutes${deploymentArn ? `: ${deploymentArn}` : ''}`
+      );
     }
     
     try {
@@ -678,7 +684,13 @@ async function waitForServiceStable(ecs, serviceArn, deploymentStartTime) {
               // ServiceDeploymentStatus has no 'FAILED' value; the real terminal failures
               // are ROLLBACK_SUCCESSFUL, ROLLBACK_FAILED, and STOPPED.
               if (TERMINAL_FAILURE_STATUSES.has(deploymentStatus)) {
-                const failure = new Error(`Deployment ${deploymentArn} ${deploymentStatus}`);
+                const diagnostics = [
+                  deployment.statusReason && `Status reason: ${deployment.statusReason}`,
+                  deployment.rollback?.reason && `Rollback reason: ${deployment.rollback.reason}`
+                ].filter(Boolean);
+                const failure = new Error(
+                  `Deployment ${deploymentArn} ${deploymentStatus}${diagnostics.length > 0 ? `: ${diagnostics.join('; ')}` : ''}`
+                );
                 failure.isTerminalFailure = true;
                 throw failure;
               }
