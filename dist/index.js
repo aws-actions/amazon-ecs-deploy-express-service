@@ -4247,7 +4247,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.1100.0";
+var version = "3.1110.0";
 var packageInfo = {
 	version: version};
 
@@ -9437,6 +9437,7 @@ const InstanceHealthCheckState = {
 };
 const InstanceHealthCheckType = {
     ACCELERATED_COMPUTE: "ACCELERATED_COMPUTE",
+    AGENT_CONNECTIVITY: "AGENT_CONNECTIVITY",
     CONTAINER_RUNTIME: "CONTAINER_RUNTIME",
     DAEMON: "DAEMON",
 };
@@ -9843,6 +9844,7 @@ const HealthStatus = {
 };
 const TaskStopCode = {
     ESSENTIAL_CONTAINER_EXITED: "EssentialContainerExited",
+    INFRASTRUCTURE_HEALTH: "InfrastructureHealth",
     SERVICE_SCHEDULER_INITIATED: "ServiceSchedulerInitiated",
     SPOT_INTERRUPTION: "SpotInterruption",
     TASK_FAILED_TO_START: "TaskFailedToStart",
@@ -12160,25 +12162,26 @@ function jsonReviver(key, value, context) {
         const numericString = context.source;
         if (typeof value === "number") {
             const inSafeRange = value <= Number.MAX_SAFE_INTEGER && value >= Number.MIN_SAFE_INTEGER;
-            if (!inSafeRange || numericString !== String(value)) {
-                if (inSafeRange && /[eE]/.test(numericString) && String(Number(numericString)) === String(value)) {
+            if (inSafeRange) {
+                if (isRepresentable(numericString, value)) {
                     return value;
                 }
-                if (isFractionalNumeric(numericString)) {
+                return new NumericValue(numericString, "bigDecimal");
+            }
+            else {
+                if (isFractionalBigNumeric(numericString)) {
                     return new NumericValue(numericString, "bigDecimal");
                 }
-                else {
-                    if (/[eE]/.test(numericString)) {
-                        return BigInt(Number(numericString));
-                    }
-                    return BigInt(numericString);
+                if (/[eE]/.test(numericString)) {
+                    return expandExponentToBigInt(numericString);
                 }
+                return BigInt(numericString);
             }
         }
     }
     return value;
 }
-function isFractionalNumeric(s) {
+function isFractionalBigNumeric(s) {
     const dotIndex = s.indexOf(".");
     if (dotIndex === -1) {
         return false;
@@ -12190,6 +12193,89 @@ function isFractionalNumeric(s) {
     const fracDigits = eIndex - dotIndex - 1;
     const exp = parseInt(s.slice(eIndex + 1), 10);
     return exp < fracDigits;
+}
+function isRepresentable(numericString, value) {
+    if (numericString === String(value)) {
+        return true;
+    }
+    if (Object.is(value, -0)) {
+        return true;
+    }
+    if (/[eE]/.test(numericString)) {
+        return expandToDecimal(numericString) === expandToDecimal(String(value));
+    }
+    const normalized = numericString.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
+    const canonical = String(value);
+    if (normalized === canonical) {
+        return true;
+    }
+    if (/[eE]/.test(canonical)) {
+        return normalized === expandToDecimal(canonical);
+    }
+    return false;
+}
+function expandToDecimal(s) {
+    const negative = s.startsWith("-");
+    const abs = negative ? s.slice(1) : s;
+    const eIndex = abs.search(/[eE]/);
+    let result;
+    if (eIndex === -1) {
+        result = abs;
+    }
+    else {
+        const exp = parseInt(abs.slice(eIndex + 1), 10);
+        const mantissa = abs.slice(0, eIndex);
+        const dotIndex = mantissa.indexOf(".");
+        let digits;
+        let intLen;
+        if (dotIndex === -1) {
+            digits = mantissa;
+            intLen = mantissa.length;
+        }
+        else {
+            digits = mantissa.slice(0, dotIndex) + mantissa.slice(dotIndex + 1);
+            intLen = dotIndex;
+        }
+        digits = digits.replace(/0+$/, "") || "0";
+        const newDotPos = intLen + exp;
+        if (digits === "0") {
+            result = "0";
+        }
+        else if (newDotPos <= 0) {
+            result = "0." + "0".repeat(-newDotPos) + digits;
+        }
+        else if (newDotPos >= digits.length) {
+            result = digits + "0".repeat(newDotPos - digits.length);
+        }
+        else {
+            result = digits.slice(0, newDotPos) + "." + digits.slice(newDotPos);
+        }
+    }
+    if (result.includes(".")) {
+        result = result.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
+    }
+    return (negative ? "-" : "") + result;
+}
+function expandExponentToBigInt(s) {
+    const eIndex = s.search(/[eE]/);
+    const exp = parseInt(s.slice(eIndex + 1), 10);
+    const negative = s.startsWith("-");
+    const mantissa = s.slice(negative ? 1 : 0, eIndex);
+    const dotIndex = mantissa.indexOf(".");
+    let digits;
+    let shift;
+    if (dotIndex === -1) {
+        digits = mantissa;
+        shift = exp;
+    }
+    else {
+        digits = mantissa.slice(0, dotIndex) + mantissa.slice(dotIndex + 1);
+        const fracDigits = mantissa.length - dotIndex - 1;
+        shift = exp - fracDigits;
+    }
+    digits = digits.replace(/0+$/, "") || "0";
+    const result = BigInt(digits) * 10n ** BigInt(shift + (mantissa.replace(".", "").length - digits.length));
+    return negative ? -result : result;
 }
 
 const REVIVER_SYMBOL = Symbol.for("@aws-sdk/reviver");
@@ -16152,7 +16238,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.39";
+var version = "3.997.42";
 var packageInfo = {
 	version: version};
 
@@ -16749,7 +16835,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.39";
+var version = "3.997.42";
 var packageInfo = {
 	version: version};
 
@@ -17430,7 +17516,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.39";
+var version = "3.997.42";
 var packageInfo = {
 	version: version};
 
@@ -18085,7 +18171,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.39";
+var version = "3.997.42";
 var packageInfo = {
 	version: version};
 
@@ -27643,24 +27729,27 @@ class Fields {
 }
 
 const getHttpHandlerExtensionConfiguration = (runtimeConfig) => {
+    if (runtimeConfig.logger && runtimeConfig.logger.constructor?.name !== "NoOpLogger") {
+        runtimeConfig.requestHandler?.updateHttpClientConfig?.(Symbol.for("logger"), runtimeConfig.logger);
+    }
     return {
         setHttpHandler(handler) {
-            runtimeConfig.httpHandler = handler;
+            runtimeConfig.requestHandler = handler;
         },
         httpHandler() {
-            return runtimeConfig.httpHandler;
+            return runtimeConfig.requestHandler;
         },
         updateHttpClientConfig(key, value) {
-            runtimeConfig.httpHandler?.updateHttpClientConfig(key, value);
+            runtimeConfig.requestHandler?.updateHttpClientConfig(key, value);
         },
         httpHandlerConfigs() {
-            return runtimeConfig.httpHandler.httpHandlerConfigs();
+            return runtimeConfig.requestHandler.httpHandlerConfigs();
         },
     };
 };
 const resolveHttpHandlerRuntimeConfig = (httpHandlerExtensionConfiguration) => {
     return {
-        httpHandler: httpHandlerExtensionConfiguration.httpHandler(),
+        requestHandler: httpHandlerExtensionConfiguration.httpHandler(),
     };
 };
 
@@ -28753,8 +28842,6 @@ class Schema {
 
 class ListSchema extends Schema {
     static symbol = Symbol.for("@smithy/lis");
-    name;
-    traits;
     valueSchema;
     symbol = ListSchema.symbol;
 }
@@ -28767,8 +28854,6 @@ const list = (namespace, name, traits, valueSchema) => Schema.assign(new ListSch
 
 class MapSchema extends Schema {
     static symbol = Symbol.for("@smithy/map");
-    name;
-    traits;
     keySchema;
     valueSchema;
     symbol = MapSchema.symbol;
@@ -28783,8 +28868,6 @@ const map = (namespace, name, traits, keySchema, valueSchema) => Schema.assign(n
 
 class OperationSchema extends Schema {
     static symbol = Symbol.for("@smithy/ope");
-    name;
-    traits;
     input;
     output;
     symbol = OperationSchema.symbol;
@@ -28799,8 +28882,6 @@ const op = (namespace, name, traits, input, output) => Schema.assign(new Operati
 
 class StructureSchema extends Schema {
     static symbol = Symbol.for("@smithy/str");
-    name;
-    traits;
     memberNames;
     memberList;
     symbol = StructureSchema.symbol;
@@ -29158,9 +29239,7 @@ const isStaticSchema = (sc) => Array.isArray(sc) && sc.length >= 5;
 
 class SimpleSchema extends Schema {
     static symbol = Symbol.for("@smithy/sim");
-    name;
     schemaRef;
-    traits;
     symbol = SimpleSchema.symbol;
 }
 const sim = (namespace, name, schemaRef, traits) => Schema.assign(new SimpleSchema(), {
@@ -31915,6 +31994,7 @@ or increase socketAcquisitionWarningTimeout=(millis) in the NodeHttpHandler conf
             this.config = await this.configProvider;
         }
         const config = this.config;
+        const logger = config.logger;
         const isSSL = request.protocol === "https:";
         if (!isSSL && !this.config.httpAgent) {
             this.config.httpAgent = await this.config.httpAgentProvider();
@@ -31958,7 +32038,7 @@ or increase socketAcquisitionWarningTimeout=(millis) in the NodeHttpHandler conf
                 });
             }
             socketWarningTimeoutId = timing.setTimeout(() => {
-                this.socketWarningTimestamp = NodeHttpHandler.checkSocketUsage(agent, this.socketWarningTimestamp, config.logger);
+                this.socketWarningTimestamp = NodeHttpHandler.checkSocketUsage(agent, this.socketWarningTimestamp, logger);
             }, config.socketAcquisitionWarningTimeout ?? (config.requestTimeout ?? 2000) + (config.connectionTimeout ?? 1000));
             const queryString = request.query ? buildQueryString(request.query) : "";
             let auth = undefined;
@@ -32025,7 +32105,7 @@ or increase socketAcquisitionWarningTimeout=(millis) in the NodeHttpHandler conf
             }
             const effectiveRequestTimeout = requestTimeout ?? config.requestTimeout;
             connectionTimeoutId = setConnectionTimeout(req, reject, config.connectionTimeout);
-            requestTimeoutId = setRequestTimeout(req, reject, effectiveRequestTimeout, config.throwOnRequestTimeout, config.logger ?? console);
+            requestTimeoutId = setRequestTimeout(req, reject, effectiveRequestTimeout, config.throwOnRequestTimeout, logger ?? console);
             socketTimeoutId = setSocketTimeout(req, reject, config.socketTimeout);
             const httpAgent = nodeHttpsOptions.agent;
             if (typeof httpAgent === "object" && "keepAlive" in httpAgent) {
@@ -32043,6 +32123,12 @@ or increase socketAcquisitionWarningTimeout=(millis) in the NodeHttpHandler conf
     updateHttpClientConfig(key, value) {
         this.config = undefined;
         this.configProvider = this.configProvider.then((config) => {
+            if (key === Symbol.for("logger")) {
+                return {
+                    ...config,
+                    logger: config.logger ?? value,
+                };
+            }
             return {
                 ...config,
                 [key]: value,
