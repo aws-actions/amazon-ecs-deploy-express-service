@@ -4247,7 +4247,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.1120.0";
+var version = "3.1135.0";
 var packageInfo = {
 	version: version};
 
@@ -5357,6 +5357,7 @@ const _cont = "container";
 const _conta = "containers";
 const _cou = "count";
 const _cp = "cpu";
+const _cr = "critical";
 const _d = "details";
 const _dA = "daemonArn";
 const _dAe = "deploymentArn";
@@ -5784,6 +5785,8 @@ const _tT = "targetType";
 const _tTR = "testTrafficRules";
 const _tV = "targetValue";
 const _tVo = "tokenValue";
+const _tWDC = "totalWithoutDaemonCount";
+const _tWDIC = "totalWithoutDaemonInstanceCount";
 const _ta = "tags";
 const _tas = "tasks";
 const _task = "task";
@@ -5813,6 +5816,8 @@ const _ve = "version";
 const _vo = "volumes";
 const _w = "weight";
 const _wD = "workingDirectory";
+const _wDC = "withoutDaemonCount";
+const _wDIC = "withoutDaemonInstanceCount";
 const _xN = "xmlName";
 const n0 = "com.amazonaws.ecs";
 const _s_registry = TypeRegistry.for(_s);
@@ -6181,8 +6186,8 @@ var CreateClusterResponse$ = [3, n0, _CCRr,
 ];
 var CreateDaemonRequest$ = [3, n0, _CDR,
     0,
-    [_dNa, _dTDA, _cPAa, _cA, _dC, _ta, _pTr, _eECSMT, _eEC, _cT],
-    [0, 0, 64 | 0, 0, () => DaemonDeploymentConfiguration$, () => Tags, 0, 2, 2, 0], 3
+    [_dNa, _dTDA, _cPAa, _cA, _dC, _ta, _pTr, _eECSMT, _eEC, _cT, _cr],
+    [0, 0, 64 | 0, 0, () => DaemonDeploymentConfiguration$, () => Tags, 0, 2, 2, 0, 2], 3
 ];
 var CreateDaemonResponse$ = [3, n0, _CDRr,
     0,
@@ -6196,8 +6201,8 @@ var CreatedAt$ = [3, n0, _CA,
 ];
 var CreateExpressGatewayServiceRequest$ = [3, n0, _CEGSR,
     0,
-    [_iRA, _eRA, _sN, _cl, _hCP, _pC, _tRA, _nC, _cp, _me, _sTc, _ta, _tDA],
-    [0, 0, 0, 0, 0, [() => ExpressGatewayContainer$, 0], 0, () => ExpressGatewayServiceNetworkConfiguration$, 0, 0, () => ExpressGatewayScalingTarget$, () => Tags, 0], 1
+    [_iRA, _eRA, _sN, _cl, _hCP, _pC, _tRA, _nC, _cp, _me, _cAp, _sTc, _ta, _tDA],
+    [0, 0, 0, 0, 0, [() => ExpressGatewayContainer$, 0], 0, () => ExpressGatewayServiceNetworkConfiguration$, 0, 0, 0, () => ExpressGatewayScalingTarget$, () => Tags, 0], 1
 ];
 var CreateExpressGatewayServiceResponse$ = [3, n0, _CEGSRr,
     0,
@@ -6236,8 +6241,8 @@ var DaemonAlarmConfiguration$ = [3, n0, _DAC,
 ];
 var DaemonCapacityProvider$ = [3, n0, _DCP,
     0,
-    [_ar, _rCu],
-    [0, 1]
+    [_ar, _rCu, _wDC],
+    [0, 1, 1]
 ];
 var DaemonCircuitBreaker$ = [3, n0, _DCB,
     0,
@@ -6266,8 +6271,8 @@ var DaemonDeploymentAlarms$ = [3, n0, _DDA,
 ];
 var DaemonDeploymentCapacityProvider$ = [3, n0, _DDCP,
     0,
-    [_ar, _rIC, _dIC],
-    [0, 1, 1]
+    [_ar, _rIC, _wDIC, _dIC],
+    [0, 1, 1, 1]
 ];
 var DaemonDeploymentConfiguration$ = [3, n0, _DDC,
     0,
@@ -6276,8 +6281,8 @@ var DaemonDeploymentConfiguration$ = [3, n0, _DDC,
 ];
 var DaemonDeploymentRevisionDetail$ = [3, n0, _DDRD,
     0,
-    [_ar, _cPap, _tRIC, _tDIC],
-    [0, () => DaemonDeploymentCapacityProviderList, 1, 1]
+    [_ar, _cPap, _tRIC, _tWDIC, _tDIC],
+    [0, () => DaemonDeploymentCapacityProviderList, 1, 1, 1]
 ];
 var DaemonDeploymentSummary$ = [3, n0, _DDS,
     0,
@@ -6296,13 +6301,13 @@ var DaemonLinuxParameters$ = [3, n0, _DLP,
 ];
 var DaemonRevision$ = [3, n0, _DR,
     0,
-    [_dRA, _cA, _dA, _dTDA, _cAr, _cI, _pTr, _eECSMT, _eEC],
-    [0, 0, 0, 0, 4, () => DaemonContainerImages, 0, 2, 2]
+    [_dRA, _cA, _dA, _dTDA, _cAr, _cI, _pTr, _eECSMT, _eEC, _cr],
+    [0, 0, 0, 0, 4, () => DaemonContainerImages, 0, 2, 2, 2]
 ];
 var DaemonRevisionDetail$ = [3, n0, _DRD,
     0,
-    [_ar, _cPap, _tRC],
-    [0, () => DaemonCapacityProviderList, 1]
+    [_ar, _cPap, _tRC, _tWDC],
+    [0, () => DaemonCapacityProviderList, 1, 1]
 ];
 var DaemonRollback$ = [3, n0, _DRa,
     0,
@@ -6736,8 +6741,8 @@ var ExpressGatewayServiceAwsLogsConfiguration$ = [3, n0, _EGSALC,
 ];
 var ExpressGatewayServiceConfiguration$ = [3, n0, _EGSC,
     0,
-    [_sRAe, _eRA, _tRA, _tDA, _cp, _me, _nC, _hCP, _pC, _sTc, _iP, _cAr],
-    [0, 0, 0, 0, 0, 0, () => ExpressGatewayServiceNetworkConfiguration$, 0, [() => ExpressGatewayContainer$, 0], () => ExpressGatewayScalingTarget$, () => IngressPathSummaries, 4]
+    [_sRAe, _eRA, _tRA, _tDA, _cp, _me, _cAp, _nC, _hCP, _pC, _sTc, _iP, _cAr],
+    [0, 0, 0, 0, 0, 0, 0, () => ExpressGatewayServiceNetworkConfiguration$, 0, [() => ExpressGatewayContainer$, 0], () => ExpressGatewayScalingTarget$, () => IngressPathSummaries, 4]
 ];
 var ExpressGatewayServiceNetworkConfiguration$ = [3, n0, _EGSNC,
     0,
@@ -7656,8 +7661,8 @@ var UpdateContainerInstancesStateResponse$ = [3, n0, _UCISRp,
 ];
 var UpdateDaemonRequest$ = [3, n0, _UDR,
     0,
-    [_dA, _dTDA, _cPAa, _dC, _pTr, _eECSMT, _eEC],
-    [0, 0, 64 | 0, () => DaemonDeploymentConfiguration$, 0, 2, 2], 3
+    [_dA, _dTDA, _cPAa, _dC, _pTr, _eECSMT, _eEC, _cr],
+    [0, 0, 64 | 0, () => DaemonDeploymentConfiguration$, 0, 2, 2, 2], 3
 ];
 var UpdateDaemonResponse$ = [3, n0, _UDRp,
     0,
@@ -7671,8 +7676,8 @@ var UpdatedExpressGatewayService$ = [3, n0, _UEGS,
 ];
 var UpdateExpressGatewayServiceRequest$ = [3, n0, _UEGSR,
     0,
-    [_sAe, _eRA, _hCP, _pC, _tRA, _nC, _cp, _me, _sTc, _tDA],
-    [0, 0, 0, [() => ExpressGatewayContainer$, 0], 0, () => ExpressGatewayServiceNetworkConfiguration$, 0, 0, () => ExpressGatewayScalingTarget$, 0], 1
+    [_sAe, _eRA, _hCP, _pC, _tRA, _nC, _cp, _me, _cAp, _sTc, _tDA],
+    [0, 0, 0, [() => ExpressGatewayContainer$, 0], 0, () => ExpressGatewayServiceNetworkConfiguration$, 0, 0, 0, () => ExpressGatewayScalingTarget$, 0], 1
 ];
 var UpdateExpressGatewayServiceResponse$ = [3, n0, _UEGSRp,
     0,
@@ -9752,6 +9757,10 @@ const ServiceDeploymentStatus = {
     STOP_REQUESTED: "STOP_REQUESTED",
     SUCCESSFUL: "SUCCESSFUL",
 };
+const ExpressCpuArchitecture = {
+    ARM64: "ARM64",
+    X86_64: "X86_64",
+};
 const ExpressGatewayServiceScalingMetric = {
     AverageCPUUtilization: "AVERAGE_CPU",
     AverageMemoryUtilization: "AVERAGE_MEMORY",
@@ -10157,6 +10166,7 @@ exports.ExecuteCommandLogConfiguration$ = ExecuteCommandLogConfiguration$;
 exports.ExecuteCommandLogging = ExecuteCommandLogging;
 exports.ExecuteCommandRequest$ = ExecuteCommandRequest$;
 exports.ExecuteCommandResponse$ = ExecuteCommandResponse$;
+exports.ExpressCpuArchitecture = ExpressCpuArchitecture;
 exports.ExpressGatewayContainer$ = ExpressGatewayContainer$;
 exports.ExpressGatewayRepositoryCredentials$ = ExpressGatewayRepositoryCredentials$;
 exports.ExpressGatewayScalingTarget$ = ExpressGatewayScalingTarget$;
@@ -15700,6 +15710,8 @@ function memoizeChain(providers, treatAsExpired) {
                         .then((c) => {
                         credentials = c;
                     })
+                        .catch(() => {
+                    })
                         .finally(() => {
                         passiveLock = undefined;
                     });
@@ -16253,7 +16265,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.43";
+var version = "3.997.44";
 var packageInfo = {
 	version: version};
 
@@ -16850,7 +16862,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.43";
+var version = "3.997.44";
 var packageInfo = {
 	version: version};
 
@@ -17531,7 +17543,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.43";
+var version = "3.997.44";
 var packageInfo = {
 	version: version};
 
@@ -18186,7 +18198,7 @@ const commonParams = {
     UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" },
 };
 
-var version = "3.997.43";
+var version = "3.997.44";
 var packageInfo = {
 	version: version};
 
@@ -28052,16 +28064,17 @@ const isBrowserNetworkError = (error) => {
 const isThrottlingError = (error) => error.$metadata?.httpStatusCode === 429 ||
     THROTTLING_ERROR_CODES.includes(error.name) ||
     error.$retryable?.throttling == true;
-const isTransientError = (error, depth = 0) => isRetryableByTrait(error) ||
-    isClockSkewCorrectedError(error) ||
-    (error.name === "InvalidSignatureException" && error.message?.includes("Signature expired")) ||
-    TRANSIENT_ERROR_CODES.includes(error.name) ||
-    NODEJS_TIMEOUT_ERROR_CODES.includes(error?.code || "") ||
-    NODEJS_NETWORK_ERROR_CODES.includes(error?.code || "") ||
-    TRANSIENT_ERROR_STATUS_CODES.includes(error.$metadata?.httpStatusCode || 0) ||
-    isBrowserNetworkError(error) ||
-    isNodeJsHttp2TransientError(error) ||
-    (error.cause !== undefined && depth <= 10 && isTransientError(error.cause, depth + 1));
+const isTransientError = (error, depth = 0) => error?.name !== "AbortError" &&
+    (isRetryableByTrait(error) ||
+        isClockSkewCorrectedError(error) ||
+        (error.name === "InvalidSignatureException" && error.message?.includes("Signature expired")) ||
+        TRANSIENT_ERROR_CODES.includes(error.name) ||
+        NODEJS_TIMEOUT_ERROR_CODES.includes(error?.code || "") ||
+        NODEJS_NETWORK_ERROR_CODES.includes(error?.code || "") ||
+        TRANSIENT_ERROR_STATUS_CODES.includes(error.$metadata?.httpStatusCode || 0) ||
+        isBrowserNetworkError(error) ||
+        isNodeJsHttp2TransientError(error) ||
+        (error.cause !== undefined && depth <= 10 && isTransientError(error.cause, depth + 1)));
 const isServerError = (error) => {
     if (error.$metadata?.httpStatusCode !== undefined) {
         const statusCode = error.$metadata.httpStatusCode;
@@ -30909,6 +30922,8 @@ const getAwsChunkedEncodingStream$1 = (readableStream, options) => {
         checksumLocationName !== undefined &&
         streamHasher !== undefined;
     const digest = checksumRequired ? streamHasher(checksumAlgorithmFn, readableStream) : undefined;
+    Promise.resolve(digest).catch(() => {
+    });
     const reader = readableStream.getReader();
     return new ReadableStream({
         async pull(controller) {
@@ -30941,8 +30956,12 @@ function getAwsChunkedEncodingStream(stream, options) {
         checksumLocationName !== undefined &&
         streamHasher !== undefined;
     const digest = checksumRequired ? streamHasher(checksumAlgorithmFn, readable) : undefined;
+    Promise.resolve(digest).catch(() => {
+    });
     const awsChunkedEncodingStream = new Readable({
-        read: () => { },
+        read() {
+            readable.resume();
+        },
     });
     readable.on("data", (data) => {
         const length = bodyLengthChecker(data) || 0;
@@ -30951,16 +30970,27 @@ function getAwsChunkedEncodingStream(stream, options) {
         }
         awsChunkedEncodingStream.push(`${length.toString(16)}\r\n`);
         awsChunkedEncodingStream.push(data);
-        awsChunkedEncodingStream.push("\r\n");
-    });
-    readable.on("end", async () => {
-        awsChunkedEncodingStream.push(`0\r\n`);
-        if (checksumRequired) {
-            const checksum = base64Encoder(await digest);
-            awsChunkedEncodingStream.push(`${checksumLocationName}:${checksum}\r\n`);
-            awsChunkedEncodingStream.push(`\r\n`);
+        if (!awsChunkedEncodingStream.push("\r\n")) {
+            readable.pause();
         }
-        awsChunkedEncodingStream.push(null);
+    });
+    readable.on("error", (err) => {
+        awsChunkedEncodingStream.destroy(err);
+    });
+    readable.pause();
+    readable.on("end", async () => {
+        try {
+            awsChunkedEncodingStream.push(`0\r\n`);
+            if (checksumRequired) {
+                const checksum = base64Encoder(await digest);
+                awsChunkedEncodingStream.push(`${checksumLocationName}:${checksum}\r\n`);
+                awsChunkedEncodingStream.push(`\r\n`);
+            }
+            awsChunkedEncodingStream.push(null);
+        }
+        catch (err) {
+            awsChunkedEncodingStream.destroy(err);
+        }
     });
     return awsChunkedEncodingStream;
 }
@@ -32376,6 +32406,7 @@ class ClientHttp2SessionRef {
     destroy() {
         this.refs = 0;
         if (!this.session.destroyed) {
+            this.session.setTimeout(0);
             this.session.destroy();
         }
     }
@@ -32493,9 +32524,8 @@ class NodeHttp2ConnectionManager {
         session.on("error", ensureDestroyed);
         session.on("frameError", ensureDestroyed);
         session.on("close", ensureDestroyed);
-        if (connectionConfiguration.requestTimeout) {
-            session.setTimeout(connectionConfiguration.requestTimeout, ensureDestroyed);
-        }
+        const timeout = connectionConfiguration.requestTimeout ?? 300_000;
+        session.setTimeout(timeout, ensureDestroyed);
         ref.retain();
         return ref;
     }
@@ -32702,6 +32732,9 @@ class NodeHttp2Handler {
                 resolve({ response: httpResponse });
                 if (useIsolatedSession) {
                     session.close();
+                    clientHttp2Stream.on("end", () => {
+                        ref.destroy();
+                    });
                 }
             });
             clientHttp2Stream.on("close", () => {
@@ -32712,7 +32745,11 @@ class NodeHttp2Handler {
                     this.connectionManager.release(requestContext, ref);
                 }
                 if (!fulfilled) {
-                    rejectWithDestroy(new Error("Unexpected error: http2 request did not get a response"));
+                    const error = new Error("Unexpected error: http2 request did not get a response");
+                    if (session.destroyed) {
+                        error.name = "TimeoutError";
+                    }
+                    rejectWithDestroy(error);
                 }
             });
             writeRequestBodyPromise = writeRequestBody(clientHttp2Stream, request, effectiveRequestTimeout);
