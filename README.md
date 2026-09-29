@@ -146,6 +146,12 @@ When `task-definition-arn` is provided, the task definition supplies the contain
 |-------|-------------|---------|
 | `cluster` | The name of the ECS cluster | `default` |
 
+### Deployment Monitoring
+
+| Input | Description | Default |
+|-------|-------------|---------|
+| `wait-for-minutes` | How long to wait for the ECS service deployment to reach a terminal state. Must be between 1 and 360 minutes. | `15` |
+
 ### Container Configuration
 
 | Input | Description | Default |
@@ -458,6 +464,7 @@ When using `mutate-tags-on-update: 'true'`, ensure your infrastructure role incl
 
 - Check that your health check path returns 200 OK
 - Verify the container is listening on the specified port
+- Increase `wait-for-minutes` if a healthy deployment's canary and alarm bake periods exceed the default
 
 ### Cluster not found error
 
@@ -473,4 +480,3 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
-
