@@ -26,6 +26,10 @@ inputs:
     description: "The name of the ECS cluster. Will default to the 'default' cluster."
     required: false
     default: 'default'
+  wait-for-minutes:
+    description: 'How long to wait for the ECS service deployment to reach a terminal state.'
+    required: false
+    default: '15'
   
   # Primary container configuration
   container-port:
