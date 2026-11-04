@@ -240,6 +240,14 @@ async function run() {
     const cpu = core.getInput('cpu', { required: false });
     const memory = core.getInput('memory', { required: false });
     const taskRoleArn = core.getInput('task-role-arn', { required: false });
+    const cpuArchitecture = core.getInput('cpu-architecture', { required: false });
+
+    // Normalize and validate the CPU architecture against the ECS CpuArchitecture enum.
+    // Validation happens before any AWS call so typos fail fast with a clear message.
+    const normalizedCpuArchitecture = cpuArchitecture.trim().toUpperCase();
+    if (normalizedCpuArchitecture && !['X86_64', 'ARM64'].includes(normalizedCpuArchitecture)) {
+      throw new Error(`Invalid cpu-architecture: "${cpuArchitecture}". Supported values are X86_64 and ARM64.`);
+    }
     
     // Read optional networking configuration inputs
     const subnets = core.getInput('subnets', { required: false });
@@ -263,6 +271,7 @@ async function run() {
         ['task-role-arn', taskRoleArn],
         ['cpu', cpu],
         ['memory', memory],
+        ['cpu-architecture', normalizedCpuArchitecture],
         ['container-port', containerPort],
         ['environment-variables', environmentVariables],
         ['secrets', secrets],
@@ -420,6 +429,10 @@ async function run() {
     
     if (taskRoleArn && taskRoleArn.trim() !== '') {
       serviceConfig.taskRoleArn = taskRoleArn;
+    }
+
+    if (normalizedCpuArchitecture) {
+      serviceConfig.cpuArchitecture = normalizedCpuArchitecture;
     }
     
     // Add optional networking configuration
