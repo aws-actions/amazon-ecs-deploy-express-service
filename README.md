@@ -138,7 +138,7 @@ See [IAM Permissions](#iam-permissions) for detailed policy requirements.
 |-------|-------------|---------|
 | `task-definition-arn` | The ARN of a task definition to use for the service, instead of having Express Mode manage one. Allows full control over the task, such as adding sidecar containers. See [Deploy with Your Own Task Definition](#deploy-with-your-own-task-definition). | - |
 
-When `task-definition-arn` is provided, the task definition supplies the container and task-level settings, so the following inputs cannot be used: `image`, `execution-role-arn`, `task-role-arn`, `cpu`, `memory`, `container-port`, `environment-variables`, `secrets`, `command`, `log-group`, `log-stream-prefix`, and `repository-credentials`. Define these in the task definition instead. The task definition must be `FARGATE`-compatible and have a container named `Main` with a single TCP port mapping that includes a container port and port name.
+When `task-definition-arn` is provided, the task definition supplies the container and task-level settings, so the following inputs cannot be used: `image`, `execution-role-arn`, `task-role-arn`, `cpu`, `memory`, `cpu-architecture`, `container-port`, `environment-variables`, `secrets`, `command`, `log-group`, `log-stream-prefix`, and `repository-credentials`. Define these in the task definition instead. The task definition must be `FARGATE`-compatible and have a container named `Main` with a single TCP port mapping that includes a container port and port name.
 
 ### Service Identification
 
@@ -166,6 +166,7 @@ When `task-definition-arn` is provided, the task definition supplies the contain
 | `cpu` | The number of CPU units to allocate (256, 512, 1024, 2048, 4096, 8192, 16384). If not specified, Express Mode defaults to 1024 (1 vCPU). | - |
 | `memory` | The amount of memory in MiB to allocate (512, 1024, 2048, 4096, 8192, 16384, 30720, 61440, 122880). If not specified, Express Mode defaults to 2048 MiB. | - |
 | `task-role-arn` | The ARN of the IAM role that the container can assume to make AWS API calls | - |
+| `cpu-architecture` | The CPU architecture for the service tasks: `X86_64` or `ARM64`. Use `ARM64` to run Graviton-based `linux/arm64` container images. If not specified, Express Mode defaults to `X86_64`. | - |
 
 ### Network Configuration
 
@@ -325,6 +326,23 @@ Express Mode Services are setup with preset defaults
     auto-scaling-metric: AVERAGE_CPU
     auto-scaling-target-value: 70
 ```
+
+### Deploy an ARM64 (Graviton) Service
+
+By default, Express Mode runs `X86_64` tasks. Set `cpu-architecture: ARM64` to run Graviton-based `linux/arm64` images; without it, an ARM64 image fails at startup with an `exec format error`.
+
+```yaml
+- name: Deploy ARM64 service
+  uses: aws-actions/amazon-ecs-deploy-express-service@v1
+  with:
+    service-name: my-app
+    image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
+    execution-role-arn: arn:aws:iam::123456789012:role/ecsTaskExecutionRole
+    infrastructure-role-arn: arn:aws:iam::123456789012:role/ecsInfrastructureRole
+    cpu-architecture: ARM64
+```
+
+`cpu-architecture` cannot be combined with `task-definition-arn`; set `runtimePlatform.cpuArchitecture` in the task definition instead.
 
 ### Deploy with Your Own Task Definition
 

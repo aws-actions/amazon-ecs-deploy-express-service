@@ -580,6 +580,116 @@ describe('Amazon ECS Deploy Express Service', () => {
     });
   });
 
+  describe('CPU architecture', () => {
+    const baseInputs = {
+      image: '123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest',
+      'execution-role-arn': 'arn:aws:iam::123456789012:role/ecsTaskExecutionRole',
+      'infrastructure-role-arn': 'arn:aws:iam::123456789012:role/ecsInfrastructureRole',
+      'service-name': 'test-service'
+    };
+
+    const mockInputs = (overrides = {}) => {
+      core.getInput.mockImplementation((name) => {
+        const inputs = { ...baseInputs, ...overrides };
+        return inputs[name] ?? '';
+      });
+    };
+
+    const mockCreateFlow = (serviceArn) => {
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+    };
+
+    const mockUpdateFlow = (serviceArn) => {
+      const deploymentMocks = mockSuccessfulDeployment(serviceArn);
+      mockSend
+        .mockResolvedValueOnce({ services: [{ serviceArn: serviceArn, status: 'ACTIVE' }] })
+        .mockResolvedValueOnce({ service: { serviceArn: serviceArn } })
+        .mockResolvedValueOnce(deploymentMocks[0])
+        .mockResolvedValueOnce(deploymentMocks[1])
+        .mockResolvedValueOnce(deploymentMocks[2]);
+    };
+
+    test('passes ARM64 cpuArchitecture when creating a service', async () => {
+      mockInputs({ 'cpu-architecture': 'ARM64' });
+      mockCreateFlow('arn:aws:ecs:us-east-1:123456789012:service/default/test-service');
+
+      await run();
+
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(CreateExpressGatewayServiceCommand.mock.calls[0][0].cpuArchitecture).toBe('ARM64');
+    });
+
+    test('passes ARM64 cpuArchitecture when updating a service', async () => {
+      mockInputs({ 'cpu-architecture': 'ARM64' });
+      mockUpdateFlow('arn:aws:ecs:us-east-1:123456789012:service/default/test-service');
+
+      await run();
+
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(UpdateExpressGatewayServiceCommand.mock.calls[0][0].cpuArchitecture).toBe('ARM64');
+    });
+
+    test('omits cpuArchitecture when cpu-architecture is not provided', async () => {
+      mockInputs();
+      mockCreateFlow('arn:aws:ecs:us-east-1:123456789012:service/default/test-service');
+
+      await run();
+
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(CreateExpressGatewayServiceCommand.mock.calls[0][0].cpuArchitecture).toBeUndefined();
+    });
+
+    test('normalizes cpu-architecture to uppercase', async () => {
+      mockInputs({ 'cpu-architecture': 'arm64' });
+      mockCreateFlow('arn:aws:ecs:us-east-1:123456789012:service/default/test-service');
+
+      await run();
+
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(CreateExpressGatewayServiceCommand.mock.calls[0][0].cpuArchitecture).toBe('ARM64');
+    });
+
+    test('fails when cpu-architecture is neither X86_64 nor ARM64', async () => {
+      mockInputs({ 'cpu-architecture': 'PPC64' });
+      // Terminate quickly if validation is missing, so a regression fails instead of hanging
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' } })
+        .mockResolvedValue({ service: { status: { statusCode: 'INACTIVE' } } });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('cpu-architecture'));
+      expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    test('fails when cpu-architecture is combined with task-definition-arn', async () => {
+      mockInputs({
+        image: '',
+        'execution-role-arn': '',
+        'task-definition-arn': 'arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:7',
+        'cpu-architecture': 'ARM64'
+      });
+      // Terminate quickly if validation is missing, so a regression fails instead of hanging
+      mockSend
+        .mockResolvedValueOnce({ services: [] })
+        .mockResolvedValueOnce({ service: { serviceArn: 'arn:aws:ecs:us-east-1:123456789012:service/default/test-service' } })
+        .mockResolvedValue({ service: { status: { statusCode: 'INACTIVE' } } });
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('cannot be used with task-definition-arn'));
+      expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining('cpu-architecture'));
+      expect(mockSend).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Deployment monitoring', () => {
     test('passes deployment start timestamp to waitForServiceStable', async () => {
       core.getInput.mockImplementation((name) => {
